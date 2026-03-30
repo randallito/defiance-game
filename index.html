@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE DEFIANCE — Civil Resistance Strategy Game</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --surface2: #f5f5f0;
+  --surface3: #eeede8;
+  --surface4: #e5e4df;
+  --border: #d4d3ce;
+  --border-light: #c4c3be;
+  --text: #1a1a1a;
+  --text-dim: #666660;
+  --text-faint: #999990;
+  --accent: #d4a017;
+  --accent-bright: #e6b422;
+  --accent-glow: rgba(212,160,23,0.1);
+  --accent-glow2: rgba(212,160,23,0.2);
+  --green: #2d7a3a;
+  --green-dim: rgba(45,122,58,0.08);
+  --red: #b91c1c;
+  --red-dim: rgba(185,28,28,0.08);
+  --yellow: #d4a017;
+  --yellow-dim: rgba(212,160,23,0.08);
+  --purple: #6d28d9;
+  --purple-dim: rgba(109,40,217,0.08);
+  --orange: #c2410c;
+  --orange-dim: rgba(194,65,12,0.08);
+  --cyan: #0e7490;
+  --cyan-dim: rgba(14,116,144,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Source Serif 4',Georgia,serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; line-height:1.7; font-size:20px; }
+button { font-family:inherit; cursor:pointer; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideIn { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+@keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 0 var(--accent-glow)} 50%{box-shadow:0 0 20px 4px var(--accent-glow2)} }
+@keyframes shakeX { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-4px)} 40%{transform:translateX(4px)} 60%{transform:translateX(-3px)} 80%{transform:translateX(2px)} }
+@keyframes popIn { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1} }
+@keyframes countUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes barGrow { from{width:0} }
+@keyframes borderPulse { 0%,100%{border-color:var(--border)} 50%{border-color:var(--accent)} }
+
+.fade-up { animation: fadeUp 0.45s ease-out both; }
+.fade-in { animation: fadeIn 0.3s ease both; }
+.slide-in { animation: slideIn 0.35s ease-out both; }
+.pop-in { animation: popIn 0.3s ease-out both; }
+.shake { animation: shakeX 0.4s ease; }
+
+/* stagger children */
+.stagger > *:nth-child(1) { animation-delay: 0s; }
+.stagger > *:nth-child(2) { animation-delay: 0.06s; }
+.stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger > *:nth-child(4) { animation-delay: 0.18s; }
+.stagger > *:nth-child(5) { animation-delay: 0.24s; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--surface3); border-radius:3px; }
+
+/* ── BUTTONS ── */
+.btn {
+  padding:0.65rem 1.4rem; border:1px solid var(--border); border-radius:4px;
+  background:var(--surface); color:var(--text); font-family:'Inter',system-ui,sans-serif;
+  font-size:0.85rem; font-weight:600; transition:all 0.15s; display:inline-flex; align-items:center; gap:0.4rem;
+}
+.btn:hover { background:var(--surface2); border-color:var(--text); }
+.btn-primary { background:var(--text); border-color:var(--text); color:var(--bg); font-weight:700; }
+.btn-primary:hover { background:#333; }
+.btn-sm { padding:0.45rem 0.9rem; font-size:0.8rem; }
+.btn-ghost { background:transparent; border-color:transparent; color:var(--text-dim); }
+.btn-ghost:hover { color:var(--text); background:var(--surface2); border-color:var(--border); }
+
+/* ════════════ TITLE SCREEN ════════════ */
+#title-screen {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:100vh; padding:2rem; text-align:center;
+}
+#title-screen h1 {
+  font-size:clamp(2.4rem,6vw,4rem); font-weight:900; letter-spacing:0.05em; line-height:1;
+  margin-bottom:0.6rem; color:var(--text); text-transform:uppercase;
+}
+.title-tagline { font-size:1.15rem; color:var(--text-dim); margin-bottom:2rem; }
+.title-features {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem;
+  max-width:650px; margin-bottom:1.5rem; text-align:left;
+}
+.title-feat {
+  padding:0.9rem 0; border-bottom:1px solid var(--border);
+}
+.title-feat .tf-icon { font-size:1.6rem; margin-bottom:0.3rem; }
+.title-feat .tf-title { font-weight:600; font-size:0.85rem; margin-bottom:0.2rem; }
+.title-feat .tf-desc { font-size:0.75rem; color:var(--text-dim); line-height:1.5; }
+
+.diff-btn {
+  padding:0.7rem 1.2rem; border:1px solid var(--border); border-radius:8px;
+  background:var(--surface); color:var(--text-dim); font-size:0.85rem; font-weight:500;
+  transition:all 0.2s; min-width:140px; text-align:center;
+}
+.diff-btn:hover { border-color:var(--accent); color:var(--text); }
+.diff-btn.active { border-color:var(--accent); background:var(--accent-glow); color:var(--accent-bright); }
+.diff-btn .diff-name { font-weight:700; display:block; margin-bottom:0.15rem; color:inherit; }
+.diff-btn .diff-desc { font-size:0.7rem; opacity:0.7; }
+
+/* ════════════ GAME LAYOUT ════════════ */
+#game-screen { display:none; }
+
+/* ── GAME HEADER ── */
+.game-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0.6rem 1.25rem; border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:100; background:var(--bg);
+}
+.gh-phase { font-family:'Inter',system-ui,sans-serif; font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.04em; }
+.gh-turn { font-family:'Inter',system-ui,sans-serif; font-size:0.75rem; color:var(--text-dim); margin-top:0.1rem; }
+.gh-dem { display:flex; align-items:center; gap:0.4rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--text-dim); }
+.gh-dem-val { font-weight:700; font-size:1.1rem; }
+
+/* ── MAIN ── */
+.game-body { display:flex; gap:1rem; padding:1rem 1.25rem; min-height:calc(100vh - 140px); }
+.game-main { flex:1; min-width:0; max-width:780px; }
+.game-sidebar { width:300px; flex-shrink:0; }
+
+@media (max-width:900px) {
+  .game-body { flex-direction:column; padding:0.75rem; }
+  .game-sidebar { width:100%; }
+}
+
+@media (max-width:600px) {
+  /* Title screen */
+  #title-screen { padding:1.5rem 1rem; }
+  #title-screen h1 { font-size:2.4rem; }
+  .title-tagline { font-size:1rem; margin-bottom:1.5rem; }
+  .title-features { grid-template-columns:1fr; gap:0.5rem; max-width:100%; }
+  .difficulty-select { flex-direction:column; align-items:center; }
+  .diff-btn { width:100%; max-width:280px; }
+
+  /* Journey board */
+  .game-header { padding:0.5rem 0.75rem; }
+  .gh-phase { font-size:0.75rem; }
+  .gh-dem-val { font-size:0.9rem; }
+
+  /* Game body */
+  .game-body { padding:0.5rem; gap:0.75rem; }
+  .game-main { max-width:100%; }
+
+  /* Event cards */
+  .event-card { padding:1rem; }
+  .event-card h2 { font-size:1.05rem; }
+  .choice-btn { padding:0.8rem; }
+
+  /* Radar */
+  /* radar removed */
+
+  /* City map */
+  .city-grid { grid-template-columns:1fr 1fr; gap:0.35rem; }
+
+  /* Outcome cards */
+  .outcome-card { padding:1rem; }
+  .case-study-box, .lesson-box, .discuss-box, .roads-not-taken, .consequence-box, .regime-reaction { padding:0.6rem 0.8rem; }
+  .followup-card { padding:1rem; }
+
+  /* Codex & timeline */
+  .codex-panel { max-height:40vh; }
+  .timeline-panel { max-height:30vh; }
+
+  /* End screen */
+  #end-screen { padding:1.5rem 1rem; }
+  .final-stats { grid-template-columns:repeat(2,1fr); }
+  .end-narrative, .end-codex { max-width:100%; }
+
+  /* Phase overlay */
+  .phase-overlay h2 { font-size:1.8rem; }
+  .phase-overlay p { font-size:0.85rem; padding:0 1rem; }
+}
+
+/* radar removed */
+
+/* ── CITY MAP ── */
+.city-panel {
+  padding:0.75rem 0; margin-bottom:1rem; border-bottom:1px solid var(--border);
+}
+.city-panel h3 {
+  font-family:'Inter',system-ui,sans-serif; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em;
+  color:var(--text-dim); margin-bottom:0.5rem;
+}
+.city-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;
+}
+.city-district {
+  border-bottom:1px solid var(--border); padding:0.4rem 0.5rem;
+  text-align:center; transition:all 0.5s; position:relative;
+}
+/* removed: was spanning 5th pillar full-width when there were only 5 pillars */
+.cd-icon { font-size:1.3rem; margin-bottom:0.15rem; }
+.cd-name { font-size:0.65rem; font-weight:600; margin-bottom:0.15rem; }
+.cd-loyalty {
+  font-family:'JetBrains Mono',monospace; font-size:0.8rem; font-weight:700;
+}
+.cd-status {
+  font-size:0.5rem; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; margin-top:0.1rem;
+}
+/* District states */
+.city-district.regime {
+  background:rgba(248,113,113,0.06); border-color:rgba(248,113,113,0.2);
+}
+.city-district.regime .cd-loyalty { color:var(--red); }
+.city-district.regime .cd-status { color:var(--red); }
+.city-district.regime .cd-icon { opacity:0.5; filter:grayscale(0.5); }
+
+.city-district.contested {
+  background:rgba(251,191,36,0.08); border-color:rgba(251,191,36,0.3);
+  animation:borderPulse 2.5s ease-in-out infinite;
+}
+.city-district.contested .cd-loyalty { color:var(--yellow); }
+.city-district.contested .cd-status { color:var(--yellow); }
+
+.city-district.movement {
+  background:rgba(34,211,238,0.1); border-color:var(--cyan);
+  box-shadow:0 0 12px var(--cyan-dim);
+}
+.city-district.movement .cd-loyalty { color:var(--cyan); }
+.city-district.movement .cd-status { color:var(--cyan); }
+.city-district.movement .cd-icon { filter:drop-shadow(0 0 4px rgba(34,211,238,0.4)); }
+
+/* ── EVENT CARD ── */
+.event-card {
+  padding:0 0 1.5rem 0; margin-bottom:1rem; border-bottom:1px solid var(--border);
+}
+.event-header { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.75rem; }
+.event-type-tag {
+  font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; padding:0.2rem 0.55rem;
+  border-radius:4px; font-weight:700;
+}
+.evt-crisis { background:var(--red-dim); color:var(--red); }
+.evt-opportunity { background:var(--green-dim); color:var(--green); }
+.evt-dilemma { background:var(--yellow-dim); color:var(--yellow); }
+.evt-intel { background:var(--cyan-dim); color:var(--cyan); }
+.evt-regime { background:var(--orange-dim); color:var(--orange); }
+.concept-tag {
+  font-size:0.6rem; padding:0.15rem 0.45rem; border-radius:3px;
+  background:var(--purple-dim); color:var(--purple); font-weight:600; cursor:pointer;
+}
+.concept-tag:hover { background:rgba(167,139,250,0.25); }
+.event-card h2 { font-size:1.2rem; font-weight:700; line-height:1.35; margin-bottom:0.6rem; }
+.event-desc { color:var(--text); line-height:1.7; font-size:1rem; }
+
+/* regime reaction banner */
+.regime-reaction {
+  background:var(--red-dim); border:1px solid rgba(185,28,28,0.15); border-radius:2px;
+  padding:0.75rem 1rem; margin-bottom:1rem; font-size:0.92rem; line-height:1.7;
+}
+.regime-reaction .rr-label {
+  font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; font-weight:700;
+  color:var(--red); margin-bottom:0.25rem;
+}
+
+/* ── CHOICES ── */
+.choices { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1rem; }
+.choice-btn {
+  text-align:left; padding:1rem 1rem 1rem 1.8rem; border:1px solid var(--border); border-radius:2px;
+  background:var(--surface); color:var(--text); transition:all 0.15s; position:relative; cursor:pointer;
+  border-left:3px solid transparent;
+}
+.choice-btn:hover {
+  border-left-color:var(--accent); background:var(--surface2);
+}
+.choice-title { font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:0.85rem; margin-bottom:0.25rem; }
+.choice-desc { font-size:0.88rem; color:var(--text-dim); line-height:1.6; margin-bottom:0.4rem; }
+.choice-hint {
+  font-size:0.75rem; color:var(--text-dim); line-height:1.4;
+  border-top:1px solid var(--border); padding-top:0.35rem; margin-top:0.3rem;
+}
+.choice-hint .hint-pos { color:rgba(74,222,128,0.7); }
+.choice-hint .hint-neg { color:rgba(248,113,113,0.7); }
+.choice-hint .hint-warn { color:rgba(251,191,36,0.7); }
+
+/* ── OUTCOME ── */
+.outcome-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:2px;
+  padding:1.5rem; margin-bottom:1rem; display:none;
+}
+.outcome-card h3 { font-family:'Inter',system-ui,sans-serif; font-size:1rem; margin-bottom:0.6rem; }
+.outcome-card p { margin-bottom:0.75rem; line-height:1.7; }
+.outcome-text { color:var(--text); line-height:1.7; font-size:1rem; margin-bottom:0.75rem; }
+.lesson-box {
+  background:var(--surface2); border-left:3px solid var(--accent); padding:0.75rem 1rem;
+  border-radius:0 8px 8px 0; margin-bottom:0.75rem;
+}
+.lesson-label { font-weight:700; color:var(--accent); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.2rem; }
+.lesson-text { font-size:0.92rem; line-height:1.7; color:var(--text); }
+.lesson-source { font-size:0.72rem; color:var(--text-dim); margin-top:0.4rem; font-style:italic; }
+
+.case-study-box {
+  background:var(--surface2); border:1px solid rgba(34,211,238,0.15); border-radius:8px;
+  padding:0.75rem 1rem; margin-bottom:0.75rem;
+}
+.case-study-label { font-weight:700; color:var(--cyan); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.3rem; }
+.case-study-text { font-size:0.92rem; line-height:1.7; color:var(--text); }
+.case-study-text strong { color:var(--text); font-weight:600; }
+
+.discuss-box {
+  background:var(--yellow-dim); border:1px solid rgba(251,191,36,0.15); border-radius:8px;
+  padding:0.75rem 1rem; margin-bottom:0.75rem;
+}
+.discuss-label { font-weight:700; color:var(--yellow); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.2rem; }
+.discuss-text { font-size:0.82rem; line-height:1.6; color:var(--text-dim); }
+
+/* ── ROADS NOT TAKEN ── */
+.roads-not-taken {
+  border:1px solid var(--border); border-radius:2px; padding:0.75rem 1rem;
+  margin-bottom:0.75rem; background:var(--surface);
+}
+.rnt-label { font-family:'Inter',system-ui,sans-serif; font-weight:700; color:var(--text-dim); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem; }
+.rnt-item { padding:0.4rem 0; border-bottom:1px solid var(--border); }
+.rnt-item:last-child { border-bottom:none; }
+.rnt-title { font-size:0.88rem; font-weight:600; color:var(--text); margin-bottom:0.15rem; }
+.rnt-counterfactual { font-size:0.88rem; color:var(--text-dim); line-height:1.6; }
+
+/* ── FOLLOW-UP CHOICE ── */
+.followup-card {
+  background:var(--surface); border:1px solid var(--accent); border-radius:12px;
+  padding:1.25rem; margin-bottom:1rem; box-shadow:0 0 15px var(--accent-glow);
+}
+.followup-card h3 { font-size:0.95rem; color:var(--accent); margin-bottom:0.4rem; }
+.followup-desc { font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:0.75rem; }
+.followup-choices { display:flex; flex-direction:column; gap:0.5rem; }
+.followup-btn {
+  text-align:left; padding:0.8rem 1rem; border:1px solid var(--border); border-radius:8px;
+  background:var(--surface2); color:var(--text); transition:all 0.2s; cursor:pointer;
+  font-family:inherit;
+}
+.followup-btn:hover { border-color:var(--accent); background:var(--surface3); transform:translateY(-1px); }
+.fu-title { font-weight:600; font-size:0.85rem; margin-bottom:0.15rem; }
+.fu-desc { font-size:0.75rem; color:var(--text-dim); line-height:1.4; }
+
+.consequence-box {
+  background:var(--orange-dim); border:1px solid rgba(251,146,60,0.15); border-radius:8px;
+  padding:0.6rem 0.8rem; margin-bottom:0.75rem; font-size:0.8rem; line-height:1.5;
+}
+.consequence-label { font-weight:700; color:var(--orange); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.15rem; }
+
+/* ── SIDEBAR: CODEX ── */
+.codex-panel {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:1rem; margin-bottom:1rem; max-height:60vh; overflow-y:auto;
+}
+.codex-panel h3 {
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim);
+  margin-bottom:0.6rem; display:flex; align-items:center; gap:0.4rem;
+}
+.codex-count { font-family:'JetBrains Mono',monospace; color:#fbbf24; }
+.codex-entry {
+  padding:0.5rem 0.6rem; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background 0.2s;
+}
+.codex-entry:last-child { border-bottom:none; }
+.codex-entry:hover { background:var(--surface2); }
+.codex-entry.locked { opacity:0.35; cursor:default; }
+.codex-entry.locked:hover { background:transparent; }
+.codex-entry.new { animation:slideIn 0.35s ease-out; }
+.ce-name { font-size:0.8rem; font-weight:600; }
+.ce-source { font-size:0.65rem; color:var(--text-dim); margin-top:0.1rem; }
+.ce-desc { font-size:0.75rem; color:var(--text-dim); line-height:1.5; margin-top:0.3rem; display:none; }
+.codex-entry.expanded .ce-desc { display:block; }
+.ce-locked-text { font-size:0.7rem; color:var(--text-faint); font-style:italic; }
+
+/* ── SIDEBAR: TIMELINE ── */
+.timeline-panel {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:1rem; max-height:40vh; overflow-y:auto;
+}
+.timeline-panel h3 { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:0.6rem; }
+.tl-entry {
+  padding:0.4rem 0 0.4rem 1rem; border-left:2px solid var(--border); font-size:0.75rem;
+  line-height:1.5; color:var(--text-dim); margin-bottom:0.3rem; position:relative;
+}
+.tl-entry::before {
+  content:''; position:absolute; left:-4px; top:0.55rem; width:6px; height:6px;
+  border-radius:50%; background:var(--border);
+}
+.tl-entry.tl-crisis::before { background:var(--red); }
+.tl-entry.tl-opportunity::before { background:var(--green); }
+.tl-entry.tl-dilemma::before { background:var(--yellow); }
+.tl-entry.tl-regime::before { background:var(--orange); }
+.tl-entry .tl-turn { font-family:'JetBrains Mono',monospace; color:var(--text-faint); font-size:0.65rem; }
+.tl-entry .tl-title { color:var(--text); font-weight:500; }
+
+/* ════════════ END SCREEN ════════════ */
+#end-screen {
+  display:none; min-height:100vh; flex-direction:column; align-items:center;
+  justify-content:center; padding:2rem; text-align:center;
+}
+#end-screen h1 { font-size:clamp(2rem,5vw,3rem); font-weight:900; margin-bottom:0.75rem; }
+.end-subtitle { font-size:1rem; color:var(--text-dim); max-width:600px; line-height:1.7; margin-bottom:1.5rem; }
+.end-narrative { text-align:left; max-width:650px; width:100%; margin-bottom:1.5rem; }
+.end-narrative p { font-size:0.9rem; line-height:1.7; color:var(--text-dim); margin-bottom:0.75rem; }
+.final-stats {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+  gap:0.6rem; max-width:600px; width:100%; margin-bottom:1.5rem;
+}
+.final-stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:0.8rem; }
+.fs-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); }
+.fs-value { font-family:'JetBrains Mono',monospace; font-size:1.3rem; font-weight:700; margin-top:0.15rem; }
+
+.end-codex { text-align:left; max-width:650px; width:100%; margin-bottom:2rem; }
+.end-codex h3 { font-size:0.9rem; margin-bottom:0.75rem; color:var(--accent); }
+.end-lesson {
+  background:var(--surface); border:1px solid var(--border); border-radius:8px;
+  padding:0.75rem 1rem; margin-bottom:0.5rem; font-size:0.82rem; line-height:1.6;
+}
+.end-lesson .el-source { font-size:0.7rem; color:var(--text-dim); font-style:italic; margin-top:0.3rem; }
+
+/* ── PHASE TRANSITION OVERLAY ── */
+.phase-overlay {
+  position:fixed; inset:0; background:rgba(26,26,26,0.95); z-index:200;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.5s;
+}
+.phase-overlay.active { opacity:1; pointer-events:auto; }
+.phase-overlay h2 {
+  font-size:2.5rem; font-weight:900; margin-bottom:0.5rem;
+  color:#fbbf24;
+}
+.phase-overlay p { color:#d4d3ce; font-size:1.1rem; max-width:500px; text-align:center; line-height:1.7; }
+
+/* ── PILLAR THRESHOLD ALERT (inline) ── */
+.threshold-alert {
+  background:var(--surface); border:1px solid var(--cyan); border-radius:10px;
+  padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 0 20px var(--cyan-dim);
+  animation:popIn 0.4s ease-out;
+}
+.threshold-alert .ta-title { font-weight:700; color:var(--cyan); margin-bottom:0.3rem; font-size:0.9rem; }
+.threshold-alert .ta-text { font-size:0.85rem; color:var(--text-dim); line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="phase-overlay" id="phase-overlay">
+  <h2 id="phase-overlay-title"></h2>
+  <p id="phase-overlay-desc"></p>
+  <p style="margin-top:1.5rem; font-size:0.9rem; color:#fbbf24; cursor:pointer; font-family:'Inter',system-ui,sans-serif;">Click to continue →</p>
+</div>
+
+<!-- ═══ TITLE ═══ -->
+<div id="title-screen">
+  <div style="background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); text-align:center; padding:0.5rem 1rem; border-radius:8px; font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1rem; max-width:500px;">⚠ Beta — For Testing Only — Likely Contains Errors</div>
+  <h1>THE DEFIANCE</h1>
+  <p class="title-tagline">Lead a movement through an era of authoritarian consolidation.</p>
+
+  <div class="title-features stagger">
+    <div class="title-feat fade-up">
+      <div class="tf-title">Shift the Pillars</div>
+      <div class="tf-desc">Win over business, military, religious, media, and labor — the institutional pillars every regime depends on.</div>
+    </div>
+    <div class="title-feat fade-up">
+      <div class="tf-title">Choices Have Consequences</div>
+      <div class="tf-desc">Your decisions ripple forward. The regime adapts to your strategy and exploits your weaknesses.</div>
+    </div>
+    <div class="title-feat fade-up">
+      <div class="tf-title">Learn From History</div>
+      <div class="tf-desc">Scenarios informed by real events and civil resistance research from dozens of countries. Movements whose organizers studied civil resistance succeeded at higher rates than those that didn't.</div>
+    </div>
+  </div>
+
+  <!-- difficulty removed — one consistent experience -->
+
+  <button class="btn btn-primary" onclick="startGame()" style="font-size:1rem; padding:0.8rem 2.5rem;">
+    Begin Campaign →
+  </button>
+
+  <div style="max-width:600px; margin-top:2rem; padding:1rem 1.25rem; border:1px solid var(--border); border-radius:10px; background:var(--surface); text-align:left; font-size:0.78rem; line-height:1.7; color:var(--text-dim);">
+    <div style="font-weight:700; color:var(--yellow); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.4rem;">⚠ A note on uncertainty</div>
+    <p style="margin-bottom:0.5rem;">This game draws on empirical research about civil resistance, but <strong style="color:var(--text);">what is happening in the United States is unprecedented in its speed.</strong> V-Dem's <em>Democracy Report 2026</em> found the U.S. lost its liberal democracy status for the first time in over 50 years. M. Gessen warns this has moved beyond "democratic backsliding" into something qualitatively different. And Bianchi, Cheeseman, and Cyr (2025) find that since 1994, nearly 90% of democratic recoveries failed within five years. No model can reliably predict what works in a situation this novel.</p>
+    <p style="margin-bottom:0.5rem;"><strong style="color:var(--text);">Civil resistance movements are succeeding less often.</strong> Chenoweth's data shows nonviolent campaign success rates climbed as high as 65% in the 1990s but have fallen to less than 34% since 2010. While regimes have adapted their repression strategies, Chenoweth argues that the most compelling explanations lie in how movements themselves have changed: campaigns have become smaller (peak participation dropped from 2.7% to 1.3% of the population), over-reliant on mass demonstrations while neglecting strikes and civil disobedience, dependent on digital organizing that assembles crowds but struggles to build organizations that can plan, negotiate, and sustain — and shorter, launching before they have built staying power.</p>
+    <p style="margin-bottom:0;">This game is a tool for <strong style="color:var(--text);">sharpening strategic thinking and sparking conversation</strong>, not a map of the territory. It was built with AI assistance and may contain errors. It does not yet model AI-related factors (disinformation, surveillance, organizing tools), geopolitical dynamics (great power competition, global authoritarian coordination), or economic disruption (AI-driven unemployment, labor market precarity). These will be addressed in future iterations.</p>
+    <p style="margin-top:0.5rem; font-size:0.68rem; color:var(--text-faint);">Sources: V-Dem <em>Democracy Report 2026</em>; M. Gessen (<em>NYT</em> 2025, 2026); Müller (<em>The Guardian</em> 2026); Bouie (<em>NYT</em> 2025); Bianchi, Cheeseman &amp; Cyr (2025); Chenoweth (2020, 2022); Pinckney &amp; Trilling (2024); Levitsky &amp; Ziblatt; Snyder; Kagan (<em>New Yorker</em> 2026); Hold the Line Guide; Batura; NDI-PRVT Guide; Tannehill; Hunter &amp; Hoque (<em>Truthout</em> 2025). Corporate campaign research compiled with AI assistance (may contain errors).</p>
+  </div>
+</div>
+
+<!-- ═══ GAME ═══ -->
+<div id="game-screen">
+  <div class="game-header" id="game-header">
+    <div>
+      <div class="gh-phase" id="phase-name">Phase 1: The Consolidation (2025)</div>
+      <div class="gh-turn" id="turn-info">Turn 1 / 8</div>
+    </div>
+    <div class="gh-dem">Democracy <span class="gh-dem-val" id="dem-header">65</span></div>
+  </div>
+
+  <div class="game-body">
+    <div class="game-main">
+      <div id="regime-reaction-area"></div>
+      <div id="consequence-area"></div>
+      <div id="threshold-alert-area"></div>
+      <div id="event-area"></div>
+      <div id="choices-area"></div>
+      <div id="outcome-area"></div>
+    </div>
+    <div class="game-sidebar">
+      <!-- radar removed -->
+      <!-- City Map -->
+      <div class="city-panel" id="city-panel">
+        <h3>Pillars of Support</h3>
+        <div class="city-grid" id="city-grid"></div>
+      </div>
+      <div class="timeline-panel" id="timeline-panel">
+        <h3>Movement Timeline</h3>
+        <div id="timeline-entries"></div>
+      </div>
+      <div class="codex-panel" id="codex-panel" style="cursor:pointer;">
+        <h3 onclick="document.getElementById('codex-entries').style.display=document.getElementById('codex-entries').style.display==='none'?'block':'none'">Concept Codex <span class="codex-count" id="codex-count">0 / 15</span> <span style="font-size:0.7em;color:var(--text-faint)">▼</span></h3>
+        <div id="codex-entries" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ END ═══ -->
+<div id="end-screen"></div>
+
+<script>
+// ═══════════════════════════════════════
+// GAME ENGINE v2
+// ═══════════════════════════════════════
+
+let difficulty = 'standard';
+let diffMods = { standard:{decay:[2,4,6],boost:1} };
+
+// difficulty selection removed — one consistent experience
+
+// ─── STATE ───
+const S = {
+  turn: 1, maxTurns: 8, phase: 1,
+  movementPower: 40, popularSupport: 45, orgCapacity: 35, coalitionUnity: 50, democracy: 65,
+  pillars: {
+    business:  { name:"Business & Markets",        icon:"📈", loyalty:20 },
+    military:  { name:"Security & Military",       icon:"🛡️", loyalty:15 },
+    religious: { name:"Religious Institutions",     icon:"⛪", loyalty:30 },
+    media:     { name:"Media & Press",              icon:"📰", loyalty:55 },
+    labor:     { name:"Labor & Unions",              icon:"✊", loyalty:45 },
+    civil:     { name:"Civil Servants & Bureaucracy",icon:"📋", loyalty:25 },
+  },
+  pillarThresholdsFired: { business:[], military:[], religious:[], media:[], labor:[], civil:[] },
+  flags: new Set(),         // tracks player choices for consequence chains
+  codex: new Map(),         // concept name -> { desc, source, turn }
+  timeline: [],
+  lessonsLearned: [],
+  usedEvents: new Set(),
+  prevStats: {},
+};
+
+function clamp(v,lo=0,hi=100){ return Math.max(lo,Math.min(hi,v)); }
+function getPhase(t){ return t<=3?1:t<=6?2:3; }
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function chance(p){ return Math.random()<p; }
+
+// ─── CODEX DEFINITIONS (v0.2 — essential concepts only) ───
+const CODEX_ALL = {
+  "Pillars of Support":{ desc:"Authoritarian regimes depend on the loyalty of key institutional pillars: business, military, religious institutions, media, labor, and civil servants. Research on democratic backsliding cases found that outreach and relationship-building shifted pillar loyalty in 39% of cases, while pressure-based protest performed worse than doing nothing. Important caveat: this research studied democratic backsliding specifically — if the situation has moved into state terror territory, where randomness rather than predictable repression is the defining feature, these findings may not fully apply.", source:"Helvey, On Strategic Nonviolent Conflict (2004); Pinckney & Trilling, Breaking Down Pillars of Support (2024)" },
+  "Loyalty Shift":{ desc:"Two paths for shifting institutional loyalty: persuasion (quiet diplomacy, back-channels, relationship-building) and pressure (boycotts, strikes, public shaming). Cross-national data shows persuasion produces more durable shifts. The most effective approach sequences both: disruptive pressure creates a window, then outreach during that window converts it.", source:"Pinckney & Trilling, Breaking Down Pillars of Support (2024)" },
+  "Mafia State":{ desc:"A system where one person distributes money and power through a network of loyalists — not through ideology but through transactions. Loyalty is the only currency. The concept comes from studying how Hungary's government was transformed into a patronage network. When the presidency operates as a profit center — pardons for sale, government equity stakes in private companies, regulatory threats exchanged for political support — this is the framework to recognize.", source:"Magyar, Post-Communist Mafia State (2016); M. Gessen, NYT (2025)" },
+  "Competitive Authoritarianism":{ desc:"A system where elections occur but the incumbent deploys state machinery to tilt the field — selective prosecution, media harassment, voter suppression, weaponized regulation. The forms of democracy continue but the substance is hollowed out. Recognizing this pattern is essential because it tells you the regime won't be defeated by normal electoral politics alone.", source:"Levitsky & Ziblatt, How Democracies Die (2018)" },
+  "Anticipatory Obedience":{ desc:"Most authoritarian power is freely given, not seized. Institutions comply before being asked — settling lawsuits they could win, dropping coverage that might offend, restructuring to avoid hypothetical threats. The FCC chair who threatens licenses without revoking any demonstrates this: the threat alone changes behavior. Recognizing anticipatory obedience matters because it shows where resistance is cheapest — early, before compliance becomes the norm.", source:"Snyder, On Tyranny (2017)" },
+  "State Terror":{ desc:"A term used by M. Gessen — a journalist who covered the rise of authoritarianism in Russia and writes about the current U.S. situation — to describe violence or coercion deployed randomly to change the behavior of onlookers, not just targets. The randomness is the point: in a repressive regime, you know the rules; in state terror, anyone can be next regardless of their behavior. The correct response is not to go underground but to make resistance MORE visible.", source:"M. Gessen, State Terror Has Arrived (NYT, 2026); Acemoglu, Bloody Minnesota (2026)" },
+  "Backfire Framework":{ desc:"When a regime uses disproportionate force, it can generate more resistance than it suppresses — IF the violence is documented and publicized effectively. The framework: document the repression, tell the stories of those targeted, convert outrage into organized action. The instinct to hide is exactly what state terror is designed to produce. The counter is to proliferate voices and stories, not reduce them.", source:"Merriman, Backfire Framework; Sharp, From Dictatorship to Democracy (1993)" },
+  "Broad Front":{ desc:"A multiracial, cross-class united front — not a single coordinated coalition with one strategy, but a shared terrain where different actors with different bases are all in relationship, aware of each other, and pointed at the same threat. The anti-apartheid struggle is the model: boycotts, street actions, institutional pressure, and individual acts of refusal all contributed differently. What changes is mutual awareness and support across the divides. The regime prefers silos — opposition it can deal with separately.", source:"Ontiveros & Dixon, Fascism Barometer Podcast; Chenoweth & Marks (2022)" },
+  "Capacity vs. Spectacle":{ desc:"Governments distinguish between movements that can sustain economic and political pressure (capacity) and those that can only produce impressive but temporary displays (spectacle). A march signals sentiment; a sustained boycott or strike signals genuine disruptive power. Movements that skip organizational infrastructure-building — decision-making structures, governance capacity, local teams — can mobilize millions but can't negotiate, pivot, or sustain campaigns.", source:"Tufekci, Twitter and Tear Gas (2017)" },
+  "Dual-Direction Pressure":{ desc:"Companies face commercial risk from BOTH progressive and conservative/regime sides. Both can impose billions in costs — but regime pressure is concentrated, certain, and immediate while movement pressure is diffuse, uncertain, and deniable. Some companies that maintained their commitments saw stronger financial performance than those that retreated. The strategic implication: diagnose which direction the target faces the most CERTAIN pressure before launching a campaign.", source:"Corporate campaigns research (2025-26)" },
+  "Regulatory Capture Risk":{ desc:"Institutions with government dependencies (broadcast licenses, merger approvals, federal contracts, tax-exempt status) are uniquely vulnerable to regime coercion. Institutions without these dependencies have more resistance capacity. This is why the FCC chair's threats change behavior even without enforcement — the licenses create leverage. Before pressuring or defending an institution, assess its government exposure.", source:"Corporate campaigns research; Fefer & Stephan (2026)" },
+  "Alternative Institutions":{ desc:"Building parallel structures — community services, mutual aid networks, independent information systems, democratic governance bodies — that don't depend on captured institutions. In authoritarian environments, these replace failing state functions AND serve as on-ramps for civic participation. Mutual aid is not a distraction from 'real' organizing — it IS organizing, especially for communities under direct threat and for youth who distrust existing institutions.", source:"Chenoweth & Marks (2022)" },
+  "Pre-Election Mobilization":{ desc:"Research strongly links pre-election mobilization to authoritarian defeat. High turnout reduces the space for fraud (harder to manipulate 60% than 51%) and generates the activated base needed to defend results after the election. But mobilization alone is not enough — it must be combined with organizational infrastructure for election protection, credible independent vote verification, and institutional defenders at every stage between voting day and inauguration.", source:"Chenoweth, The Breakdown Podcast (2026); Batura, How to Compete in Unfair Elections (2024)" },
+  "Parallel Vote Tabulation":{ desc:"Citizen-led independent vote counting that can verify or challenge official results. Has been decisive in multiple democratic transitions. The critical requirement is CREDIBILITY: if the observer corps is composed entirely of progressive activists, the regime discredits it by pointing at who's doing it. Effective independent verification requires faith leaders, veterans, business owners, and members of the opposing party in the observer corps.", source:"Batura, How to Compete in Unfair Elections (2024); NDI PRVT Guide" },
+  "Nonviolent Discipline":{ desc:"Nonviolent campaigns have achieved success 53% of the time, compared with 26% for violent resistance campaigns. The strategic argument is not 'violence is wrong' but 'violence narrows your coalition precisely when you need to broaden it.' Blockades, sit-ins, and strikes are all forms of nonviolent escalation — escalation and nonviolence are not opposites. The discipline must be built through training before the crisis, not imposed during it.", source:"Chenoweth & Stephan, Why Civil Resistance Works (2011)" },
+  "Three Earths":{ desc:"A framework from organizers Ai-jen Poo and Cristina Jiménez Moreta (née Praeli) for understanding where you are. Earth One: a flawed but functional democracy where organizing wins are durable and institutions respond to pressure. Earth Two: an authoritarian breakthrough where the rules have changed and Earth One tactics may not apply. Earth Three: the future you're building — not a return to the old normal but something better. The framework matters because misdiagnosing which Earth you're on leads to wasted resources: Earth One strategies on Earth Two produce frustration; Earth Two strategies on Earth One produce overreaction.", source:"Poo & Praeli, Three Earths Framework (2025)" },
+};
+
+// ─── EVENT DATABASE (v0.2 — 8 turns, diagnosis-first) ───
+const EVENTS = [
+// ════ PHASE 1: THE CONSOLIDATION (2025) — Turns 1-3 ════
+{
+  phase:1, type:"crisis",
+  title:"The Purges Begin",
+  desc:"It's been relentless. Inspectors general fired. Senior military leaders purged — disproportionately women and officers of color. Transgender service members expelled. The government proposes cutting federal funding from any hospital providing gender-affirming care to young people — effectively a nationwide ban.<br><br>The FCC chair threatens station licenses on social media — no enforcement action, just the threat. Former FCC chairs warn it creates a chilling effect — stations pull back on coverage rather than risk their licenses. Universities are offered a deal: accept restrictions on admissions and hiring, cap international students, abolish departments that the administration says 'punish, belittle, and spark violence against conservative ideas' — or lose federal funding. None of the original nine universities sign. Pro bono immigration legal work dries up as law firms face government pressure for representing immigrants.<br><br>Longstanding voting access barriers continue to disproportionately affect disabled voters and Indigenous communities on reservations.<br><br>Then it gets closer to home. Congressional investigations into the movement's main fundraising platform — investigations that began before the current administration even took office — are now being used as pretext for broader attacks on opposition fundraising infrastructure. You hear that dozens of retaliatory investigations are open across federal agencies — targeting judges, elected officials, activists, nonprofits. Few have produced charges. The investigations themselves are the punishment.<br><br>Each development lands before you've processed the last one. The media covers each as an individual story — failing to connect the pattern. There's no single dramatic moment — just a steady, grinding accumulation. And it raises a question your movement has to answer: what, exactly, are you living through?",
+  concepts:["Anticipatory Obedience","Competitive Authoritarianism","Mafia State"],
+  choices:[
+    {
+      title:"This is an authoritarian crisis",
+      desc:"The president is following the authoritarian playbook — attacking civil society, persecuting opponents, sidelining the legislature, rigging elections, consolidating power. This follows patterns that have played out in other countries, and studying those patterns is the fastest way to get ahead of what's coming.",
+      hint:"<span class='hint-pos'>Recognizes the pattern</span> · <span class='hint-pos'>Builds parallel infrastructure</span> · <span class='hint-warn'>Risk: if you're wrong, you look alarmist</span>",
+      effects:{movementPower:3,popularSupport:1,orgCapacity:10,coalitionUnity:4,democracy:3},
+      pillarEffects:{civil:8,military:5},
+      flags:["diagnosed_authoritarian_crisis"],
+      outcome:"You go into learning mode. You subscribe to the <a href='https://www.fascismbarometer.org/' target='_blank'>Fascism Barometer podcast</a>. You start reading <a href='https://snyder.substack.com/' target='_blank'>Timothy Snyder's Substack</a> and Protect Democracy's <a href='https://www.ifyoucankeepit.org/' target='_blank'>If We Can Keep It</a> newsletter. You sign up for <a href='https://choosedemocracy.us/' target='_blank'>Choose Democracy</a> updates and connect with <a href='https://freedomtrainers.net/' target='_blank'>Freedom Trainers</a> for training materials. You discover frameworks that help you see the pattern: mafia state, competitive authoritarianism, pillars of support.<br><br>You also start reading practical guides on organizational defense — how to prepare for asset freezes, how to handle retaliatory investigations, how to protect your communications and your people. You bring these ideas to your team. The learning isn't a distraction from the work — it IS the work right now, because the organizers who understand the pattern can act faster and more strategically than those treating every development as unprecedented.",
+      caseStudy:"In <strong>Serbia</strong>, the Otpor! movement gradually built relationships with sympathetic police and military officers over nearly two years before the decisive confrontation with Milošević in 2000. When the dictator ordered a crackdown, security forces refused — because the movement had built trust through years of quiet back-channel work. In <strong>Poland</strong>, Solidarity built an entire parallel society underground — independent publishing, workers' councils, underground universities — infrastructure that ultimately outlasted the regime. The authoritarian-crisis lens helps you see what's coming and prepare for it.",
+      lesson:"If this is an authoritarian crisis, then it follows patterns recognizable from other countries. Organizers who study those patterns can act faster and more strategically than those treating every development as unprecedented.",
+      source:"Britton-Purdy, Pozen & Guida, NYT (2026); Levitsky & Ziblatt (2018); Chenoweth & Marks (2022)",
+      concepts_unlocked:["Competitive Authoritarianism","Anticipatory Obedience","Pillars of Support"],
+      discuss:"What patterns from other countries do you recognize? What would you build now that you'll need in 6 months? In 18 months? In 2 years? Research shows that even when democratic turnarounds happen, 90% fail to sustain within five years. How long do you think this fight will last?"
+    },
+    {
+      title:"This is more of the same — intensified",
+      desc:"The system was already broken before this administration. Racial disparities in criminal justice. An arbitrary immigration system. Billionaires running the country. What's happening now isn't new — it intensifies deep trends in American life. The people alarmed now weren't alarmed when these things happened to communities of color for decades. Keep doing the work: tenant unions, workplace organizing, progressive electoral campaigns, investing in the public good.",
+      hint:"<span class='hint-pos'>Addresses root causes</span> · <span class='hint-pos'>Resonates with affected communities</span> · <span class='hint-warn'>Risk: underestimates what's new about this moment</span>",
+      effects:{movementPower:4,popularSupport:6,orgCapacity:6,coalitionUnity:2,democracy:1},
+      pillarEffects:{religious:5,labor:5},
+      flags:["diagnosed_more_of_same"],
+      outcome:"You continue the work you were already doing — organizing tenant unions, pushing for progressive taxation and public investment, building worker power, electing democratic socialists to local and national office, campaigning to shift public safety budgets toward community-based alternatives. This is the work that addresses the root failures that created the conditions for authoritarianism. The 'more of the same' framework has a crucial insight: the people just now alarmed weren't alarmed when immigration raids, surveillance, and state violence targeted Black and brown communities for decades. But it has a risk: if what's happening IS qualitatively different — if the regime is consolidating power in ways that close off the future possibility of tenant unions, progressive taxation, and elected socialists — then continuing pre-2025 work in a post-2025 context may not be enough.",
+      caseStudy:"In <strong>Chile under the Pinochet military dictatorship</strong>, the Catholic Church's Vicariate of Solidarity provided legal defense, food assistance, and community support for families — building the community infrastructure that eventually powered the democratic transition. The 'more of the same' lens correctly identifies that many communities have been living under conditions of state violence for generations. But the Hungarian scholar Bálint Magyar warns that there's a difference between a flawed democracy and a <strong>mafia state</strong> — a system where one person distributes money and power through loyalty networks. Both require community infrastructure, but the mafia state requires recognizing that conventional accountability mechanisms may no longer function.",
+      lesson:"The 'more of the same' framework correctly identifies that authoritarianism didn't start with this administration — and that community infrastructure is needed regardless. But if the system is being transformed into something qualitatively different, the response must go beyond what was needed before.",
+      source:"Britton-Purdy, Pozen & Guida, NYT (2026); Magyar (2016); M. Gessen, NYT (2025)",
+      concepts_unlocked:["Mafia State","Alternative Institutions"],
+      discuss:"What's the difference between 'more of the same' and 'qualitatively different'? What evidence would tell you which framework is right? Does it matter if both require community infrastructure?"
+    },
+    {
+      title:"This is constitutional regime change",
+      desc:"Like it or not, this is how American governance has always changed — not through formal amendments but through political initiatives that rearrange power. When organizers pressured Obama to create DACA through executive action, that was also a president bypassing Congress to reshape policy. Roosevelt was called a fascist too. The system will absorb this and correct.",
+      hint:"<span class='hint-pos'>Historical perspective</span> · <span class='hint-warn'>Assumes democratic self-correction</span> · <span class='hint-warn'>Risk: normalizes what shouldn't be normalized</span>",
+      effects:{movementPower:2,popularSupport:4,orgCapacity:2,coalitionUnity:4,democracy:2},
+      pillarEffects:{civil:3},
+      flags:["diagnosed_regime_change"],
+      outcome:"You invest in working through existing channels — legal challenges, congressional pressure, electoral preparation. This framework has a real insight: American governance HAS changed through executive action before, and movements you participated in — like the campaign for DACA — celebrated when a president used that power on your behalf. But there's a critical difference: DACA was a response to movement pressure with broad public support. This administration acts mainly through executive action without majority support and is systematically closing off the channels for future change. The question isn't whether presidents push boundaries — it's whether the system can still self-correct.",
+      caseStudy:"In <strong>Hungary</strong>, opposition parties spent years working through institutional channels while Orbán systematically captured the judiciary, media regulators, and election administration. They treated each development as within the normal range of democratic politics. By the time they recognized the pattern, the institutions they were relying on had been hollowed out from within. The constitutional-regime-change framework has a crucial insight: norms DO change, and not all norm-breaking is authoritarian. But it has a fatal flaw: it assumes the system will self-correct. In Hungary, it didn't.",
+      lesson:"The constitutional-regime-change framework correctly identifies that American governance transforms through disruption. But if this disruption is not self-correcting — if the regime is closing off the pathways for future change — then treating it as normal constitutional politics wastes the window when resistance is cheapest.",
+      source:"Britton-Purdy, Pozen & Guida, NYT (2026); Levitsky & Ziblatt (2018); V-Dem Democracy Report (2026)",
+      concepts_unlocked:["Competitive Authoritarianism"],
+      discuss:"What's the difference between legitimate constitutional change and authoritarian consolidation? How do you tell the difference in real time?"
+    }
+  ]
+},
+{
+  phase:1, type:"dilemma",
+  title:"The Broad Front Question",
+  desc:"Your phone buzzes. It's your cousin — the one who voted the other way twice, the one you stopped arguing with at Thanksgiving. She works at a company that just got hit with billions in tariffs. 'Half my division is getting laid off. My boss says it's because the government is punishing the company. Are you guys doing anything about this?'<br><br>You stare at the message. Your group chat is already on fire: a prominent voice in your movement just posted that anyone working with 'liberals and Democrats who created this mess' is part of the problem. Three people you respect are sharing it approvingly. Meanwhile, one of your staff — who is undocumented — asks if it's safe to keep coming to the office. Maybe you're asking yourself the same question.<br><br>The regime is targeting immigrant communities, trans people, student activists, universities, and corporations all at once. White supremacy and the enforcement of traditional hierarchies are central to the authoritarian project — not just tactics to divide. But the breadth of the attack is also creating unexpected cracks: members of the president's own party are publicly breaking with him. At CPAC in early 2026, supporters are uneasy about the new war. A militia leader who once led armed standoffs against federal agents now calls immigration enforcement 'tyranny' — he operates outside the system the same way you do, just with different politics.<br><br>And then there's the right's organizing infrastructure. Turning Point USA alone has over a thousand campus chapters, has taken over state party committees in places like Arizona, runs voter mobilization through churches across swing states, and continued operating after the assassination of its founder. You're not just facing a regime — you're facing an organized movement with infrastructure the left hasn't matched.<br><br>Your cousin is still waiting for a reply.",
+  concepts:["Broad Front","Pillars of Support","Loyalty Shift"],
+  choices:[
+    {
+      title:"Build the broadest possible front",
+      desc:"A 'no' front — united against the regime — can include people who disagree deeply about everything else. The cost is real: working alongside people whose other positions may harm your communities. But the alternative is a front too narrow to win.",
+      hint:"<span class='hint-pos'>Broadest possible front</span> · <span class='hint-warn'>Internal friction guaranteed</span> · <span class='hint-warn'>Real costs to your communities</span>",
+      effects:{movementPower:4,popularSupport:8,orgCapacity:3,coalitionUnity:-3,democracy:5},
+      pillarEffects:{business:6,religious:5,military:4},
+      flags:["chose_broad_front"],
+      outcome:"You start building relationships across the divides — not a single coordinated coalition, but a shared terrain where different actors with different strategies and different bases are all aware of each other and pointed at the same threat. It's deeply uncomfortable. Your undocumented staff member sees you in relationship with people who voted for policies that threaten her family. Some of your base questions your judgment. But you're building what Chenoweth and Marks call a 'multiracial, cross-class united front' — not one where everyone agrees on a program, but one where everyone is in relationship, thinking about how their work fits into the broader struggle. One possibility that keeps coming up: if this broad front could unite around building multi-party democracy — fusion voting, proportional representation, structural reforms that give every faction a political voice — the 'yes' agenda might be broad enough to hold.",
+      caseStudy:"Every successful resistance to authoritarianism required alliances that felt deeply uncomfortable. The <strong>anti-apartheid movement in South Africa</strong> united communists, liberal democrats, traditional chiefs, and religious leaders. The <strong>broad front that defeated Milošević in Serbia</strong> included nationalists, liberals, and socialists. In <strong>Chile's 1988 plebiscite</strong>, the opposition spanned parties from center-right to communist.<br><br>The broad front is already forming in unexpected places: forty-one retired generals and admirals filed a court brief defending a senator's right to say that troops needn't obey unlawful orders. Former Republican FCC chairs are calling for investigation of their own party's appointee. Former military lawyers are opposing the use of military courts to prosecute civilians. These are uncomfortable allies whose broader politics many in your movement oppose — but they're defending the constitutional foundations that everyone depends on.",
+      lesson:"A 'no' front — united against the regime — allows a bigger tent than a 'yes' front — united for a specific vision. Breadth comes with real costs, but narrowness has consistently led to defeat.",
+      source:"Ontiveros & Dixon, Fascism Barometer Podcast; Chenoweth & Marks (2022)",
+      concepts_unlocked:["Broad Front"],
+      discuss:"Who are the most uncomfortable potential allies in the current situation? What are the real costs of working with them — and what are the costs of NOT working with them?"
+    },
+    {
+      title:"Maintain political alignment and clarity",
+      desc:"A front that includes people who oppose your core commitments — on racial justice, immigration, living wages, affordable housing, and reining in billionaires — will collapse or compromise away what matters most. Political clarity sustains long fights.",
+      hint:"<span class='hint-pos'>Clear message and strategy</span> · <span class='hint-pos'>Protects core commitments</span> · <span class='hint-warn'>Narrower front</span>",
+      effects:{movementPower:6,popularSupport:-2,orgCapacity:5,coalitionUnity:8,democracy:1},
+      pillarEffects:{labor:6},
+      flags:["chose_alignment"],
+      outcome:"You build a tighter, more aligned movement. Decision-making is faster, messaging is clearer, and your core commitments — to racial justice, immigrant rights, living wages, affordable housing, and reining in billionaires — are not negotiable. But the broad front fractures into silos.<br><br>Business leaders, anti-authoritarian conservatives, and moderates who oppose the regime are still active — but nobody is in relationship across the divides. Multiple resistance efforts run in parallel without mutual awareness. And here's the danger: authoritarian regimes attack institutions one by one, isolating each before moving to the next. When Polish judges organized collectively across institutions, they survived. When Hungarian media outlets were picked off individually, they fell. By choosing alignment over breadth, you may be playing into the regime's isolation strategy — making it easier for them to deal with each faction separately.",
+      caseStudy:"Political clarity has genuine strategic value — movements without it struggle to sustain commitment over years. <strong>The Zapatista movement in Mexico</strong> maintained clear political principles while building broad solidarity networks, and sustained resistance for decades. But in other cases, the cost of narrowness was decisive: opposition movements in <strong>Turkey</strong> and <strong>Hungary</strong> that couldn't bridge ideological divides between secular liberals, socialists, and conservative opponents of the regime were defeated by authoritarian leaders who exploited the fragmentation.",
+      lesson:"Political clarity protects core commitments and sustains long fights. But if the front is too narrow to contest power, those commitments remain aspirational rather than realized. The question is where to draw the line.",
+      source:"Chenoweth & Marks (2022); Ontiveros & Dixon, Fascism Barometer Podcast",
+      concepts_unlocked:["Broad Front"],
+      discuss:"Where is the line between necessary political clarity and counterproductive narrowness? Which commitments are non-negotiable, and which can coexist with uncomfortable allies?"
+    },
+    {
+      title:"We need an affirmative vision, not just opposition",
+      desc:"People can only sustain opposition for so long. We need both a 'no' front AND an agenda that addresses the conditions driving distrust — housing, debt, healthcare, the economic disruption from AI and war. For many, 'defending democracy' means defending a system that was already failing them.",
+      hint:"<span class='hint-pos'>Sustains motivation longer</span> · <span class='hint-pos'>Addresses root causes</span> · <span class='hint-warn'>Risk: affirmative agenda divides the front</span>",
+      effects:{movementPower:5,popularSupport:5,orgCapacity:2,coalitionUnity:-5,democracy:4},
+      pillarEffects:{labor:8,religious:3},
+      flags:["chose_affirmative_vision"],
+      outcome:"You combine opposition to the regime with an affirmative agenda — living wages, affordable housing, and reining in billionaires, housing, climate, healthcare. It resonates with young people and working-class communities who feel the system was already failing them before the authoritarian turn. But the affirmative demands create new fault lines — people who joined a pure 'no' front start to pull back when specific policy positions emerge. 'Defending democracy' means different things to different parts of the front: for some it means restoring the pre-2025 status quo, for others it means building something that never existed.",
+      caseStudy:"The <strong>South Korean candlelight revolution of 2016-17</strong> succeeded partly because it combined opposition to President Park's corruption with broader demands for democratic reform — demands focused enough to hold the broad front together. By contrast, in <strong>Egypt after Tahrir Square</strong>, the broad front that toppled Mubarak had no shared affirmative agenda — and one faction, the Muslim Brotherhood, cut a side deal with the military at the expense of the rest of the coalition, winning elections but then being overthrown in a coup that led to a far worse autocracy than the one they'd replaced.",
+      lesson:"A 'no' front needs 'yes' building blocks to sustain itself — but the affirmative agenda must be broad enough not to fracture the alliance. 'Defending democracy' isn't enough for people who feel the prior system was already failing them.",
+      source:"Chenoweth & Marks (2022); Ontiveros & Dixon, Fascism Barometer Podcast",
+      concepts_unlocked:["Broad Front","Alternative Institutions"],
+      discuss:"What affirmative demands could unite the broadest possible front? What does 'defending democracy' mean to different parts of your community?"
+    }
+  ]
+},
+{
+  phase:1, type:"crisis",
+  title:"The Mafia State Becomes Visible",
+  desc:"You've been seeing these stories for months. Individually, each one seemed like just another headline. But something shifts when you see them together.<br><br>The president demanded a cut of an AI chip company's international sales — the CEO negotiated the percentage down in a face-to-face meeting in the Oval Office. A steel company was forced to give the government permanent veto power over its business decisions — which plants to close, which suppliers to use. An AI company was labeled a national security threat for refusing to drop its safety policies. Presidential pardons are being brokered through lobbyists for millions. A half-billion-dollar deal with a foreign government was signed four days before the inauguration. Media companies are settling meritless lawsuits and restructuring their operations to curry favor.<br><br>A libertarian think tank is calling the entire approach — the shakedowns, the ad hoc deal-making, the government seizing control over private companies — 'more Russian or Chinese than American.' Economists across the political spectrum are using words like 'state capitalism' and 'venture socialism.' Historian Timothy Snyder warns that the expansion of detention facilities follows a historical pattern that leads to using detained people as a labor force — and urges that this must be prevented before it becomes normalized.<br><br>The Hungarian scholar Bálint Magyar has a framework for understanding systems like this: the 'mafia state' — where one person distributes money and power through a network of loyalists, and loyalty is the only currency. Is that what you're looking at? Is this framework useful for understanding what's happening — or is there a better way to make sense of it?",
+  concepts:["Mafia State","Dual-Direction Pressure","Regulatory Capture Risk","Three Earths"],
+  choices:[
+    {
+      title:"This is extreme but temporary — it ends when the administration changes",
+      desc:"This is corruption and overreach on an unprecedented scale, but it's still one administration. The best thing we can do is keep our heads down, keep doing our work, and make sure voters see this for what it is in 2026 and 2028. Federal politics is federal politics — it doesn't change what we need to do locally.",
+      hint:"<span class='hint-pos'>Maintains focus</span> · <span class='hint-warn'>Assumes the ground hasn't shifted</span>",
+      effects:{movementPower:3,popularSupport:5,orgCapacity:2,coalitionUnity:3,democracy:3},
+      pillarEffects:{media:6},
+      flags:["diagnosed_corruption"],
+      outcome:"You continue your regular organizing work — tenant campaigns, workplace fights, electoral races, issue advocacy. You tune out the federal noise, treat it as politics-as-usual on steroids, and trust the system to self-correct. Your local work is good and necessary. But the question the mafia state framework raises is whether the ground has shifted under that work while you were doing it. If the rules of the system have changed — if courts don't enforce, if regulatory agencies have been captured, if election administration itself is compromised — then the assumptions your local work depends on may no longer hold. You're operating as if you're on Earth One — a flawed but functional democracy where organizing wins are durable. What if you're on Earth Two?",
+      caseStudy:"In <strong>Hungary</strong>, opposition parties and civil society organizations continued operating within the existing system for years after Viktor Orbán began dismantling democratic institutions in 2010 — running candidates, filing lawsuits, organizing protests. Each individual fight made sense on its own terms. But the system they were operating within was being hollowed out around them: courts were packed, media was captured, electoral districts were redrawn, and civil society funding was restricted through foreign agent laws. By the time organizations recognized the structural shift, the cost of resistance had increased dramatically. In <strong>Poland</strong>, civil society recognized the pattern earlier — partly because they had Hungary's example — and mounted a broader, faster response that ultimately succeeded in protecting and restoring democratic institutions.",
+      lesson:"The most dangerous assumption in an authoritarian consolidation is that local work can proceed normally while the national system transforms around it. The question isn't whether your local campaigns are valuable — they are — but whether the system they depend on is still functioning the way you assume.",
+      source:"Magyar, Post-Communist Mafia State (2016); Grzymala-Busse, How Populists Rule (2024); Poo & Praeli, Three Earths Framework (2025)",
+      concepts_unlocked:["Mafia State","Three Earths"],
+      discuss:"Is federal politics really separate from your local work? What happens to your local wins if the system that enforces them changes?"
+    },
+    {
+      title:"This is a mafia state — and our mental models need to change",
+      desc:"The way power works has changed, and the mental models most organizers are using haven't caught up. Regime pressure is concentrated, certain, and immediate; movement pressure is diffuse, uncertain, and deniable. We don't need to stop acting — but we need to update our understanding of how this system works while we act, or we'll waste resources on approaches designed for a different kind of government.",
+      hint:"<span class='hint-pos'>Correct scale analysis</span> · <span class='hint-pos'>Pattern recognition</span> · <span class='hint-warn'>Risk: analysis paralysis</span>",
+      effects:{movementPower:2,popularSupport:3,orgCapacity:8,coalitionUnity:5,democracy:4},
+      pillarEffects:{business:6},
+      flags:["diagnosed_scale_mismatch"],
+      outcome:"You invest in understanding the system while continuing to act. The mafia state framework — from the Hungarian scholar Bálint Magyar — helps explain why conventional pressure campaigns produce unpredictable results: companies face coercion from the regime (tariffs, equity seizures, regulatory threats), pressure from conservative activists, AND pressure from progressive campaigns. Companies respond to the most CERTAIN threat — and the regime's pressure is the most predictable.<br><br>Understanding the system also means preparing your own organization. The regime uses asset freezes, retaliatory investigations, and funding disruption as weapons — and investigations can compound when internal stress causes staff to go to media, further damaging the organization's standing with funders. Most organizations aren't prepared for any of this.<br><br>And there's a strategic insight: building connections beyond the left — with faith organizations, local elected officials, community institutions — makes your organization harder to isolate and target. The Black Panther Party's free breakfast program built such broad community support that attacking the Panthers meant attacking the people feeding children. The FBI targeted them anyway — but the community relationships made the political cost visible. Isolation is certain death for an organization. Being embedded isn't a guarantee of safety, but it's your best protection.",
+      caseStudy:"Labor studies professor Eric Blanc argues that the most effective boycotts share specific features: clear and winnable demands (companies need to know what to do to get your business back), big numbers built through real organization (not just a website), a short target list (long lists are paralyzing), measurable impact (if companies can't attribute losses to your campaign, they won't change), time-bound actions (one-day strikes have clearer before/after than indefinite boycotts), and targeting intermediary institutions like schools and local governments where you have exceptional leverage. But these criteria come from historical campaigns in democratic contexts. Under state terror conditions — where the regime operates through randomness rather than predictable rules — the calculus may be different. What do you think: do these principles still hold, or does a new system require new approaches?",
+      lesson:"Before launching a corporate campaign, diagnose the target's government dependencies and the nature of countervailing pressure. The risk of individual consumer action is that millions of people feel they've 'done their part' by unsubscribing and never join an organized campaign. Organized campaigns with clear demands, measurable impact, and real numbers behind them have historically been far more effective — but we're in historically unusual territory.",
+      source:"Blanc, Your Individual Boycotts Aren't Helping (2026); Corporate campaigns research (2025-26); Pinckney & Trilling (2024)",
+      concepts_unlocked:["Dual-Direction Pressure","Regulatory Capture Risk","Mafia State"],
+      discuss:"How do you assess whether a company is more vulnerable to movement pressure or regime pressure? What determines which direction they'll bend?"
+    },
+    {
+      title:"Support the resisters — a 'buycott' instead of a boycott",
+      desc:"Some companies and institutions are holding their ground despite pressure from all directions. Instead of punishing those that fold, reward the ones that hold — consumer loyalty, investor backing, public recognition. Some organizers call this a 'buycott': the opposite of a boycott.",
+      hint:"<span class='hint-pos'>Rewards courage</span> · <span class='hint-pos'>Changes cost calculation</span> · <span class='hint-warn'>Risk: ignores complicit actors</span>",
+      effects:{movementPower:4,popularSupport:5,orgCapacity:4,coalitionUnity:4,democracy:3},
+      pillarEffects:{business:8,religious:4},
+      flags:["diagnosed_support_resisters"],
+      outcome:"You shift from punishing collaborators to rewarding resisters. When companies or universities maintain their commitments under regime pressure, you organize consumer loyalty, investor support, and public backing. Some companies that held their ground saw stronger financial performance than those that caved. But there are two costs. First: the companies actively enabling harm go unchallenged. Second — and this is the harder one: by visibly rewarding resisters, you raise their profile, which makes them targets for regime retaliation. Politicized investigations, regulatory pressure, audits of key directors. Your support may be painting a target on the companies you're trying to protect. If they survive the retaliation, they become proof that resistance is possible — and that can trigger a cascade of other companies finding their courage. But if they don't survive, you've contributed to their destruction.",
+      caseStudy:"The dual-direction pressure dynamic creates an opportunity: companies that retreated from their commitments under regime pressure sometimes faced devastating consequences from the OTHER direction — one major retailer lost over $12 billion in market value and its CEO departed after rolling back values policies under conservative pressure. Meanwhile, a competitor that maintained its commitments saw 98% shareholder support and revenue growth. Faith communities are showing similar dynamics: when a bishop and clergy delegation showed up at a federal building during immigration hearings, federal agents scattered rather than create a scene — demonstrating that moral authority still carries weight even against armed power.",
+      lesson:"Supporting resisters can be more effective than pressuring collaborators. When institutions see that holding their ground is rewarded with loyalty and support, the calculation changes — and the cost of capitulation starts to exceed the cost of resistance.",
+      source:"Corporate campaigns research (2025-26); Stephan, 6 Superpowers of Faith Communities (Waging Nonviolence, 2025)",
+      concepts_unlocked:["Dual-Direction Pressure"],
+      discuss:"Which companies and institutions in your area are resisting? What would it take to visibly support them?"
+    }
+  ]
+},
+// ════ PHASE 2: THE RESISTANCE BUILDS (mid 2025 - 2026) — Turns 4-6 ════
+{
+  phase:2, type:"dilemma",
+  title:"The Organizing Crisis",
+  desc:"A clip is blowing up on your feed. Someone you've never met — a person with 200,000 followers — posted a TikTok calling for a general strike next Tuesday. It went viral, half a million views overnight. Other accounts clipped it, added their own commentary, pushed it further. Now legacy media is picking it up, treating it as 'the movement's position.' Your phone explodes. 'Did we agree to this?' 'Who authorized this?' 'I've been building a relationship with the state labor council for six months and this person just torched it in 30 seconds.'<br><br>No one authorized it. No organization made this decision. A person with a following said something that resonated, independent political entrepreneurs clipped and amplified it, and now it's 'the movement's position.'<br><br>Meanwhile, you open your email and see a fundraising appeal from a national organization. They're telling YOUR community's story — the ICE raids, the block parties, the church shelters — in a slick fundraising email to their national list. They raised $340,000 off it in 48 hours. None of that money is coming back to your community. Nobody asked permission to use the story. And the framing makes it sound like THEY organized the response, when it was your people on the ground.",
+  concepts:["Capacity vs. Spectacle","Alternative Institutions","Broad Front"],
+  choices:[
+    {
+      title:"We have a mobilization problem",
+      desc:"We need more people, more energy, more visibility. Momentum creates alignment — get big enough and the organizational problems sort themselves out. The spokespeople problem becomes irrelevant when the movement is too large for anyone to claim to represent it.",
+      hint:"<span class='hint-pos'>Energy and visibility</span> · <span class='hint-neg'>Spectacle without capacity</span> · <span class='hint-warn'>Regime waits you out</span>",
+      effects:{movementPower:8,popularSupport:5,orgCapacity:-6,coalitionUnity:-3,democracy:1},
+      pillarEffects:{media:4},
+      flags:["diagnosed_mobilization_problem"],
+      outcome:"You invest in scaling up mobilization — bigger rallies, more cities, more visibility. And there's real value here. Mass rallies like the No Kings protests serve as easy on-ramps into activism, build cross-organization relationships — Indivisible and DSA and Sunrise and local groups all working together for the first time — and provide coordination rehearsal for harder joint actions later. They counter isolation: people feel less alone, see the beauty of humanity showing up for each other. Most of them are volunteer-organized, which is a strength. Chenoweth and Marks argue that movements should use elections as opportunities to 'message and engage, organize and mobilize a growing base' — and rallies can do that.<br><br>But mobilization alone has limits. After the largest protests in American history against the Iraq war in 2003, President Bush said he didn't take his opinions from a focus group. Hundreds of thousands of people organized against the genocide in Gaza and watched it change neither the party's position nor the policy. Sociologist Zeynep Tufekci argues mass mobilization can function as a powerful signal of discontent — but the research suggests that signal alone doesn't force concessions unless it's backed by organizational capacity to sustain economic or political pressure. Organizing builds power; mobilizing wields it. They're complementary, not opposed. The question is whether you're building both.",
+      caseStudy:"In <strong>Egypt in 2011</strong>, 18 days of spectacular protest in Tahrir Square toppled a dictator — but the protesters who started the revolution were organized, through groups like the April 6 Movement and labor unions. They were just LESS organized than the Muslim Brotherhood, which had deeper infrastructure, decision-making structures, and years of experience. The Brotherhood captured the gains of a revolution they didn't start — and then the military overthrew them, installing a regime worse than the one the protesters had toppled. The lesson isn't that the protesters were disorganized — it's that in the aftermath, better-organized forces captured their momentum. In <strong>Hong Kong in 2019</strong>, a similar pattern: up to 2 million participants by organizers' estimates, creative and decentralized tactics, but crushed by a government willing to impose sweeping security laws. Across multiple countries, the journalist Vincent Bevins documented this repeating pattern: spectacular uprisings without sufficient organizational infrastructure saw their gains captured by better-organized forces — military, established political factions, oligarchs.",
+      lesson:"Mobilization and organization are complementary, not opposed. Mass mobilization builds energy, signals strength, and creates on-ramps — but without organizational capacity to sustain pressure, those gains are vulnerable to capture by better-organized forces.",
+      source:"Tufekci, Twitter and Tear Gas (2017); Chenoweth & Stephan (2011); Chenoweth & Marks (2022); Bevins, If We Burn (2023)",
+      concepts_unlocked:["Capacity vs. Spectacle"],
+      discuss:"What did the No Kings rallies accomplish? What would it take to convert that energy into lasting organizational capacity?"
+    },
+    {
+      title:"We have an infrastructure problem — organizational AND local",
+      desc:"We can mobilize millions but can't make collective decisions, negotiate with power, or sustain campaigns. And national organizations are parachuting into communities instead of building power there. We need decision-making structures, local teams rooted in their districts, and the unglamorous governance capacity that lets a movement sustain pressure for months — not just fill streets for a weekend.",
+      hint:"<span class='hint-neg'>Lose short-term momentum</span> · <span class='hint-pos'>Massive capacity gain</span> · <span class='hint-pos'>Local teams pivot to election protection</span>",
+      effects:{movementPower:-2,popularSupport:3,orgCapacity:12,coalitionUnity:7,democracy:5},
+      pillarEffects:{civil:5,religious:5,labor:4},
+      flags:["diagnosed_infrastructure_problem"],
+      outcome:"You invest in the unglamorous work — decision-making protocols, leadership development, local teams rooted in their districts. You lose momentum in the short term. People who want action are frustrated. But you're building the capacity to negotiate, pivot, and sustain campaigns over months — AND you're building local teams that don't leave after election day. The candidates they help elect have genuine local roots, and when results are contested, your people are still there.",
+      caseStudy:"When communities in Minnesota organized block party blockades and ICE Watch patrols, that infrastructure didn't appear overnight — it was built on networks created during 2016-2020 organizing. People who had practiced rapid-response coordination for years could activate in days. The rallies were impressive; the community infrastructure was what made the actual defense possible. <strong>Poland's Solidarity movement</strong> built democratic governance structures AND local chapters simultaneously — the combination of internal decision-making capacity and community-level roots sustained the movement through martial law, repression, and years of struggle before ultimately prevailing.",
+      lesson:"Every movement that sustained pressure long enough to force concessions had built both governance infrastructure and local roots. Mobilization without either produces impressive spectacle that the regime correctly reads as shallow.",
+      source:"Tufekci, Twitter and Tear Gas (2017); Chenoweth & Marks (2022); Batura (2024)",
+      concepts_unlocked:["Capacity vs. Spectacle","Alternative Institutions","Pre-Election Mobilization"],
+      discuss:"Does your organization have the decision-making structures to sustain a campaign for months? Does it have local teams that will still be there after election day?"
+    }
+  ]
+},
+{
+  phase:2, type:"crisis",
+  title:"State Terror and Community Response",
+  desc:"The writer Masha Gessen — who grew up in the Soviet Union and has spent a career studying how authoritarian power works — uses the term 'state terror' to describe what happens when government violence is designed not to enforce the law but to make whole communities afraid. That's what you're looking at now.<br><br>It started months ago with the abductions. University students — several active in Palestinian solidarity organizing — seized by immigration enforcement and deported to a foreign mega-prison. Far-right groups had compiled deportation lists using facial recognition technology, and an executive order that redefined antisemitism so broadly it criminalized campus organizing gave the regime the legal framework to act. Trans community members face escalating attacks from both the state and from independent influencers who see political opportunity in targeting them — but they remain on the front lines, refusing to disappear.<br><br>Then in late November, a right-wing influencer posts an unsubstantiated video alleging fraud in Minnesota — Republican legislators had fed him the information. It goes viral. The president rants on social media. A massive enforcement deployment follows. In January, a mother named Renée Good is killed by federal agents near a school. The regime claims she used her vehicle as a weapon. Neighbors who witnessed it describe something different. Two weeks later, a nurse named Alex Pretti is shot while documenting enforcement activity with his phone. He was legally carrying a licensed sidearm; video shows one agent removed it from his holster before another agent shot him on the ground. The regime lies about both killings — and the lies aren't designed to be believed. They're designed to demonstrate that the state can say whatever it wants and there's nothing you can do about it. The scholar Ruth Ben-Ghiat calls these 'power lies' — lies told not to deceive but to demonstrate impunity.<br><br>The vilification of victims is what begins to shift unexpected people. A rancher. A militia leader. People who never saw themselves as part of your movement start saying: this isn't what I signed up for.<br><br>Meanwhile, NSPM-7 — a presidential memorandum — has classified 'anti-fascist' organizing as domestic terrorism, a definition broad enough to cover everything from ICE Watch patrols to block party blockades. And yet something emerges — not spontaneously, but from years of organizing. ICE Watch networks, built on infrastructure developed during 2016-2020, activate in days. Neighbors begin tailing federal agents through residential streets, documenting every stop. An agent in full tactical gear slips on ice. The crowd laughs. By February, pop-up blockades have turned into block parties — pallets, lawn chairs, kids playing, people grilling. A journalist describes it as 'a real resistance, broad and organized and overwhelmingly nonviolent.'<br><br>But visibility has costs. When the regime points a finger at any organization, independent actors deliver the punishment: death threats flood your inbox, staff get doxxed, pizzas show up at their homes as a message — we know where you live. The January 6th pardons and the hiring of a man acquitted of killing a subway rider sent a signal: political violence will be rewarded. Members of Congress post thinly veiled threats after protests. The intimidation is decentralized — the regime doesn't need to direct it, just give permission.<br><br>Your organization faces a question — and the answer depends on who you are and who your people are. Maybe you yourself are undocumented, or trans, or have family members who are. Maybe you're personally at risk every time you step into public. Or maybe you have citizenship and relative safety, and the question is what you owe to those who don't. For some in your organization, visibility isn't a strategic choice — it's a survival calculation. For others, staying invisible when they could safely speak up is its own kind of failure. Both impulses are real.",
+  concepts:["State Terror","Backfire Framework"],
+  choices:[
+    {
+      title:"Go public — more people, more stories, more visible",
+      desc:"The instinct to hide is exactly what state terror is designed to produce. The answer is to make resistance MORE visible — not just bodies on the line, but voices. Church leaders explaining from the pulpit why they're sheltering families. Teachers explaining why they document enforcement near schools. Small business owners explaining why they closed for the one-day strike. The power is in the breadth: when it's obviously not a radical fringe but everyday people standing up for their neighbors.",
+      hint:"<span class='hint-pos'>Counters the fear dynamic</span> · <span class='hint-pos'>Backfire potential</span> · <span class='hint-warn'>Not everyone can safely be visible</span>",
+      effects:{movementPower:8,popularSupport:8,orgCapacity:-2,coalitionUnity:4,democracy:5},
+      pillarEffects:{media:8,religious:6},
+      flags:["diagnosed_go_public"],
+      outcome:"You go public — but 'going public' means more than putting bodies on the line. It means voices. A church leader explains from the pulpit why her congregation is sheltering families. A teacher posts a video about why she documents enforcement near her school. A small business owner explains why he closed for the day of action. Union members explain what they saw at the detention center. The power isn't in the spectacle — it's in the breadth. When it's obviously not a radical fringe but everyday people standing up for their neighbors, the regime's narrative collapses.<br><br>The community response proves the approach works: participation increases rather than decreases. Neighbors are tailing agents through their own streets. Block parties are blocking enforcement routes. Faith leaders show up at federal buildings and agents scatter rather than create a scene with clergy. But the cost is real and specific. The decentralized intimidation machine activates: staff who appear in viral documentation videos receive death threats within hours. A community member with a pending immigration case is identified at a blockade. The people who can most safely be visible are not the ones most at risk — and the ones most at risk sometimes pay for the movement's visibility with their safety.",
+      caseStudy:"The <strong>backfire framework</strong> predicts this: when a regime uses disproportionate force, it can generate MORE resistance than it suppresses — but only if the violence is documented and publicized. In <strong>Birmingham, Alabama in 1963</strong>, the civil rights movement deliberately chose to protest where they knew the response would be disproportionate — fire hoses and attack dogs against peaceful protesters, including children. The images broadcast nationally broke the political deadlock on civil rights legislation. The key: the movement had trained thousands in nonviolent discipline BEFORE the confrontation, and had media relationships in place to ensure documentation.",
+      lesson:"The instinct to go underground is exactly what state terror is designed to produce. The most effective counter is to bring MORE people and MORE stories into the open — making resistance visible, normal, and widespread.",
+      source:"M. Gessen, State Terror Has Arrived (2026); Merriman, Backfire Framework; Ben-Ghiat, Strongmen (2020); Stephan, 6 Superpowers of Faith Communities (2025)",
+      concepts_unlocked:["State Terror","Backfire Framework"],
+      discuss:"What's the difference between provoking a backfire and walking into a crackdown? How do you know which dynamic you're in?"
+    },
+    {
+      title:"Protect your community — build safety infrastructure",
+      desc:"For communities directly targeted — undocumented families, organizers with pending cases, people whose identities make them vulnerable — safety comes first. Build sanctuary networks, rapid response teams, legal defense, encrypted communications. This isn't retreat — it's the foundation that makes everything else possible.",
+      hint:"<span class='hint-pos'>Protects most vulnerable</span> · <span class='hint-pos'>Builds community trust</span> · <span class='hint-warn'>Less publicly visible</span>",
+      effects:{movementPower:-3,popularSupport:2,orgCapacity:8,coalitionUnity:5,democracy:1},
+      pillarEffects:{civil:4},
+      flags:["diagnosed_go_underground"],
+      outcome:"The reality is a partial withdrawal: the people closest to the most vulnerable communities pull back to protect them, while the broader movement continues without your voice in it. You build safety infrastructure — sanctuary networks, rapid response teams, encrypted communications. Some organizations enforce strict media blackouts and cut contact with people who talk to reporters, because operational security demands it.<br><br>For the people you protect, this is the difference between detention and safety. But there are costs. Your organization goes quiet while the broader movement continues — without the perspectives of the communities most directly affected. The regime fills the narrative vacuum. The media blackout creates insularity — allies who could have helped are cut off.<br><br>If you chose this path, what are the trade-offs you're living with? How do you stay connected to the broader movement without compromising the safety of the people you're protecting? How do you prevent the regime from defining you in your absence? What would need to change before you come back into public?",
+      caseStudy:"In <strong>Chile under the Pinochet military dictatorship</strong>, the Catholic Church's Vicariate of Solidarity provided legal defense, food assistance, and protection for families of political prisoners. It wasn't dramatic public resistance — it was steady community protection work that kept people alive and connected through years of state terror. The community networks it built became the infrastructure for the democratic transition. In the current U.S. context, mutual aid and community protection aren't alternatives to public resistance — they're what makes public resistance possible for communities that can't afford to be visible without a safety net underneath them.",
+      lesson:"Community protection infrastructure isn't retreat — it's the foundation that makes sustained resistance possible for communities directly targeted by state violence. The movements that protected their people built deeper trust and longer-lasting capacity.",
+      source:"M. Gessen, State Terror Has Arrived (2026); Hunter, New Phase of the Resistance (Waging Nonviolence, 2025)",
+      concepts_unlocked:["State Terror"],
+      discuss:"How do you protect the people closest to danger without cutting them off from the broader movement? What's the minimum level of public visibility your organization needs to maintain?"
+    }
+  ]
+},
+{
+  phase:2, type:"opportunity",
+  title:"The Youth Question",
+  desc:"You're at a community meeting trying to recruit volunteers for the midterms. A 19-year-old in the back row speaks up. 'I got laid off from my warehouse job last month — they automated my whole shift. I can't afford rent. And you want me to knock doors for a candidate who hasn't said a word about any of that?' She's not hostile — she's genuinely asking.<br><br>After the meeting, your youth outreach coordinator shows you the numbers: volunteer sign-ups in the 18-25 range are down 40% from last cycle.<br><br>'It's not that they don't care,' she says. 'They're just not hanging out with each other anymore. Not at each other's houses, not at the park, not anywhere. They're not even seeing their friends outside of school. And if they're not in the same room, they're not joining organizations, not showing up to meetings, not building the relationships you need for real organizing. The ones who ARE political are watching influencers who say voting is pointless. Some organized against the genocide in Gaza and watched it change nothing — not the party's position, not the policy. That confirmed everything they already believed about the system not responding to them.'<br><br>'And the most capable ones — the ones who could actually think strategically — they're choosing to withdraw. Not because they're apathetic. Because the organizations don't give them any real power. They show up, get told to phone-bank, watch staff make all the decisions, and leave. The angry ones aren't going apathetic either — they're going somewhere else entirely.'",
+  concepts:["Alternative Institutions","Broad Front","Capacity vs. Spectacle"],
+  choices:[
+    {
+      title:"The problem is outreach and messaging",
+      desc:"Young people need to be recruited into existing organizations. Better content, better events, better spokespeople — meet them where they already are online.",
+      hint:"<span class='hint-pos'>Fast recruitment</span> · <span class='hint-neg'>Doesn't address root distrust</span> · <span class='hint-warn'>Already tried, not working</span>",
+      effects:{movementPower:5,popularSupport:3,orgCapacity:-2,coalitionUnity:2,democracy:1},
+      pillarEffects:{},
+      flags:["diagnosed_youth_outreach"],
+      outcome:"You invest in youth outreach — social media campaigns, campus events, influencer partnerships. Recruitment numbers go up briefly. But the deeper problem remains: young people distrust these institutions because the institutions don't give them real power. The outreach feels extractive — 'we need your energy and your votes but not your judgment.'",
+      caseStudy:"Research on youth civic engagement shows that outreach campaigns have diminishing returns when the underlying relationship is extractive. Studies found the key variable in building lasting political engagement wasn't messaging quality — it was whether young people felt a genuine sense of belonging and had real opportunities to use their voice. The same dynamic applies to movement organizations: recruitment without genuine power-sharing produces temporary numbers, not lasting infrastructure.",
+      lesson:"Recruitment without genuine power-sharing produces temporary numbers but not lasting engagement. Young people distrust institutions that want their energy but not their judgment.",
+      source:"CIRCLE, Youth Political Efficacy (2025); Chenoweth & Marks (2022)",
+      concepts_unlocked:[],
+      discuss:"What would it take for your organization to genuinely share power with young people — not as a youth wing, but as co-governors?"
+    },
+    {
+      title:"The decline of youth-run democratic organizations IS the problem",
+      desc:"The national network of student governments is gone. Most youth organizations are top-down — staff make decisions, young people are mobilized as volunteers but don't govern. These organizations fit the patterns that research identifies as ineffective: they produce mobilization without organizational capacity. Build genuinely youth-governed organizations where young people set their own direction.",
+      hint:"<span class='hint-pos'>Creates genuine ownership</span> · <span class='hint-pos'>Develops next generation</span> · <span class='hint-warn'>Slow, messy, adults resist</span>",
+      effects:{movementPower:2,popularSupport:4,orgCapacity:10,coalitionUnity:3,democracy:5},
+      pillarEffects:{},
+      flags:["diagnosed_youth_institutions"],
+      outcome:"You invest in genuinely youth-governed organizations — self-governing structures where young people set strategy and make decisions. It's slow and messy. The adults resist ceding control. But here's the counterintuitive insight: organizations that ask MORE of people — real responsibility, real governance, real consequences — retain better members than those that optimize for low barriers to entry. The instinct to 'make it easy' is what kills organizations. People don't leave because you asked too much of them. They leave because you didn't ask enough.<br><br>The political scientist Theda Skocpol documented how American civic life shifted from member-governed organizations — where ordinary people ran local chapters, held elections, managed budgets — to staff-managed nonprofits where professionals make decisions and members are reduced to donors and volunteers. That shift is the structural problem. It's Ella Baker's insight from the 1960s in reverse: she built organizations where ordinary people governed themselves. The current model asks them to show up when called.",
+      caseStudy:"The <strong>Student Nonviolent Coordinating Committee (SNCC)</strong> in the 1960s wasn't a youth wing of an adult organization — it was genuinely self-governing with its own culture, decision-making, and strategic direction. Ella Baker helped create it precisely because she distrusted top-down leadership models. It produced an extraordinary generation of organizers because young people had real power, not managed participation. In <strong>Spain</strong>, mass anti-austerity protests in 2011 created local assemblies that were messy and inefficient but developed thousands of organizers who later ran for office and transformed the country's politics.",
+      lesson:"Organizations that ask more of people retain stronger members than those that optimize for low barriers. The shift from member-governed to staff-managed organizations is the structural problem underlying youth disengagement.",
+      source:"Skocpol, Diminished Democracy (2003); CIRCLE (2025); Chenoweth & Marks (2022)",
+      concepts_unlocked:["Alternative Institutions"],
+      discuss:"What does a genuinely youth-governed organization look like? How is it different from a youth program within an adult organization?"
+    },
+    {
+      title:"They need material reasons to engage",
+      desc:"Mutual aid, living wages, affordable housing, and reining in billionaires, direct service. When the state is failing people — especially as youth unemployment rises — community organizations that provide real help become the on-ramp to sustained engagement.",
+      hint:"<span class='hint-pos'>On-ramp for disengaged youth</span> · <span class='hint-pos'>Replaces failing state services</span> · <span class='hint-warn'>Strategic organizers dismiss this as charity</span>",
+      effects:{movementPower:3,popularSupport:7,orgCapacity:5,coalitionUnity:4,democracy:3},
+      pillarEffects:{religious:5,labor:4},
+      flags:["diagnosed_youth_material"],
+      outcome:"You build mutual aid networks as on-ramps for youth engagement. Right now that looks like community fridges, Venmo chains, Signal group chats coordinating rides and resources, GoFundMe campaigns for rent. Some colleagues dismiss this as 'charity work' that distracts from 'real' organizing. But the evidence says otherwise: in authoritarian environments, mutual aid replaces failing state functions AND creates the relationships that sustained political engagement depends on. Young people who feel the movement is actually helping them and their communities stay engaged at far higher rates.<br><br>The question is ambition. What you're doing now is real and necessary. But why can't we build at the scale of the mutual benefit societies that sustained communities through far worse?",
+      caseStudy:"The Jim Crow South was an authoritarian system — lynching, disenfranchisement, people trapped in debt by the sharecropping system, state-sanctioned terror. Under those conditions, Black communities built cooperatives as acts of resistance. The Colored Farmers' Alliance had over a million members by 1891. The <strong>Secret Society of Tents</strong> — founded by formerly enslaved Black women — built a self-governing mutual benefit society that ran old-age homes without grant funding, sustained entirely by member contributions. <strong>Ella Baker</strong> organized cooperative economics in New York in the early 1930s through the Young Negroes' Cooperative League, then went South to build NAACP branches under conditions where civil rights work could get you killed. That organizing tradition powered the movement that came later.<br><br>In <strong>Poland</strong>, Solidarity built mutual aid networks — workers' cooperatives, independent education, health support — that sustained engagement through martial law and years of repression.<br><br>The lesson: when above-ground political work is dangerous, you build the infrastructure through mutual aid and economic cooperation. This isn't a new strategy. Black communities practiced it for a century under authoritarian conditions. The question is why our current mutual aid efforts aren't building at anything close to that scale.",
+      lesson:"Mutual aid is both a moral imperative and a strategic investment. In authoritarian environments, community organizations that provide real material help become the most effective on-ramps for sustained engagement — but only if they build toward lasting institutions, not just emergency response.",
+      source:"Chenoweth & Marks (2022); CIRCLE (2025); Skocpol, Diminished Democracy (2003); Bushwick, Secret Society of Tents (2024)",
+      concepts_unlocked:["Alternative Institutions"],
+      discuss:"What's the relationship between providing direct services and building political power? Can you do both?"
+    }
+  ]
+},
+// ════ PHASE 3: THE 2026 MIDTERMS — Turns 7-8 ════
+{
+  phase:3, type:"crisis",
+  title:"Six Months Out",
+  desc:"Your inbox is full. A Super PAC wants to run $2 million in digital ads in your district. A national organization wants to send 500 volunteers for a door-knocking blitz. Your data team says AI-generated voter contact could triple your reach. The candidate wants to run on affordability. Your national allies want the messaging to be about democracy.<br><br>Meanwhile, a Supreme Court case could invalidate hundreds of thousands of mail-in ballots. The DOJ has opened retaliatory investigations into election officials in competitive states. And the nonpartisan legal organization Protect Democracy has published an analytical framework warning of a pattern they call 'Executive Override' — describing how an administration could use three stages to subvert election results: Deceive (spread false voter information), Disrupt (interfere with election administration), Deny (invalidate ballots and challenge results).<br><br>Chenoweth and Marks argue that movements should use elections not just as contests to win, but as opportunities to 'message and engage, organize and mobilize a growing base' — flashpoints for building the capacity you'll need regardless of outcome.<br><br>Election defense strategists use a framework called Fight, Win, Prove, Enforce. FIGHT is pre-election defense of voting rules and infrastructure. WIN is the election itself — turnout, voter contact, campaigning. PROVE is verifying results — independent observation, audits, documentation. ENFORCE is what happens if results are challenged — litigation, mass mobilization, noncooperation. Most organizations invest almost everything in WIN. But the real question isn't which stage to prioritize exclusively — it's where in the ecosystem the gaps are. Where is nobody investing? What stage is nobody preparing for?<br><br>There's a genuine strategic tension here: some groups actively discourage talking about contested elections, worried it will suppress turnout. Others think preparation is essential. Both arguments are serious.",
+  concepts:["Pre-Election Mobilization","Parallel Vote Tabulation","Pillars of Support"],
+  choices:[
+    {
+      title:"Most organizations are focused on WIN — we should be too",
+      desc:"Voter contact, turnout, digital infrastructure, campaigning. This is where most of the ecosystem is investing. Winning is necessary for everything else.",
+      hint:"<span class='hint-pos'>Maximizes electoral performance</span> · <span class='hint-warn'>Assumes the vote alone is enough</span>",
+      effects:{movementPower:6,popularSupport:7,orgCapacity:-2,coalitionUnity:3,democracy:3},
+      pillarEffects:{media:4},
+      flags:["diagnosed_normal_election"],
+      outcome:"You go all-in on electoral tactics — the best digital ads, the best targeting models, the most efficient voter contact operation. The campaign performs well. And this approach isn't wrong — better campaigns DO win elections, and winning matters enormously. But here's the question: have you built any infrastructure to defend the results if they're contested? Is this a normal election where better tactics win — or is this competitive authoritarianism, where winning the vote is necessary but not sufficient?",
+      caseStudy:"In competitive authoritarian regimes, winning the vote is necessary but not sufficient. In <strong>Belarus in 2020</strong>, the opposition clearly won the election — independent monitors documented it — but without institutional defenders, credible independent verification, or organized capacity to sustain pressure, the results were overturned by force. The lesson is not that winning doesn't matter — it matters enormously — but that winning without the infrastructure to defend the win is like scoring a goal and then leaving the field.",
+      lesson:"Under competitive authoritarianism, winning the vote is necessary but not sufficient. The infrastructure to defend results must be built alongside the campaign to win them.",
+      source:"Batura, How to Compete in Unfair Elections (2024); Chenoweth, Breakdown Podcast (2026)",
+      concepts_unlocked:["Pre-Election Mobilization"],
+      discuss:"What would happen in your district if the results were contested? Who would defend the count?"
+    },
+    {
+      title:"Almost nobody is investing in PROVE — that's the ecosystem gap",
+      desc:"The ecosystem is heavy on WIN but almost nobody is building the capacity to independently verify results. Citizen observation, documentation infrastructure, independent verification — this work is resource-intensive and probably best led by specialized organizations. But your organization can contribute observers, credibility, and local knowledge. The credibility depends on WHO does it — if the observer corps is all progressive activists, the regime discredits it by pointing at who's running it.",
+      hint:"<span class='hint-pos'>Covers both electoral and defense needs</span> · <span class='hint-warn'>Splits resources between two priorities</span>",
+      effects:{movementPower:4,popularSupport:4,orgCapacity:8,coalitionUnity:5,democracy:6},
+      pillarEffects:{civil:6,religious:4},
+      flags:["diagnosed_competitive_authoritarianism"],
+      outcome:"You split resources between the campaign and election defense — building local teams that can do voter contact now and pivot to result protection after. The cost is real: fewer door-knocks, less ad spending, and a genuine risk of losing a winnable race because you diverted resources to election defense. If the results AREN'T contested, you may have sacrificed the win for a precaution that wasn't needed. But when results ARE contested, you have local teams in place, people who know the election administrators, and the capacity to sustain pressure for weeks.",
+      caseStudy:"In <strong>Chile in 1988</strong>, the democratic opposition ran an effective campaign to win the plebiscite AND built election defense infrastructure simultaneously — trained observers at every polling station, community networks ready to mobilize, and an independent vote count. Both were essential: they needed to win AND they needed to prove they won. In <strong>Serbia in 2000</strong>, Otpor combined election campaigning with organized capacity to defend results — when Milošević tried to steal the election, the infrastructure was already in place for mass nonviolent resistance.",
+      lesson:"Under competitive authoritarianism, the campaign to win and the infrastructure to defend results must be built simultaneously. Neither is sufficient alone.",
+      source:"Batura (2024); Hold the Line Guide; Secret Bipartisan Campaign That Saved 2020 (TIME)",
+      concepts_unlocked:["Parallel Vote Tabulation","Pre-Election Mobilization"],
+      discuss:"How would you split resources between winning and protecting? What's the right ratio?"
+    },
+    {
+      title:"ENFORCE capacity is untested — that's the ecosystem gap",
+      desc:"Nobody in the ecosystem has a real plan for what happens if results are overturned. PROVE and ENFORCE matter most in the roughly fifteen competitive states where results could be challenged. For most organizations, building ENFORCE capacity doesn't mean diverting massive resources — it mostly means adding election defense scenarios to your existing training scripts and conversations, and building the relationships that would let you mobilize quickly if needed.",
+      hint:"<span class='hint-pos'>Durable infrastructure</span> · <span class='hint-pos'>Survives any electoral outcome</span> · <span class='hint-warn'>Sounds like giving up on winning</span>",
+      effects:{movementPower:3,popularSupport:5,orgCapacity:10,coalitionUnity:6,democracy:4},
+      pillarEffects:{religious:5,labor:5,civil:4},
+      flags:["diagnosed_long_game"],
+      outcome:"You build ENFORCE capacity — the organizational infrastructure to sustain mass nonviolent pressure if election results are challenged. This is the thing nobody wants to plan for because it means acknowledging the election might be stolen. But if you don't plan for it, the regime only needs to win at the DENY stage to end the contest.<br><br>The costs are real: planning for ENFORCE feels like planning to lose, which is demoralizing. If results AREN'T challenged, you've built capacity you didn't need. And by diverting resources from WIN, you miss the midterm as a rehearsal for 2028 — the only opportunity to test your election defense infrastructure before the presidential election. You also risk signaling to your constituency that elections don't matter — which decreases participation and does the autocrat's work for free.",
+      caseStudy:"<strong>Poland's Solidarity</strong> built infrastructure over years — workers' cooperatives, underground publishing, mutual aid networks — that sustained the movement through martial law, repression, and multiple electoral setbacks before finally prevailing in 1989. The organizations that survived were those that had built community-level capacity that didn't depend on any single electoral outcome. In the current U.S. context, communities with strong mutual aid networks, sanctuary infrastructure, and local democratic organizations are demonstrably more resilient — regardless of which party controls Congress.",
+      lesson:"Movement infrastructure that's built for the long game survives any single electoral outcome. The organizations that last are those rooted in community relationships, not campaign cycles.",
+      source:"Chenoweth & Marks (2022); Protect Democracy, Executive Override Framework",
+      concepts_unlocked:["Alternative Institutions"],
+      discuss:"Think about the full arc from voter registration to governing. Where in that arc is the ecosystem strongest? Where are the gaps? Which stage is nobody preparing for?"
+    }
+  ]
+},
+{
+  phase:3, type:"crisis",
+  title:"Election Week",
+  desc:"Election day. Turnout is high. Then the contested results start coming in — not in one or two places, but across competitive races in multiple states, at every level: congressional, state legislature, local offices. The regime announces 'irregularities' simultaneously in dozens of districts. Judges issue holds on certification. Federal agents are seen near election offices. The scale is overwhelming — too many places, too many simultaneous challenges. What happens next depends on everything you've built over the past seven turns.",
+  concepts:["Pre-Election Mobilization","Pillars of Support","Nonviolent Discipline"],
+  choices:[
+    {
+      title:"The consequences arrive",
+      desc:"The decisions that matter were made months ago. What you built — or didn't — determines what happens now.",
+      hint:"<span class='hint-pos'>Your earlier diagnoses determine the outcome</span>",
+      effects:{movementPower:0,popularSupport:0,orgCapacity:0,coalitionUnity:0,democracy:0},
+      pillarEffects:{},
+      flags:["election_week_consequence"],
+      outcome:"",
+      caseStudy:"",
+      lesson:"By the time election results are contested, the real decisions have already been made — months earlier, when you chose where to invest, what to build, and how to diagnose the situation you were in.",
+      source:"Batura (2024); Chenoweth & Stephan (2011)",
+      concepts_unlocked:[],
+      discuss:"Looking back at your choices: what did you invest in that's paying off now? What do you wish you'd built?"
+    }
+  ]
+},
+];
+
+
+
+// ─── REGIME AI ───
+function getRegimeReaction() {
+  const phase = getPhase(S.turn);
+  if (phase === 1 && S.turn <= 2) return null; // regime doesn't react in first 2 turns
+
+  const stats = [
+    {name:'movementPower', label:'movement power', val:S.movementPower},
+    {name:'popularSupport', label:'popular support', val:S.popularSupport},
+    {name:'orgCapacity', label:'organizational capacity', val:S.orgCapacity},
+    {name:'coalitionUnity', label:'coalition unity', val:S.coalitionUnity},
+  ];
+  const strongest = stats.reduce((a,b)=>a.val>b.val?a:b);
+  const reactions = [];
+
+  // Specific regime tactics pool
+  const phase1Tactics = [
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 4); }, msg:"A federal investigation is opened into your organization's fiscal sponsor. No charges — just the investigation itself, which means your operations director spends dozens of hours compiling requested documents instead of coordinating programs. Decision-making freezes. A stressed staff member goes to a reporter, which damages your standing with your largest funder. The investigation compounds. (Org capacity −4)" },
+    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 4); }, msg:"A right-wing media outlet publishes internal communications from a coalition partner, framing routine disagreements as evidence of radical extremism. Two organizations quietly distance themselves. (Coalition unity −4)" },
+    { effect:() => { S.popularSupport = clamp(S.popularSupport - 3); }, msg:"The regime offers a settlement deal to a university in your coalition — favorable terms if they drop their public opposition. They take the deal. The message to others is clear: compliance is rewarded. (Popular support −3)" },
+  ];
+
+  const phase2Tactics = [
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization's primary funder receives a letter from a congressional committee requesting all grant documentation for the past five years. The funder pauses all disbursements pending review. (Org capacity −5)" },
+    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 5); }, msg:"The regime amplifies your coalition's internal debate about Palestine through right-wing media, forcing every member organization to publicly take a position that divides the front. (Coalition unity −5)" },
+    { effect:() => { S.movementPower = clamp(S.movementPower - 5); }, msg:"Three organizers in your network are arrested on dubious charges. The charges will likely be dropped in months — but the arrests make national news, and other organizers start declining to attend public events. (Movement power −5)" },
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization is flagged in a domestic terrorism investigation under NSPM-7 — a presidential memorandum that classifies 'anti-fascist' organizing as domestic terrorism. The definition is broad enough to cover immigration defense, trans rights advocacy, and most of what you do. Your lawyers say the case is baseless — but your operations director spends the next two weeks compiling requested documents instead of coordinating election defense. (Org capacity −5)" },
+    { effect:() => { S.popularSupport = clamp(S.popularSupport - 4); }, msg:"The president labels your coalition 'the radical left' and 'enemies within' in a social media post. Independent influencers clip it, add commentary, push it viral. Legacy media picks it up. Within 48 hours, three local officials who had been working with you stop returning calls. (Popular support −4)" },
+  ];
+
+  const phase3Tactics = [
+    { effect:() => { S.democracy = clamp(S.democracy - 5); }, msg:"A federal court issues a ruling restricting mail-in ballot acceptance windows in three competitive states, potentially invalidating hundreds of thousands of votes. (Democracy −5)" },
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"The DOJ opens an investigation into election protection organizations in your state, requesting all volunteer records and communications. The investigation itself — regardless of outcome — drains resources and chills volunteer recruitment. (Org capacity −5)" },
+    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 4); }, msg:"Federal agents visit two election administrators who had publicly committed to certifying legitimate results. After the visits, both go silent. (Coalition unity −4)" },
+  ];
+
+  // Phase 1 Turn 3: mild reaction
+  if (phase === 1 && S.turn === 3) {
+    const tactic = rand(phase1Tactics);
+    tactic.effect();
+    reactions.push(tactic.msg);
+  }
+
+  // Phase 2: specific tactics + pillar pressure
+  if (phase === 2) {
+    const tactic = rand(phase2Tactics);
+    tactic.effect();
+    reactions.push(tactic.msg);
+
+    const driftingPillar = rand(Object.entries(S.pillars).filter(([k,p])=>p.loyalty>=45));
+    if (driftingPillar && chance(0.5)) {
+      const [key, pillar] = driftingPillar;
+      S.pillars[key].loyalty = clamp(pillar.loyalty - 5);
+      const pillarLeader = {business:'business',security:'military',religious:'faith',media:'media',labor:'union',civil:'civil service'}[key] || pillar.name.toLowerCase();
+      reactions.push(`A ${pillarLeader} leader who had been speaking out receives a visit from federal agents — not an arrest, just a conversation. The message lands. Others in the sector go quiet. (${pillar.name} loyalty −5)`);
+    }
+
+    if (S.flags.has('diagnosed_mobilization_problem') && chance(0.5)) {
+      S.orgCapacity = clamp(S.orgCapacity - 4);
+      reactions.push(`Independent influencers clip your rallies, add misleading commentary, and push them viral on social media. Legacy media picks up the framing. Members of Congress post thinly veiled threats afterward. Within days, staff receive death threats, someone gets doxxed, and pizzas start showing up at an organizer's home — we know where you live. Your operations director spends 60 hours that week on security protocols instead of coordinating campaign work. (Org capacity −4)`);
+    }
+  }
+
+  // Phase 3: election-specific tactics
+  if (phase === 3) {
+    const tactic = rand(phase3Tactics);
+    tactic.effect();
+    reactions.push(tactic.msg);
+
+    if (chance(0.4)) {
+      S.democracy = clamp(S.democracy - 4);
+      reactions.push(`New state legislation restricts early voting and same-day registration in competitive districts. (Democracy −4)`);
+    }
+    // State terror escalation
+    if (S.democracy > 55 && chance(0.4)) {
+      S.movementPower = clamp(S.movementPower - 4);
+      reactions.push(`Regime deploys intimidation tactics against election workers — anonymous threats, early morning visits, IRS investigations. (Movement power −4)`);
+    }
+  }
+
+  if (reactions.length === 0) return null;
+  return reactions.join(' ');
+}
+
+// ─── CONSEQUENCE CHAINS (v0.2) ───
+function getConsequence() {
+  const consequences = [];
+  const phase = getPhase(S.turn);
+
+  // Phase 1 diagnosis payoffs in Phase 2
+  if (S.flags.has('diagnosed_regime_change') && phase >= 2 && !S.flags.has('_system_holds_consequence')) {
+    S.flags.add('_system_holds_consequence');
+    S.orgCapacity = clamp(S.orgCapacity - 5);
+    consequences.push("Your diagnosis that 'the system will hold' meant you didn't build parallel infrastructure when resistance was cheapest. The organizational gap is now harder to close. (Org capacity −5)");
+  }
+
+  if (S.flags.has('diagnosed_authoritarian_crisis') && phase >= 2 && !S.flags.has('_auth_consol_payoff')) {
+    S.flags.add('_auth_consol_payoff');
+    S.orgCapacity = clamp(S.orgCapacity + 5);
+    S.pillars.civil.loyalty = clamp(S.pillars.civil.loyalty + 5);
+    consequences.push("Your early investment in back-channel networks with resisting civil servants is paying off — intelligence about upcoming purges arrives before they happen. (+5 Org Capacity, Civil Servants +5)");
+  }
+
+  if (S.flags.has('diagnosed_more_of_same') && phase >= 2 && !S.flags.has('_mafia_state_payoff')) {
+    S.flags.add('_mafia_state_payoff');
+    S.popularSupport = clamp(S.popularSupport + 4);
+    S.orgCapacity = clamp(S.orgCapacity + 3);
+    consequences.push("Your community mutual aid networks are sustaining thousands — food, legal aid, sanctuary. Communities that built these parallel structures are more resilient. (+4 Popular Support, +3 Org Capacity)");
+  }
+
+  // Broad front payoffs
+  if (S.flags.has('chose_alignment') && phase >= 2 && !S.flags.has('_purity_consequence')) {
+    S.flags.add('_purity_consequence');
+    S.popularSupport = clamp(S.popularSupport - 4);
+    consequences.push("Your narrower front struggles to reach persuadable voters outside the progressive base. Potential allies who were turned away have disengaged entirely. (Popular support −4)");
+  }
+
+  if (S.flags.has('chose_broad_front') && phase >= 2 && !S.flags.has('_broad_front_payoff')) {
+    S.flags.add('_broad_front_payoff');
+    S.pillars.business.loyalty = clamp(S.pillars.business.loyalty + 5);
+    S.pillars.religious.loyalty = clamp(S.pillars.religious.loyalty + 4);
+    consequences.push("Your broad front is attracting unlikely allies — business leaders alarmed by state capitalism, faith leaders defending immigrant communities, veterans concerned about military purges. (Business +5, Religious +4)");
+  }
+
+  // Spectacle penalty
+  if (S.flags.has('diagnosed_mobilization_problem') && phase >= 2 && S.orgCapacity < 35 && !S.flags.has('_spectacle_penalty')) {
+    S.flags.add('_spectacle_penalty');
+    consequences.push("Your investment in mobilization without organizational infrastructure has left the movement unable to negotiate, pivot, or sustain campaigns. The regime waits you out.");
+  }
+
+  // Phase 2 payoffs in Phase 3
+  if (S.flags.has('diagnosed_infrastructure_problem') && phase >= 3 && !S.flags.has('_org_payoff')) {
+    S.flags.add('_org_payoff');
+    S.orgCapacity = clamp(S.orgCapacity + 6);
+    S.coalitionUnity = clamp(S.coalitionUnity + 4);
+    consequences.push("The decision-making structures you built are paying off — the movement can coordinate election defense across dozens of organizations without freezing. (+6 Org Capacity, +4 Unity)");
+  }
+
+  if (S.flags.has('diagnosed_infrastructure_problem') && phase >= 3 && !S.flags.has('_local_payoff')) {
+    S.flags.add('_local_payoff');
+    S.orgCapacity = clamp(S.orgCapacity + 5);
+    S.popularSupport = clamp(S.popularSupport + 4);
+    consequences.push("The local teams you built in target districts are now pivoting from voter contact to election protection — people who know their communities and are trusted by their neighbors. (+5 Org Capacity, +4 Popular Support)");
+  }
+
+  if (S.flags.has('diagnosed_go_underground') && phase >= 3 && !S.flags.has('_protection_payoff')) {
+    S.flags.add('_protection_payoff');
+    S.popularSupport = clamp(S.popularSupport + 5);
+    S.orgCapacity = clamp(S.orgCapacity + 3);
+    consequences.push("Your community protection networks are becoming election protection hubs — trusted local organizations with existing relationships that no outside group could replicate. (+5 Popular Support, +3 Org Capacity)");
+  }
+
+  if (S.flags.has('diagnosed_go_public') && phase >= 3 && !S.flags.has('_visibility_payoff')) {
+    S.flags.add('_visibility_payoff');
+    S.popularSupport = clamp(S.popularSupport + 4);
+    S.pillars.media.loyalty = clamp(S.pillars.media.loyalty + 5);
+    consequences.push("Your documentation and storytelling has built a powerful narrative — the stories of communities resisting are reaching persuadable voters who had been disengaged. (+4 Popular Support, Media +5)");
+  }
+
+  if (S.flags.has('diagnosed_youth_institutions') && phase >= 3 && !S.flags.has('_youth_inst_payoff')) {
+    S.flags.add('_youth_inst_payoff');
+    S.orgCapacity = clamp(S.orgCapacity + 4);
+    consequences.push("The youth-governed organizations you invested in have developed 200 new organizers with genuine ownership of the movement — they're now deployed as election protection volunteers. (+4 Org Capacity)");
+  }
+
+  if (S.flags.has('diagnosed_youth_material') && phase >= 3 && !S.flags.has('_youth_material_payoff')) {
+    S.flags.add('_youth_material_payoff');
+    S.popularSupport = clamp(S.popularSupport + 5);
+    consequences.push("Your mutual aid networks have become the primary on-ramp for youth civic engagement — young people who started by volunteering at food distributions are now organizing voter contact. (+5 Popular Support)");
+  }
+
+  return consequences.length > 0 ? consequences.join(' ') : null;
+}
+
+// ─── PILLAR THRESHOLDS ───
+function checkPillarThresholds() {
+  const alerts = [];
+  for (const [key, p] of Object.entries(S.pillars)) {
+    const fired = S.pillarThresholdsFired[key];
+    if (p.loyalty >= 60 && !fired.includes(60)) {
+      fired.push(60);
+      alerts.push({ pillar:p.name, level:"CONTESTED → MOVEMENT", text:`${p.name} has shifted toward the movement! Their cooperation unlocks new possibilities for organized resistance.` });
+      // Bonus
+      S.democracy = clamp(S.democracy + 3);
+    }
+    if (p.loyalty >= 80 && !fired.includes(80)) {
+      fired.push(80);
+      alerts.push({ pillar:p.name, level:"DEEP ALIGNMENT", text:`${p.name} are now deeply aligned with the movement. This fundamentally weakens the regime's power base.` });
+      S.democracy = clamp(S.democracy + 5);
+      S.movementPower = clamp(S.movementPower + 5);
+    }
+    if (p.loyalty <= 10 && !fired.includes(10)) {
+      fired.push(10);
+      alerts.push({ pillar:p.name, level:"FULLY CAPTURED", text:`${p.name} are now fully captured by the regime. Shifting them back will be extremely difficult.` });
+      S.democracy = clamp(S.democracy - 3);
+    }
+  }
+  return alerts;
+}
+
+// ─── RENDERING ───
+
+// Track turn outcomes for journey board coloring
+const turnOutcomes = {};
+
+// ── JOURNEY BOARD ──
+function renderHeader() {
+  const phase = getPhase(S.turn);
+  const phaseNames = {1:"Phase 1: The Consolidation (2025)",2:"Phase 2: The Resistance Builds (2025-26)",3:"Phase 3: The 2026 Midterms"};
+  document.getElementById('phase-name').textContent = phaseNames[phase];
+  document.getElementById('turn-info').textContent = `Turn ${S.turn} / ${S.maxTurns}`;
+  const demEl = document.getElementById('dem-header');
+  demEl.textContent = S.democracy;
+  demEl.style.color = S.democracy > 60 ? 'var(--green)' : S.democracy > 40 ? 'var(--yellow)' : 'var(--red)';
+}
+
+// ── CITY MAP ──
+function renderCityMap() {
+  const districts = [
+    {key:'business',name:'Business & Markets',icon:''},
+    {key:'military',name:'Security & Military',icon:''},
+    {key:'religious',name:'Religious Institutions',icon:''},
+    {key:'media',name:'Media & Press',icon:''},
+    {key:'labor',name:'Labor & Unions',icon:''},
+    {key:'civil',name:'Civil Servants & Bureaucracy',icon:''},
+  ];
+  document.getElementById('city-grid').innerHTML = districts.map(d => {
+    const l = S.pillars[d.key].loyalty;
+    const state = l>=60?'movement':l>=40?'contested':'regime';
+    const statusText = l>=60?'MOVEMENT-ALIGNED':l>=40?'CONTESTED':'REGIME-ALIGNED';
+    return `<div class="city-district ${state}"><div class="cd-icon">${d.icon}</div><div class="cd-name">${d.name}</div><div class="cd-loyalty">${l}%</div><div class="cd-status">${statusText}</div></div>`;
+  }).join('');
+  const avg = Object.values(S.pillars).reduce((s,p)=>s+p.loyalty,0)/6;
+  const panel = document.getElementById('city-panel');
+  if (avg>=55) panel.style.boxShadow='0 0 20px rgba(34,211,238,0.1)';
+  else if (avg<=25) panel.style.boxShadow='0 0 20px rgba(248,113,113,0.1)';
+  else panel.style.boxShadow='none';
+}
+
+// Unified render
+function renderStats() { renderHeader(); }
+function renderPillars() { renderCityMap(); }
+
+function renderCodex() {
+  const total = Object.keys(CODEX_ALL).length;
+  const unlocked = S.codex.size;
+  document.getElementById('codex-count').textContent = `${unlocked} / ${total}`;
+
+  let html = '';
+  for (const [name, def] of Object.entries(CODEX_ALL)) {
+    if (S.codex.has(name)) {
+      const entry = S.codex.get(name);
+      html += `<div class="codex-entry" onclick="this.classList.toggle('expanded')">
+        <div class="ce-name">✦ ${name}</div>
+        <div class="ce-source">${def.source} · Turn ${entry.turn}</div>
+        <div class="ce-desc">${def.desc}</div>
+      </div>`;
+    } else {
+      html += `<div class="codex-entry locked">
+        <div class="ce-name">🔒 ???</div>
+        <div class="ce-locked-text">Unlocked through gameplay</div>
+      </div>`;
+    }
+  }
+  document.getElementById('codex-entries').innerHTML = html;
+}
+
+function renderTimeline() {
+  document.getElementById('timeline-entries').innerHTML = S.timeline.map(t =>
+    `<div class="tl-entry tl-${t.type}">
+      <span class="tl-turn">Turn ${t.turn}</span>
+      <span class="tl-title">${t.title}</span>
+    </div>`
+  ).join('');
+}
+
+function addTimeline(type, title) {
+  S.timeline.unshift({ turn:S.turn, type, title });
+  renderTimeline();
+}
+
+// ─── ALERTS ───
+function showThresholdAlert(alert) {
+  const el = document.createElement('div');
+  el.className = 'threshold-alert';
+  el.innerHTML = `<div class="ta-title">⚡ ${alert.level}: ${alert.pillar}</div><div class="ta-text">${alert.text}</div>`;
+  document.getElementById('threshold-alert-area').appendChild(el);
+}
+
+function showPhaseTransition(phase) {
+  const titles = { 2:"Phase 2: The Resistance Builds", 3:"Phase 3: The 2026 Midterms" };
+  const descs = {
+    2:"The regime is consolidating. How you diagnose the situation and where you invest your resources will determine whether the movement has the infrastructure to protect the midterm elections.",
+    3:"The midterms under competitive authoritarianism. The preparation you did — or didn't do — now determines what's possible."
+  };
+  const overlay = document.getElementById('phase-overlay');
+  document.getElementById('phase-overlay-title').textContent = titles[phase];
+  document.getElementById('phase-overlay-desc').textContent = descs[phase];
+  overlay.classList.add('active');
+  // Manual dismiss instead of auto-timer
+  overlay.onclick = () => overlay.classList.remove('active');
+}
+
+// ─── EVENT FLOW ───
+let currentEvent = null;
+
+function pickEvent() {
+  // Sequential ordering — events play in fixed order (turn 1 = event 0, turn 2 = event 1, etc.)
+  const idx = S.turn - 1;
+  if (idx < EVENTS.length) return EVENTS[idx];
+  return generateFallback();
+}
+
+function generateFallback() {
+  return {
+    phase:getPhase(S.turn), type:"crisis",
+    title:"Regime Pressure Intensifies",
+    desc:"The regime tightens its grip. Every day the democratic space shrinks further. Your movement must choose where to invest its limited resources.",
+    concepts:["Authoritarian Spiral"],
+    choices:[
+      { title:"Strengthen organizational infrastructure", desc:"Invest in internal capacity — comms, training, planning.", hint:"<span class='hint-pos'>Org capacity</span> · <span class='hint-pos'>Coalition unity</span>",
+        effects:{movementPower:3,popularSupport:2,orgCapacity:10,coalitionUnity:5,democracy:3}, pillarEffects:{}, flags:[],
+        outcome:"You invest in durable organizational capacity.", lesson:"Sustained resistance requires organizational infrastructure that outlasts any single crisis.", source:"Chenoweth & Marks",
+        concepts_unlocked:[], discuss:"What infrastructure does your organization need most right now?" },
+      { title:"Escalate public pressure", desc:"Increase visibility and frequency of public actions.", hint:"<span class='hint-pos'>Movement power</span> · <span class='hint-neg'>Org strain</span>",
+        effects:{movementPower:10,popularSupport:5,orgCapacity:-5,coalitionUnity:-3,democracy:4}, pillarEffects:{media:5}, flags:[],
+        outcome:"Pressure keeps the cause visible but strains resources.", lesson:"Escalation is most effective when backed by genuine capacity to sustain pressure.", source:"Tufekci — Signaling",
+        concepts_unlocked:[], discuss:"When does escalation become counterproductive? How do you know?" },
+      { title:"Focus on coalition maintenance", desc:"Keep your diverse coalition united and aligned.", hint:"<span class='hint-pos'>Coalition unity</span> · <span class='hint-pos'>Pillar shifts</span>",
+        effects:{movementPower:2,popularSupport:3,orgCapacity:3,coalitionUnity:12,democracy:3}, pillarEffects:{labor:3,religious:3}, flags:[],
+        outcome:"Coalition unity holds the movement together during prolonged struggle.", lesson:"Broad fronts require constant maintenance — alliances with uncomfortable partners must be continuously renewed.", source:"Ontiveros & Dixon",
+        concepts_unlocked:[], discuss:"What's the hardest alliance your coalition maintains? What keeps it together?" }
+    ]
+  };
+}
+
+function renderEvent(event) {
+  // Scroll to top so the player sees the new event
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  document.getElementById('event-area').innerHTML = `
+    <div class="event-card fade-up">
+      <h2>${event.title}</h2>
+      <p class="event-desc">${event.desc}</p>
+    </div>`;
+
+  // Turn 8: pure consequence event — no choices, generate narrative from flags
+  if (S.turn === 8) {
+    const consequenceNarrative = generateElectionConsequence();
+    document.getElementById('choices-area').innerHTML = '';
+    document.getElementById('outcome-area').innerHTML = `
+      <div class="outcome-card fade-up" style="display:block">
+        <h3>What Your Choices Built</h3>
+        ${consequenceNarrative}
+        <div style="margin-top:1rem; text-align:right;">
+          <button class="btn btn-primary btn-sm" onclick="nextTurn()">See What Comes Next →</button>
+        </div>
+      </div>`;
+    document.getElementById('consequence-area').innerHTML = '';
+    // Record for timeline
+    addTimeline('crisis', 'Election Week');
+    S.lessonsLearned.push({ lesson:"By the time election results are contested, the real decisions have already been made — months earlier.", source:"Batura (2024)" });
+    renderStats();
+    renderPillars();
+    renderCodex();
+    return;
+  }
+
+  document.getElementById('choices-area').innerHTML = `
+    <h3 style="font-size:0.85rem; color:var(--yellow); margin-bottom:0.6rem; font-weight:600;">How do you read this situation?</h3>
+    <div class="choices stagger">
+      ${event.choices.map((c,i) => `
+        <button class="choice-btn fade-up" onclick="makeChoice(${i})">
+          <div class="choice-title">${c.title}</div>
+          <div class="choice-desc">${c.desc}</div>
+        </button>`).join('')}
+    </div>`;
+
+  document.getElementById('outcome-area').innerHTML = '';
+  document.getElementById('consequence-area').innerHTML = '';
+}
+
+function highlightCodex(name) {
+  if (!S.codex.has(name)) return;
+  const entries = document.querySelectorAll('.codex-entry');
+  entries.forEach(e => {
+    if (e.querySelector('.ce-name')?.textContent.includes(name)) {
+      e.classList.add('expanded');
+      e.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      e.style.background = 'var(--accent-glow)';
+      setTimeout(() => e.style.background = '', 2000);
+    }
+  });
+}
+
+function saveStats() {
+  S.prevStats = {
+    movementPower:S.movementPower, popularSupport:S.popularSupport,
+    orgCapacity:S.orgCapacity, coalitionUnity:S.coalitionUnity, democracy:S.democracy
+  };
+}
+
+function makeChoice(index) {
+  const choice = currentEvent.choices[index];
+  saveStats();
+
+  // Apply difficulty modifier
+  const boost = diffMods[difficulty].boost;
+  const eff = choice.effects;
+
+  S.movementPower  = clamp(S.movementPower  + Math.round(eff.movementPower * (eff.movementPower > 0 ? boost : 1)));
+  S.popularSupport = clamp(S.popularSupport + Math.round(eff.popularSupport * (eff.popularSupport > 0 ? boost : 1)));
+  S.orgCapacity    = clamp(S.orgCapacity    + Math.round(eff.orgCapacity * (eff.orgCapacity > 0 ? boost : 1)));
+  S.coalitionUnity = clamp(S.coalitionUnity + Math.round(eff.coalitionUnity * (eff.coalitionUnity > 0 ? boost : 1)));
+  S.democracy      = clamp(S.democracy      + Math.round(eff.democracy * (eff.democracy > 0 ? boost : 1)));
+
+  // Pillar effects
+  for (const [p, val] of Object.entries(choice.pillarEffects || {})) {
+    if (S.pillars[p]) S.pillars[p].loyalty = clamp(S.pillars[p].loyalty + val);
+  }
+
+  // Flags
+  (choice.flags || []).forEach(f => S.flags.add(f));
+
+  // Democracy decay (regime pressure)
+  const phase = getPhase(S.turn);
+  const decay = diffMods[difficulty].decay[phase-1];
+  S.democracy = clamp(S.democracy - decay);
+
+  // Pillar aggregate effect
+  const avgLoyalty = Object.values(S.pillars).reduce((s,p)=>s+p.loyalty,0)/6;
+  if (avgLoyalty > 55) S.democracy = clamp(S.democracy + 2);
+  else if (avgLoyalty < 25) S.democracy = clamp(S.democracy - 2);
+
+  // Unlock codex entries
+  (choice.concepts_unlocked || []).forEach(c => {
+    if (CODEX_ALL[c] && !S.codex.has(c)) {
+      S.codex.set(c, { turn:S.turn });
+    }
+  });
+
+  // Record turn outcome for journey board
+  turnOutcomes[S.turn] = currentEvent.type;
+
+  // Record
+  S.lessonsLearned.push({ lesson:choice.lesson, source:choice.source });
+  addTimeline(currentEvent.type, choice.title);
+
+  // Hide choices, show outcome
+  document.getElementById('choices-area').innerHTML = '';
+
+  // Build roads not taken
+  const otherChoices = currentEvent.choices.filter((_,i) => i !== index);
+  const roadsNotTaken = otherChoices.length > 0 ? `
+    <div class="roads-not-taken">
+      <div class="rnt-label">🔀 Roads Not Taken</div>
+      ${otherChoices.map(c => `
+        <div class="rnt-item">
+          <div class="rnt-title">${c.title}</div>
+          <div class="rnt-counterfactual">${c.counterfactual || c.outcome}</div>
+        </div>`).join('')}
+    </div>` : '';
+
+  // Build follow-up if this choice has one
+  const followUpHtml = choice.followUp ? `
+    <div class="followup-card fade-up" id="followup-area">
+      <h3>⚡ What's Your Next Move?</h3>
+      <div class="followup-desc">${choice.followUp.prompt}</div>
+      <div class="followup-choices">
+        ${choice.followUp.options.map((opt,fi) => `
+          <button class="followup-btn" onclick="resolveFollowUp(${fi})">
+            <div class="fu-title">${opt.title}</div>
+            <div class="fu-desc">${opt.desc}</div>
+          </button>`).join('')}
+      </div>
+    </div>` : '';
+
+  // Store follow-up data for resolveFollowUp
+  if (choice.followUp) {
+    window._pendingFollowUp = choice.followUp;
+  } else {
+    window._pendingFollowUp = null;
+  }
+
+  document.getElementById('outcome-area').innerHTML = `
+    <div class="outcome-card fade-up" style="display:block">
+      <h3>Outcome</h3>
+      <p class="outcome-text">${choice.outcome}</p>
+      ${choice.caseStudy ? `<div class="case-study-box">
+        <div class="case-study-label">🌍 Case Study</div>
+        <div class="case-study-text">${choice.caseStudy}</div>
+      </div>` : ''}
+      <div class="lesson-box">
+        <div class="lesson-label">📖 Key Concept</div>
+        <div class="lesson-text">${choice.lesson}</div>
+        <div class="lesson-source">— ${choice.source}</div>
+      </div>
+      ${roadsNotTaken}
+      ${choice.discuss ? `<div class="discuss-box">
+        <div class="discuss-label">💬 Discussion Prompt</div>
+        <div class="discuss-text">${choice.discuss}</div>
+      </div>` : ''}
+      ${followUpHtml}
+      ${!choice.followUp ? `<div style="margin-top:1rem; text-align:right;">
+        <button class="btn btn-primary btn-sm" onclick="nextTurn()">
+          ${S.turn >= S.maxTurns ? 'See Results →' : 'Next Turn →'}
+        </button>
+      </div>` : ''}
+    </div>`;
+
+  renderStats();
+  renderPillars();
+  renderCodex();
+
+  // Pillar threshold alerts
+  const alerts = checkPillarThresholds();
+  alerts.forEach((a,i) => setTimeout(() => showThresholdAlert(a), i * 600));
+}
+
+function resolveFollowUp(optIndex) {
+  const fu = window._pendingFollowUp;
+  if (!fu) return;
+  const opt = fu.options[optIndex];
+  window._pendingFollowUp = null;
+
+  // Apply effects
+  const boost = diffMods[difficulty].boost;
+  for (const [key, val] of Object.entries(opt.effects || {})) {
+    if (S.hasOwnProperty(key)) S[key] = clamp(S[key] + Math.round(val * (val > 0 ? boost : 1)));
+  }
+  for (const [p, val] of Object.entries(opt.pillarEffects || {})) {
+    if (S.pillars[p]) S.pillars[p].loyalty = clamp(S.pillars[p].loyalty + val);
+  }
+  (opt.flags || []).forEach(f => S.flags.add(f));
+
+  addTimeline('dilemma', opt.title);
+  renderStats();
+  renderPillars();
+
+  // Replace follow-up area with resolution
+  const fuArea = document.getElementById('followup-area');
+  if (fuArea) {
+    const otherOpts = fu.options.filter((_,i) => i !== optIndex);
+    fuArea.outerHTML = `
+      <div class="case-study-box fade-up" style="margin-bottom:0.75rem">
+        <div class="case-study-label">⚡ Follow-Up Outcome</div>
+        <div class="case-study-text">${opt.outcome}</div>
+      </div>
+      ${otherOpts.length > 0 ? `<div class="roads-not-taken">
+        <div class="rnt-label">🔀 Other Approaches</div>
+        ${otherOpts.map(o => `<div class="rnt-item"><div class="rnt-title">${o.title}</div><div class="rnt-counterfactual">${o.counterfactual || o.desc}</div></div>`).join('')}
+      </div>` : ''}
+      <div style="margin-top:1rem; text-align:right;">
+        <button class="btn btn-primary btn-sm" onclick="nextTurn()">
+          ${S.turn >= S.maxTurns ? 'See Results →' : 'Next Turn →'}
+        </button>
+      </div>`;
+  }
+}
+
+function checkGameOver() {
+  if (S.democracy <= 0) return { over:true, result:'loss', reason:'Democracy has collapsed. The authoritarian regime has consolidated total power.' };
+  if (S.movementPower <= 0) return { over:true, result:'loss', reason:'Your movement has been crushed. Without power, resistance is impossible.' };
+  if (S.coalitionUnity <= 0) return { over:true, result:'loss', reason:'The broad front has splintered irreconcilably. Without unity, the movement cannot sustain itself.' };
+  if (S.orgCapacity <= 0) return { over:true, result:'loss', reason:'Your organizational infrastructure has collapsed. You can mobilize crowds but cannot sustain campaigns, negotiate demands, or make collective decisions.' };
+  if (S.turn > S.maxTurns) {
+    // Epilogue — determined by accumulated score and flags
+    return { over:true, result:'epilogue' };
+  }
+  return { over:false };
+}
+
+function nextTurn() {
+  S.turn++;
+  const result = checkGameOver();
+  if (result.over) { showEndScreen(result); return; }
+
+  const phase = getPhase(S.turn);
+  const prevPhase = getPhase(S.turn - 1);
+
+  // Phase transition
+  if (phase !== prevPhase) {
+    S.phase = phase;
+    showPhaseTransition(phase);
+  }
+
+  saveStats();
+
+  // Clear previous alerts
+  document.getElementById('threshold-alert-area').innerHTML = '';
+
+  // Regime reaction
+  const reaction = getRegimeReaction();
+  if (reaction) {
+    document.getElementById('regime-reaction-area').innerHTML = `
+      <div class="regime-reaction fade-up">
+        <div class="rr-label">🔴 Regime Counter-Move</div>
+        ${reaction}
+      </div>`;
+    addTimeline('regime', 'Regime counter-move');
+  } else {
+    document.getElementById('regime-reaction-area').innerHTML = '';
+  }
+
+  // Consequence chains
+  const consequence = getConsequence();
+  if (consequence) {
+    document.getElementById('consequence-area').innerHTML = `
+      <div class="consequence-box fade-up">
+        <div class="consequence-label">⚡ Consequence of Previous Choices</div>
+        ${consequence}
+      </div>`;
+  } else {
+    document.getElementById('consequence-area').innerHTML = '';
+  }
+
+  renderStats();
+  renderPillars();
+  renderCodex();
+
+  currentEvent = pickEvent();
+  renderEvent(currentEvent);
+}
+
+function showEndScreen(result) {
+  document.getElementById('game-screen').style.display = 'none';
+  const end = document.getElementById('end-screen');
+  end.style.display = 'flex';
+  window.scrollTo({ top: 0 });
+
+  // Early loss (stat hit zero)
+  if (result.result === 'loss') {
+    const colors = { loss:'var(--red)' };
+    end.innerHTML = `
+      <h1 style="color:var(--red)" class="fade-up">🕯️ The Movement Collapses</h1>
+      <p class="end-subtitle fade-up">${result.reason}</p>
+      <div class="end-narrative fade-up"><p>The regime's consolidation accelerates. Without a functioning movement, the 2026 midterms offer no check on power. By 2028, the question of whether the president will leave office is moot — there is no organized force capable of insisting on it.</p></div>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.5rem;">
+        <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
+      </div>`;
+    return;
+  }
+
+  // Epilogue — branching based on accumulated score and flags
+  const pillarsMoved = Object.values(S.pillars).filter(p=>p.loyalty>=50).length;
+  const totalScore = S.democracy + S.orgCapacity + S.popularSupport + S.movementPower + S.coalitionUnity;
+  const narrative = generateNarrative();
+
+  // Determine path
+  let path, pathColor, pathTitle, midtermOutcome, epilogueText;
+  if (S.democracy >= 65 && S.orgCapacity >= 50 && totalScore >= 300) {
+    path = 'strong';
+    pathColor = 'var(--green)';
+    pathTitle = '✊ Strong Foundation';
+    midtermOutcome = 'The new Congress is seated. Across the country, the results are uneven — but in the places where organizations like yours invested in local teams, community infrastructure, and broad alliances, the election was defended. Sanctuary networks are keeping families together. Mutual aid is feeding people whose breadwinners were detained. Young organizers who came up through the movement own this fight. The movement ecosystem held — not because any single organization controlled the outcome, but because enough organizations made the right investments at the right time.';
+  } else if (S.democracy >= 45 && totalScore >= 220) {
+    path = 'contested';
+    pathColor = 'var(--yellow)';
+    pathTitle = '⚖️ Contested Ground';
+    midtermOutcome = 'Some races held. Others didn\'t. The picture is uneven across the country — and your organization\'s choices shaped what happened in your area, not everywhere. Where movements built local teams, families are safer and election results were defended by people who knew their neighbors. Where organizations relied on fly-in models or went quiet during the crisis, contested results went unchallenged. Deportations continue, but unevenly: communities with protection infrastructure are harder to raid. The next two years will be harder, and the gaps in the movement ecosystem are now the regime\'s targets.';
+  } else {
+    path = 'weak';
+    pathColor = 'var(--red)';
+    pathTitle = '🕯️ Insufficient Foundation';
+    midtermOutcome = 'The regime contested enough results to prevent a meaningful shift in power. The movement ecosystem wasn\'t ready — not just your organization, but the broader landscape of organizations that needed to build election defense infrastructure and didn\'t. Deportations are accelerating. Communities without protection infrastructure are exposed. Youth unemployment is rising. Some communities are holding together anyway — organizers and neighbors who built capacity on their own, without waiting for national organizations to lead. But the scale of what was needed was larger than what was built.';
+  }
+
+  // Build epilogue with final choice
+  end.innerHTML = `
+    <h1 style="color:${pathColor}" class="fade-up">${pathTitle}</h1>
+    <p class="end-subtitle fade-up">The 2026 Midterms</p>
+
+    <div class="end-narrative fade-up">
+      <p>${midtermOutcome}</p>
+      ${narrative}
+    </div>
+
+    <div class="final-stats stagger">
+      <div class="final-stat fade-up"><div class="fs-label">Democracy</div><div class="fs-value" style="color:${S.democracy>=50?'var(--green)':'var(--red)'}">${S.democracy}</div></div>
+      <div class="final-stat fade-up"><div class="fs-label">Mvmt Power</div><div class="fs-value" style="color:var(--accent)">${S.movementPower}</div></div>
+      <div class="final-stat fade-up"><div class="fs-label">Pop Support</div><div class="fs-value" style="color:var(--green)">${S.popularSupport}</div></div>
+      <div class="final-stat fade-up"><div class="fs-label">Org Capacity</div><div class="fs-value" style="color:var(--purple)">${S.orgCapacity}</div></div>
+      <div class="final-stat fade-up"><div class="fs-label">Unity</div><div class="fs-value" style="color:var(--yellow)">${S.coalitionUnity}</div></div>
+      <div class="final-stat fade-up"><div class="fs-label">Pillars</div><div class="fs-value" style="color:var(--cyan)">${pillarsMoved}/6</div></div>
+    </div>
+
+    <div style="margin-top:1.5rem; padding:1rem 0; border-bottom:1px solid var(--border); text-align:left;">
+      <h2 style="font-size:1.3rem; margin-bottom:1rem;">Debrief</h2>
+      <p style="margin-bottom:0.75rem; font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:0.9rem;">Questions for reflection:</p>
+      <ul style="margin:0 0 1rem 1.5rem; line-height:1.8; font-size:0.95rem; list-style:disc;">
+        <li style="margin-bottom:0.5rem;">Looking back at your choices, what would you do differently?</li>
+        <li style="margin-bottom:0.5rem;">What did you learn that changes how you think about your real work?</li>
+        <li style="margin-bottom:0.5rem;">Which diagnosis surprised you — or challenged how you usually think about this?</li>
+        ${S.flags.has('chose_alignment') ? '<li style="margin-bottom:0.5rem;">If the regime attacks institutions one by one, what does that mean for your decision to maintain alignment over breadth?</li>' : ''}
+        ${S.flags.has('diagnosed_mobilization_problem') ? '<li style="margin-bottom:0.5rem;">If movements without organizational infrastructure see their gains captured by better-organized forces, what does your movement need to build?</li>' : ''}
+        ${S.flags.has('diagnosed_go_underground') ? '<li style="margin-bottom:0.5rem;">How do you come back into public after going underground — and how do you prevent the regime from defining you in your absence?</li>' : ''}
+      </ul>
+    </div>
+    <div style="margin-top:1.5rem; padding:1rem; border:1px solid var(--border); border-radius:2px; background:var(--surface); font-size:0.9rem; line-height:1.7; color:var(--text-dim); text-align:left; max-width:650px; width:100%;">
+      <p style="margin-bottom:0.5rem;"><strong style="color:var(--text);">The game ends here. The real story doesn't.</strong></p>
+      <p style="margin-bottom:0;">What you build — in your community, in your organizations, in your relationships — determines what's possible when the crisis comes. Every turn in this game was grounded in real events and real research. The patterns are recognizable. The choices are yours.</p>
+    </div>
+
+    <div style="margin-top:1.5rem; padding:1rem; border:1px solid var(--border); border-radius:2px; background:var(--surface); font-size:0.85rem; line-height:1.7; color:var(--text-dim); text-align:left; max-width:650px; width:100%;">
+      <p style="margin-bottom:0.6rem;"><strong style="color:var(--text);">Want to go deeper?</strong></p>
+      <ul style="margin:0; padding-left:1.2rem; list-style:disc;">
+        <li><a href="https://www.hup.harvard.edu/books/9780231156820" target="_blank" style="color:var(--accent);">Chenoweth & Stephan — <em>Why Civil Resistance Works</em></a> (the evidence — start here)</li>
+        <li><a href="https://www.twitterandteargas.org/downloads/twitter-and-tear-gas-by-zeynep-tufekci.pdf" target="_blank" style="color:var(--accent);">Tufekci — <em>Twitter and Tear Gas</em></a> (capacity vs. spectacle — free PDF)</li>
+        <li><a href="https://www.penguinrandomhouse.com/books/558051/on-tyranny-by-timothy-snyder/" target="_blank" style="color:var(--accent);">Snyder — <em>On Tyranny</em></a> (anticipatory obedience)</li>
+        <li><a href="https://www.penguinrandomhouse.com/books/621076/surviving-autocracy-by-masha-gessen/" target="_blank" style="color:var(--accent);">M. Gessen — <em>Surviving Autocracy</em></a> (state terror, mafia state)</li>
+        <li><a href="https://ceupress.com/book/post-communist-mafia-state" target="_blank" style="color:var(--accent);">Magyar — <em>Post-Communist Mafia State</em></a> (understanding the system)</li>
+        <li><a href="https://www.journalofdemocracy.org/articles/how-to-compete-in-unfair-elections/" target="_blank" style="color:var(--accent);">Batura — <em>How to Compete in Unfair Elections</em></a> (election defense)</li>
+        <li><a href="https://holdthelineguide.com" target="_blank" style="color:var(--accent);">The Hold the Line Guide</a> (practical election protection)</li>
+      </ul>
+    </div>
+
+    <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
+    </div>`;
+}
+
+function resolveEpilogue(choice) {
+  const totalScore = S.democracy + S.orgCapacity + S.popularSupport + S.movementPower + S.coalitionUnity;
+  const path = (S.democracy >= 65 && S.orgCapacity >= 50 && totalScore >= 300) ? 'strong'
+    : (S.democracy >= 45 && totalScore >= 220) ? 'contested' : 'weak';
+
+  let outcome2028;
+  if (path === 'strong') {
+    outcome2028 = choice === 'invest'
+      ? '<p><strong>2028.</strong> The president refuses to leave. But the movement is ready. In every contested district, local teams are at the election offices — people who know the administrators, who are trusted by their neighbors, who aren\'t going anywhere. The broad front holds: faith leaders, business owners, veterans, and conservatives who never imagined they\'d stand alongside progressives are all speaking with one voice. Sustained, community-rooted pressure makes the cost of overturning the election undeniable. The transition happens. Families that were hiding can come home. Children whose parents were detained are reunited. The mutual aid networks keep running — they\'ve become permanent community infrastructure. It is not the end. But for the first time in years, it feels like the beginning of something.</p>'
+      : '<p><strong>2028.</strong> The president refuses to leave. The movement forces the transition — and uses the momentum to push for structural changes so the next crisis doesn\'t start from the same vulnerable position. In communities across the country, the organizations that kept people fed, housed, and safe during the crisis are now the foundation of a different kind of politics — rooted in neighborhoods, governed democratically, accountable to the people they serve. Whether the structural reforms succeed is the next chapter. But the infrastructure to fight for them exists — and it was built by the people who lived through this.</p>';
+  } else if (path === 'contested') {
+    outcome2028 = choice === 'invest'
+      ? '<p><strong>2028.</strong> The president tries to stay. The movement\'s infrastructure is uneven — strong where you built local teams, absent where you didn\'t. In some districts, families are protected, election results are defended, communities hold together. In others, deportations continue unchecked, contested results go unchallenged, and people are afraid to leave their homes. The outcome takes months to resolve. Your children still go to school. Their teachers still show up. But the uncertainty — about what happens next, about who is safe, about whether any of this will hold — is the texture of daily life now.</p>'
+      : '<p><strong>2028.</strong> The push for structural reform generates real energy — people want something to fight FOR, not just against. But the broad front that held together for the midterms fractures over the specifics. The president exploits the divisions. Some communities hold together. Others don\'t. The mutual aid networks in the places that built them are the difference between families that survive and families that don\'t. The question is no longer abstract: it\'s whether your neighbor\'s kids have food, whether the organizer down the street is safe, whether anyone will still be there next month.</p>';
+  } else {
+    outcome2028 = choice === 'invest'
+      ? '<p><strong>2028.</strong> The movement rebuilds from the ground up — one neighborhood at a time, one relationship at a time. It is slow and painful. The president does not leave. Deportations have accelerated. People you organized with are in detention. But in the communities that are rebuilding — the ones with local teams, mutual aid, people who show up for each other — something is growing. Political violence is escalating elsewhere, in places without this infrastructure. The difference between communities that hold together and communities that fragment is exactly what you\'re building: relationships, trust, the daily practice of taking care of each other. It may take years. The people doing this work may never see the outcome. But the historical record is clear: authoritarian regimes that face sustained, organized, community-rooted resistance cannot govern effectively forever.</p>'
+      : '<p><strong>2028.</strong> The president does not leave. But in communities across the country, people are taking care of each other. Food networks feed families whose breadwinners were detained. Legal defense funds keep organizers out of prison. Neighborhood alert systems protect people from raids. After-school programs give children a safe place when their parents are afraid. None of this is dramatic. None of it makes the news. But it is the foundation of everything that comes next — because the movements that ultimately prevail are the ones that kept people alive and connected during the darkest years. The question is not whether resistance continues. It\'s whether it has the infrastructure to sustain itself until the moment comes.</p>';
+  }
+
+  const end = document.getElementById('end-screen');
+  // Replace choices with outcome
+  const choicesEl = end.querySelector('.choices');
+  const eventCard = end.querySelector('.event-card');
+  if (choicesEl) choicesEl.remove();
+  if (eventCard) eventCard.remove();
+
+  const epilogueDiv = document.createElement('div');
+  epilogueDiv.className = 'end-narrative fade-up';
+  epilogueDiv.style.marginTop = '1.5rem';
+  epilogueDiv.innerHTML = `
+    ${outcome2028}
+    <div style="margin-top:1.5rem; padding:1rem; border:1px solid var(--border); border-radius:10px; background:var(--surface); font-size:0.78rem; line-height:1.7; color:var(--text-dim);">
+      <p style="margin-bottom:0.5rem;"><strong style="color:var(--text);">The game ends here. The real story doesn't.</strong></p>
+      <p style="margin-bottom:0;">The choices in this game mirror real strategic decisions being made right now. What you build — in your community, in your organizations, in your relationships — determines what's possible when the crisis comes. Every turn in this game was grounded in real events and real research. The patterns are recognizable. The choices are yours.</p>
+    </div>
+    <div style="margin-top:1.5rem; padding:1rem; border:1px solid var(--border); border-radius:10px; background:var(--surface); font-size:0.78rem; line-height:1.7; color:var(--text-dim);">
+      <p style="margin-bottom:0.6rem;"><strong style="color:var(--text);">Want to go deeper?</strong></p>
+      <ul style="margin:0; padding-left:1.2rem; list-style:disc;">
+        <li><a href="https://www.hup.harvard.edu/books/9780231156820" target="_blank" style="color:var(--accent);">Chenoweth & Stephan — <em>Why Civil Resistance Works</em></a> (the evidence — start here)</li>
+        <li><a href="https://www.twitterandteargas.org/downloads/twitter-and-tear-gas-by-zeynep-tufekci.pdf" target="_blank" style="color:var(--accent);">Tufekci — <em>Twitter and Tear Gas</em></a> (capacity vs. spectacle — free PDF)</li>
+        <li><a href="https://www.penguinrandomhouse.com/books/558051/on-tyranny-by-timothy-snyder/" target="_blank" style="color:var(--accent);">Snyder — <em>On Tyranny</em></a> (anticipatory obedience)</li>
+        <li><a href="https://www.penguinrandomhouse.com/books/621076/surviving-autocracy-by-masha-gessen/" target="_blank" style="color:var(--accent);">M. Gessen — <em>Surviving Autocracy</em></a> (state terror, mafia state)</li>
+        <li><a href="https://ceupress.com/book/post-communist-mafia-state" target="_blank" style="color:var(--accent);">Magyar — <em>Post-Communist Mafia State</em></a> (understanding the system)</li>
+        <li><a href="https://www.journalofdemocracy.org/articles/how-to-compete-in-unfair-elections/" target="_blank" style="color:var(--accent);">Batura — <em>How to Compete in Unfair Elections</em></a> (election defense)</li>
+        <li><a href="https://holdthelineguide.com" target="_blank" style="color:var(--accent);">The Hold the Line Guide</a> (practical election protection)</li>
+      </ul>
+    </div>
+    <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
+    </div>`;
+  end.appendChild(epilogueDiv);
+}
+
+function generateElectionConsequence() {
+  const parts = [];
+
+  // Local infrastructure
+  if (S.flags.has('diagnosed_infrastructure_problem')) {
+    parts.push("<p>In your district, the local team you helped build is at the election office when the contested count begins. They know the election administrator. They know the community. They're not leaving. Across the country, the picture is uneven — some districts have teams like yours, others don't. The places that invested in local infrastructure are holding. The places that relied on fly-in volunteers are scrambling.</p>");
+  } else {
+    parts.push("<p>In your district, the count is being contested and you don't have people on the ground who know the election administrators or the community. Across the country, some places are holding — the ones where organizations invested in local teams. Your area isn't one of them. You're watching from the outside, contributing what you can remotely, but the decisions that would have mattered were the ones you didn't make six months ago.</p>");
+  }
+
+  // Broad front
+  if (S.flags.has('chose_broad_front')) {
+    parts.push("<p>The broad front is holding — uncomfortably. Business leaders, faith communities, veterans, and anti-authoritarian conservatives are speaking out alongside progressive organizations. The regime can't credibly dismiss this as a radical faction. But there's a tension that doesn't go away: the people defending election integrity are largely the same people opposing the regime on everything else. The regime is already calling election defense 'partisan obstruction.'</p>");
+  } else if (S.flags.has('chose_alignment')) {
+    parts.push("<p>Your movement's message is clear and disciplined. But the front is narrower than it could have been. The regime's narrative — that election challenges are partisan rather than democratic — is harder to counter when there aren't voices outside the progressive ecosystem making the case.</p>");
+  }
+
+  // State terror response
+  if (S.flags.has('diagnosed_go_public')) {
+    parts.push("<p>The documentation skills the movement developed during the immigration enforcement crisis are now being applied to election irregularities. Community networks that organized block parties and ICE Watch patrols are recording everything at polling places. The infrastructure of visibility transferred directly to election defense.</p>");
+  } else if (S.flags.has('diagnosed_go_underground')) {
+    parts.push("<p>Your organization protected its people — and that mattered. But the community networks that organized spontaneously during the immigration crisis developed skills your organization could have helped sharpen for election defense. They're doing the work anyway, but without training in the specific technical requirements of election monitoring. It's a missed connection, not a catastrophe — they're capable organizers. But election defense has specific requirements that community organizing alone doesn't teach.</p>");
+  }
+
+  // Youth
+  if (S.flags.has('diagnosed_youth_institutions') || S.flags.has('diagnosed_youth_material')) {
+    parts.push("<p>Young organizers who came up through the organizations and mutual aid networks your movement invested in are showing up as election protection volunteers. They own this work — it's theirs, not something they were recruited into.</p>");
+  }
+
+  // Organizational capacity
+  if (S.flags.has('diagnosed_mobilization_problem')) {
+    parts.push("<p>The energy is real — people are showing up. But when coordination is needed across multiple contested districts, when legal challenges need to be filed simultaneously, when pressure needs to be sustained for weeks — the decision-making infrastructure isn't there. Your organization can turn people out but can't coordinate a sustained multi-front defense.</p>");
+  }
+
+  if (parts.length === 0) {
+    parts.push("<p>Election week unfolds. Results are contested in several districts. Across the movement ecosystem, some organizations are prepared, others aren't. Your organization responds with whatever it built — and lives with the gaps in what it didn't.</p>");
+  }
+
+  return parts.join('');
+}
+
+function generateNarrative() {
+  const parts = [];
+
+  // Phase 1 diagnoses
+  if (S.flags.has('diagnosed_regime_change')) parts.push("<p>You diagnosed the situation as constitutional regime change — extreme but temporary, correctable through existing channels. The regime was designed to absorb exactly that kind of opposition.</p>");
+  if (S.flags.has('diagnosed_authoritarian_crisis')) parts.push("<p>You recognized the authoritarian crisis early and went into learning mode — studying what happened in other countries, developing new frameworks, training your people. The early investment in understanding the pattern gave you months of strategic lead time over organizations that treated every development as unprecedented.</p>");
+  if (S.flags.has('diagnosed_more_of_same')) parts.push("<p>You saw continuity with the long history of state violence and economic injustice — and continued the work: tenant unions, workplace organizing, progressive electoral campaigns, community-based alternatives to policing. The question is whether the ground shifted under that work while you were doing it.</p>");
+
+  // Phase 1 broad front
+  if (S.flags.has('chose_broad_front')) parts.push("<p>You built the broadest possible front — tolerating uncomfortable alliances with moderates, conservatives, and business leaders who opposed authoritarianism. The historical record validated this: broad fronts defeat authoritarian regimes at dramatically higher rates than narrow ones.</p>");
+  if (S.flags.has('chose_alignment')) parts.push("<p>You prioritized ideological clarity over breadth — building a tighter, more aligned movement but a narrower one. Potential allies who were willing to oppose the regime found no place in your front.</p>");
+
+  // Phase 2 organizing
+  if (S.flags.has('diagnosed_mobilization_problem')) parts.push("<p>You invested in mobilization over organization — impressive rallies that the regime correctly read as spectacle without organizational depth.</p>");
+  if (S.flags.has('diagnosed_infrastructure_problem')) parts.push("<p>You invested in organizational infrastructure and local teams — decision-making structures, governance capacity, people rooted in their communities. It was slow and unglamorous, but when the crisis came, your organization could coordinate, negotiate, and sustain pressure. Not every organization in the ecosystem made the same choice.</p>");
+
+  // Phase 2 state terror
+  if (S.flags.has('diagnosed_go_public')) parts.push("<p>When state terror arrived, you made resistance MORE visible — telling stories, documenting everything, bringing more people onto the field. The backfire framework converted repression into recruitment.</p>");
+  if (S.flags.has('diagnosed_go_underground')) parts.push("<p>You built community protection infrastructure — sanctuary networks, rapid response teams, mutual aid — that kept people safe and became the foundation for election defense.</p>");
+
+  // Phase 2 youth
+  if (S.flags.has('diagnosed_youth_institutions')) parts.push("<p>You invested in genuinely youth-governed organizations, developing a generation of organizers with real ownership of the movement.</p>");
+  if (S.flags.has('diagnosed_youth_material')) parts.push("<p>You built mutual aid networks as on-ramps for youth engagement — young people who started volunteering at food distributions became the election protection corps.</p>");
+
+  // Phase 3
+  if (S.flags.has('diagnosed_competitive_authoritarianism')) parts.push("<p>Your local election protection teams — rooted in their districts, trusted by their neighbors — were the decisive infrastructure when results were contested.</p>");
+  if (S.flags.has('diagnosed_competitive_authoritarianism')) parts.push("<p>Your independent vote verification system — deliberately nonpartisan, with faith leaders, veterans, and business owners alongside progressive observers — created a factual record the regime couldn't credibly dismiss.</p>");
+  if (S.flags.has('diagnosed_competitive_authoritarianism')) parts.push("<p>The officials you pressured into public commitments before the crisis held the line — their pre-committed positions made silent capitulation impossible when the pressure came.</p>");
+
+  if (parts.length === 0) parts.push("<p>Your movement navigated an unprecedented crisis, making strategic diagnoses under impossible conditions. Every decision carried lessons for the struggles ahead.</p>");
+  return parts.join('');
+}
+
+// ─── GAME START ───
+function startGame() {
+  document.getElementById('title-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+
+  renderCityMap();
+  renderCodex();
+  renderTimeline();
+
+  currentEvent = pickEvent();
+  renderEvent(currentEvent);
+}
+</script>
+<footer style="text-align:center; padding:1.5rem 1rem; font-size:0.65rem; color:var(--text-faint); border-top:1px solid var(--border); margin-top:2rem;">
+  The Defiance v0.2 Beta — Built with AI assistance; may contain errors — For playtesting only
+</footer>
+</body>
+</html>
