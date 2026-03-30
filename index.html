@@ -591,50 +591,50 @@ const EVENTS = [
 {
   phase:1, type:"crisis",
   title:"The Purges Begin",
-  desc:"One week. Monday: five inspectors general fired overnight. Tuesday: the broadcasting regulator threatens station licenses on social media — no formal action, just the post. By Wednesday a news producer spikes a story about raids in immigrant neighborhoods. Thursday: universities are offered a deal — accept restrictions that disproportionately affect students of color, or lose federal funding. Most refuse. A few quietly sign. Friday: a law firm removes its immigration cases from its website. Meanwhile, senior military leaders — disproportionately Black officers and those who opposed using troops against civilians — are purged. Transgender service members expelled. A nationwide ban on gender-affirming care for young people is announced. Nobody ordered the news producer or the law firm to fold. They did it on their own. The pattern of who gets targeted is not random.",
+  desc:"It's been relentless. Inspectors general fired. Senior military leaders purged — disproportionately Black officers and those who opposed using troops against civilians. Transgender service members expelled. A nationwide ban on gender-affirming care for young people announced. The broadcasting regulator threatens station licenses on social media — no enforcement action, just the threat — and a network news producer spikes a story about immigration raids the next day. Universities are offered a deal: accept restrictions that disproportionately affect students of color, or lose federal funding. Most refuse. A few quietly sign. A law firm removes its immigration cases from its website. Nobody ordered the news producer or the law firm to fold. They did it on their own. The universities that signed didn't have to — the ones that refused proved that. Each development lands before you've processed the last one. There's no single dramatic moment — just a steady, grinding accumulation. And it raises a question your movement has to answer: what, exactly, are you living through?",
   concepts:["Anticipatory Obedience","Competitive Authoritarianism","Mafia State"],
   choices:[
     {
-      title:"The system will hold",
-      desc:"This is an extreme administration, but courts, elections, and institutions will constrain it. Invest in institutional defense and electoral accountability.",
-      hint:"<span class='hint-pos'>Preserves institutional legitimacy</span> · <span class='hint-warn'>Risk: wastes critical early window if wrong</span>",
-      effects:{movementPower:2,popularSupport:4,orgCapacity:2,coalitionUnity:4,democracy:2},
-      pillarEffects:{civil:3},
-      flags:["diagnosed_system_holds"],
-      outcome:"You invest in working through existing channels — legal challenges, congressional pressure, electoral preparation. These matter, but if the situation is worse than you think, you've spent the critical early window — when resistance is cheapest — on approaches the regime is designed to absorb.",
-      caseStudy:"In <strong>Hungary</strong>, opposition parties spent years working through institutional channels while Orbán systematically captured the judiciary, media regulators, and election administration. By the time they recognized the pattern, the institutions they were relying on had been hollowed out from within. The pattern: regimes that are consolidating power WANT the opposition to play by the old rules, because those rules no longer constrain the regime.",
-      lesson:"If you diagnose the situation as normal politics when it's actually authoritarian consolidation, you waste the window when resistance is cheapest. Organizers who recognized the pattern from other countries were months ahead.",
-      source:"Levitsky & Ziblatt, How Democracies Die (2018); V-Dem Democracy Report (2026)",
-      concepts_unlocked:["Competitive Authoritarianism"],
-      discuss:"How do you know whether the system will hold or not? What evidence would change your diagnosis? What's the cost of being wrong in each direction?"
-    },
-    {
-      title:"This is authoritarian consolidation",
-      desc:"The purges are systematic, not random — designed to eliminate institutional resistance before it can organize. Build parallel infrastructure and back-channel networks with people inside the system who are resisting.",
-      hint:"<span class='hint-pos'>Builds parallel capacity</span> · <span class='hint-pos'>Connects with internal resisters</span> · <span class='hint-warn'>Risk: looks alarmist if system holds</span>",
+      title:"This is an authoritarian crisis",
+      desc:"The president is following the authoritarian playbook — attacking civil society, persecuting opponents, sidelining the legislature, rigging elections, consolidating power. The closest parallel isn't any prior American president. It's Orbán in Hungary.",
+      hint:"<span class='hint-pos'>Recognizes the pattern</span> · <span class='hint-pos'>Builds parallel infrastructure</span> · <span class='hint-warn'>Risk: if you're wrong, you look alarmist</span>",
       effects:{movementPower:3,popularSupport:1,orgCapacity:10,coalitionUnity:4,democracy:3},
       pillarEffects:{civil:8,military:5},
-      flags:["diagnosed_authoritarian_consolidation"],
-      outcome:"You begin building parallel infrastructure — encrypted networks with career officials, documentation systems for irregularities, back-channel relationships with people resisting from inside. It's unglamorous work. But organizers who studied what happened in other countries recognized this pattern early and were months ahead of those who waited for proof.",
-      caseStudy:"In <strong>Serbia</strong>, the Otpor! movement spent two years building relationships with sympathetic police and military officers before the decisive confrontation with Milošević in 2000. When the dictator ordered a crackdown, security forces refused — because the movement had built trust through years of quiet back-channel work. In <strong>Poland</strong>, Solidarity built an entire parallel society underground — independent publishing, workers' councils, underground universities — infrastructure that ultimately outlasted the regime.",
-      lesson:"Authoritarian consolidation follows recognizable patterns from other countries. Organizers who study those patterns can act faster and more strategically than those treating every development as unprecedented.",
-      source:"Chenoweth & Marks, Pro-Democracy Organizing (2022); Pinckney & Trilling (2024)",
-      concepts_unlocked:["Anticipatory Obedience","Pillars of Support"],
-      discuss:"What patterns from other countries do you recognize in the current situation? What would you build NOW that you'll need in six months?"
+      flags:["diagnosed_authoritarian_crisis"],
+      outcome:"You begin building parallel infrastructure — encrypted networks with career officials, documentation systems, back-channel relationships with people resisting from inside. The authoritarian-crisis framework tells you: the regime is following a recognizable playbook, and organizers who've studied what happened in other countries can act faster than those treating every development as unprecedented.",
+      caseStudy:"In <strong>Serbia</strong>, the Otpor! movement spent two years building relationships with sympathetic police and military officers before the decisive confrontation with Milošević in 2000. When the dictator ordered a crackdown, security forces refused — because the movement had built trust through years of quiet back-channel work. In <strong>Poland</strong>, Solidarity built an entire parallel society underground — independent publishing, workers' councils, underground universities — infrastructure that ultimately outlasted the regime. The authoritarian-crisis lens helps you see what's coming and prepare for it.",
+      lesson:"If this is an authoritarian crisis, then it follows patterns recognizable from other countries. Organizers who study those patterns can act faster and more strategically than those treating every development as unprecedented.",
+      source:"Britton-Purdy, Pozen & Guida, NYT (2026); Levitsky & Ziblatt (2018); Chenoweth & Marks (2022)",
+      concepts_unlocked:["Competitive Authoritarianism","Anticipatory Obedience","Pillars of Support"],
+      discuss:"What patterns from other countries do you recognize? What would you build NOW that you'll need in six months?"
     },
     {
-      title:"This is a mafia state being built",
-      desc:"Loyalty is the only currency. Institutions are being converted from public functions into instruments of personal power. Build community capacity that doesn't depend on institutions — mutual aid, community protection, alternative services.",
-      hint:"<span class='hint-pos'>Community resilience</span> · <span class='hint-pos'>Doesn't depend on institutions</span> · <span class='hint-warn'>Risk: concedes institutional ground</span>",
+      title:"This is more of the same — intensified",
+      desc:"The system was already broken before this administration. Racial disparities in criminal justice. An arbitrary immigration system. Economic oligarchy. What's happening now isn't new — it intensifies deep trends in American life. The people alarmed now weren't alarmed when these things happened to communities of color for decades.",
+      hint:"<span class='hint-pos'>Addresses root causes</span> · <span class='hint-pos'>Resonates with affected communities</span> · <span class='hint-warn'>Risk: underestimates what's new about this moment</span>",
       effects:{movementPower:4,popularSupport:6,orgCapacity:6,coalitionUnity:2,democracy:1},
       pillarEffects:{religious:5,labor:5},
-      flags:["diagnosed_mafia_state"],
-      outcome:"You build community infrastructure that doesn't depend on any institution the regime can capture — mutual aid networks, sanctuary infrastructure, community alert systems. When the state fails people, these networks become the foundation of organized resistance. The concept of the 'mafia state' comes from studying how Hungary's government was transformed into a patronage network where one person distributes money and power.",
-      caseStudy:"The Hungarian scholar Bálint Magyar documented how Orbán transformed the government into what he called a <strong>mafia state</strong> — a centralized system of personal loyalty and transactional relationships, not ideology. In this system, normal accountability mechanisms don't work because the system is designed to reward loyalty and punish dissent, not to respond to public opinion. In <strong>Chile under the Pinochet military dictatorship</strong>, the Catholic Church's Vicariate of Solidarity provided legal defense, food assistance, and community support — its institutional legitimacy made it harder for the regime to shut down, and its community networks became the infrastructure for the democratic transition.",
-      lesson:"A mafia state operates through transactions, not ideology. Understanding this framework tells you why conventional political accountability may be insufficient — and why community infrastructure that doesn't depend on institutions becomes essential.",
-      source:"Magyar, Post-Communist Mafia State (2016); M. Gessen, NYT (2025)",
-      concepts_unlocked:["Mafia State"],
-      discuss:"What's the difference between corruption in a democracy and the mafia state pattern? What community infrastructure exists in your area that doesn't depend on government?"
+      flags:["diagnosed_more_of_same"],
+      outcome:"You focus on the continuities — building community infrastructure to address the long-standing failures that created the conditions for this moment. Mutual aid networks, sanctuary infrastructure, community protection — things communities of color have always needed, authoritarian crisis or not. The 'more of the same' framework has a crucial insight: the people just now alarmed weren't alarmed when immigration raids, surveillance, and state violence targeted Black and brown communities for decades. But it has a risk too: if what's happening IS qualitatively different — if the regime is consolidating power in ways that close off future possibilities for change — then treating it as 'more of the same' may underestimate the urgency.",
+      caseStudy:"In <strong>Chile under the Pinochet military dictatorship</strong>, the Catholic Church's Vicariate of Solidarity provided legal defense, food assistance, and community support for families — building the community infrastructure that eventually powered the democratic transition. The 'more of the same' lens correctly identifies that many communities have been living under conditions of state violence for generations. But the Hungarian scholar Bálint Magyar warns that there's a difference between a flawed democracy and a <strong>mafia state</strong> — a system where one person distributes money and power through loyalty networks. Both require community infrastructure, but the mafia state requires recognizing that conventional accountability mechanisms may no longer function.",
+      lesson:"The 'more of the same' framework correctly identifies that authoritarianism didn't start with this administration — and that community infrastructure is needed regardless. But if the system is being transformed into something qualitatively different, the response must go beyond what was needed before.",
+      source:"Britton-Purdy, Pozen & Guida, NYT (2026); Magyar (2016); M. Gessen, NYT (2025)",
+      concepts_unlocked:["Mafia State","Alternative Institutions"],
+      discuss:"What's the difference between 'more of the same' and 'qualitatively different'? What evidence would tell you which framework is right? Does it matter if both require community infrastructure?"
+    },
+    {
+      title:"This is constitutional regime change",
+      desc:"Like it or not, this is how American governance has always changed — not through formal amendments but through political initiatives that rearrange power. Roosevelt was called a fascist too. The system will absorb this and correct.",
+      hint:"<span class='hint-pos'>Historical perspective</span> · <span class='hint-warn'>Assumes democratic self-correction</span> · <span class='hint-warn'>Risk: normalizes what shouldn't be normalized</span>",
+      effects:{movementPower:2,popularSupport:4,orgCapacity:2,coalitionUnity:4,democracy:2},
+      pillarEffects:{civil:3},
+      flags:["diagnosed_regime_change"],
+      outcome:"You invest in working through existing channels — legal challenges, congressional pressure, electoral preparation. The constitutional-regime-change framework says: major transformations in governance have always been disruptive and alarming to those socialized in the previous order. But there's a critical difference between Roosevelt and this moment: Roosevelt pursued an anti-oligarchic program with enormous electoral support and worked closely with Congress. This administration has rarely enjoyed majority support and acts mainly through executive action. The framework may correctly identify how American governance changes — but it may be wrong about whether this change is legitimate or reversible.",
+      caseStudy:"In <strong>Hungary</strong>, opposition parties spent years working through institutional channels while Orbán systematically captured the judiciary, media regulators, and election administration. They treated each development as within the normal range of democratic politics. By the time they recognized the pattern, the institutions they were relying on had been hollowed out from within. The constitutional-regime-change framework has a crucial insight: norms DO change, and not all norm-breaking is authoritarian. But it has a fatal flaw: it assumes the system will self-correct. In Hungary, it didn't.",
+      lesson:"The constitutional-regime-change framework correctly identifies that American governance transforms through disruption. But if this disruption is not self-correcting — if the regime is closing off the pathways for future change — then treating it as normal constitutional politics wastes the window when resistance is cheapest.",
+      source:"Britton-Purdy, Pozen & Guida, NYT (2026); Levitsky & Ziblatt (2018); V-Dem Democracy Report (2026)",
+      concepts_unlocked:["Competitive Authoritarianism"],
+      discuss:"What's the difference between legitimate constitutional change and authoritarian consolidation? How do you tell the difference in real time?"
     }
   ]
 },
@@ -1007,20 +1007,20 @@ function getConsequence() {
   const phase = getPhase(S.turn);
 
   // Phase 1 diagnosis payoffs in Phase 2
-  if (S.flags.has('diagnosed_system_holds') && phase >= 2 && !S.flags.has('_system_holds_consequence')) {
+  if (S.flags.has('diagnosed_regime_change') && phase >= 2 && !S.flags.has('_system_holds_consequence')) {
     S.flags.add('_system_holds_consequence');
     S.orgCapacity = clamp(S.orgCapacity - 5);
     consequences.push("Your diagnosis that 'the system will hold' meant you didn't build parallel infrastructure when resistance was cheapest. The organizational gap is now harder to close. (Org capacity −5)");
   }
 
-  if (S.flags.has('diagnosed_authoritarian_consolidation') && phase >= 2 && !S.flags.has('_auth_consol_payoff')) {
+  if (S.flags.has('diagnosed_authoritarian_crisis') && phase >= 2 && !S.flags.has('_auth_consol_payoff')) {
     S.flags.add('_auth_consol_payoff');
     S.orgCapacity = clamp(S.orgCapacity + 5);
     S.pillars.civil.loyalty = clamp(S.pillars.civil.loyalty + 5);
     consequences.push("Your early investment in back-channel networks with resisting civil servants is paying off — intelligence about upcoming purges arrives before they happen. (+5 Org Capacity, Civil Servants +5)");
   }
 
-  if (S.flags.has('diagnosed_mafia_state') && phase >= 2 && !S.flags.has('_mafia_state_payoff')) {
+  if (S.flags.has('diagnosed_more_of_same') && phase >= 2 && !S.flags.has('_mafia_state_payoff')) {
     S.flags.add('_mafia_state_payoff');
     S.popularSupport = clamp(S.popularSupport + 4);
     S.orgCapacity = clamp(S.orgCapacity + 3);
@@ -1736,9 +1736,9 @@ function generateNarrative() {
   const parts = [];
 
   // Phase 1 diagnoses
-  if (S.flags.has('diagnosed_system_holds')) parts.push("<p>You diagnosed the situation as 'the system will hold' — investing in institutional channels and electoral accountability. The regime was designed to absorb exactly that kind of opposition.</p>");
-  if (S.flags.has('diagnosed_authoritarian_consolidation')) parts.push("<p>You recognized the authoritarian consolidation pattern early and built parallel infrastructure — back-channel networks with resisting civil servants, documentation systems, encrypted communications. The early investment gave you months of lead time.</p>");
-  if (S.flags.has('diagnosed_mafia_state')) parts.push("<p>You recognized the mafia state pattern and built community capacity that doesn't depend on captured institutions — mutual aid, sanctuary networks, alternative services. When the state failed people, your networks were already in place.</p>");
+  if (S.flags.has('diagnosed_regime_change')) parts.push("<p>You diagnosed the situation as constitutional regime change — extreme but temporary, correctable through existing channels. The regime was designed to absorb exactly that kind of opposition.</p>");
+  if (S.flags.has('diagnosed_authoritarian_crisis')) parts.push("<p>You recognized the authoritarian crisis early and built parallel infrastructure — back-channel networks with resisting civil servants, documentation systems, encrypted communications. The early investment gave you months of lead time.</p>");
+  if (S.flags.has('diagnosed_more_of_same')) parts.push("<p>You saw continuity with the long history of state violence against communities of color — and built community infrastructure that addresses those deep failures regardless of who's in power. Mutual aid, sanctuary networks, alternative services. When the state failed people, your networks were already in place.</p>");
 
   // Phase 1 broad front
   if (S.flags.has('chose_broad_front')) parts.push("<p>You built the broadest possible front — tolerating uncomfortable alliances with moderates, conservatives, and business leaders who opposed authoritarianism. The historical record validated this: broad fronts defeat authoritarian regimes at dramatically higher rates than narrow ones.</p>");
