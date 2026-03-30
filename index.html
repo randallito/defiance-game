@@ -461,17 +461,14 @@ button { font-family:inherit; cursor:pointer; }
 
   <div class="title-features stagger">
     <div class="title-feat fade-up">
-      <div class="tf-icon">🏛️</div>
       <div class="tf-title">Shift the Pillars</div>
       <div class="tf-desc">Win over business, military, religious, media, and labor — the institutional pillars every regime depends on.</div>
     </div>
     <div class="title-feat fade-up">
-      <div class="tf-icon">⚡</div>
       <div class="tf-title">Choices Have Consequences</div>
       <div class="tf-desc">Your decisions ripple forward. The regime adapts to your strategy and exploits your weaknesses.</div>
     </div>
     <div class="title-feat fade-up">
-      <div class="tf-icon">🌍</div>
       <div class="tf-title">Learn From History</div>
       <div class="tf-desc">Scenarios informed by real events and civil resistance research from dozens of countries. Movements whose organizers studied civil resistance succeeded at higher rates than those that didn't.</div>
     </div>
@@ -1139,12 +1136,12 @@ function renderHeader() {
 // ── CITY MAP ──
 function renderCityMap() {
   const districts = [
-    {key:'business',name:'Business & Markets',icon:'📈'},
-    {key:'military',name:'Security & Military',icon:'🛡️'},
-    {key:'religious',name:'Religious Institutions',icon:'⛪'},
-    {key:'media',name:'Media & Press',icon:'📰'},
-    {key:'labor',name:'Labor & Unions',icon:'✊'},
-    {key:'civil',name:'Civil Servants & Bureaucracy',icon:'📋'},
+    {key:'business',name:'Business & Markets',icon:''},
+    {key:'military',name:'Security & Military',icon:''},
+    {key:'religious',name:'Religious Institutions',icon:''},
+    {key:'media',name:'Media & Press',icon:''},
+    {key:'labor',name:'Labor & Unions',icon:''},
+    {key:'civil',name:'Civil Servants & Bureaucracy',icon:''},
   ];
   document.getElementById('city-grid').innerHTML = districts.map(d => {
     const l = S.pillars[d.key].loyalty;
