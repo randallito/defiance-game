@@ -205,9 +205,6 @@ button { font-family:inherit; cursor:pointer; }
 /* removed: was spanning 5th pillar full-width when there were only 5 pillars */
 .cd-icon { font-size:1.3rem; margin-bottom:0.15rem; }
 .cd-name { font-size:0.65rem; font-weight:600; margin-bottom:0.15rem; }
-.cd-loyalty {
-  font-family:'JetBrains Mono',monospace; font-size:0.8rem; font-weight:700;
-}
 .cd-status {
   font-size:0.5rem; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; margin-top:0.1rem;
 }
@@ -215,7 +212,6 @@ button { font-family:inherit; cursor:pointer; }
 .city-district.regime {
   background:rgba(248,113,113,0.06); border-color:rgba(248,113,113,0.2);
 }
-.city-district.regime .cd-loyalty { color:var(--red); }
 .city-district.regime .cd-status { color:var(--red); }
 .city-district.regime .cd-icon { opacity:0.5; filter:grayscale(0.5); }
 
@@ -223,14 +219,12 @@ button { font-family:inherit; cursor:pointer; }
   background:rgba(251,191,36,0.08); border-color:rgba(251,191,36,0.3);
   animation:borderPulse 2.5s ease-in-out infinite;
 }
-.city-district.contested .cd-loyalty { color:var(--yellow); }
 .city-district.contested .cd-status { color:var(--yellow); }
 
 .city-district.movement {
   background:rgba(34,211,238,0.1); border-color:var(--cyan);
   box-shadow:0 0 12px var(--cyan-dim);
 }
-.city-district.movement .cd-loyalty { color:var(--cyan); }
 .city-district.movement .cd-status { color:var(--cyan); }
 .city-district.movement .cd-icon { filter:drop-shadow(0 0 4px rgba(34,211,238,0.4)); }
 
@@ -1109,6 +1103,50 @@ function getConsequence() {
     consequences.push("Your mutual aid networks have become the primary on-ramp for youth civic engagement — young people who started by volunteering at food distributions are now organizing voter contact. (+5 Popular Support)");
   }
 
+  // Turn 3 diagnosis payoffs in Phase 2
+  if (S.flags.has('diagnosed_corruption') && phase >= 2 && !S.flags.has('_corruption_payoff')) {
+    S.flags.add('_corruption_payoff');
+    S.orgCapacity = clamp(S.orgCapacity - 3);
+    consequences.push("Your organization is caught off-guard when a regulatory agency you depended on stops responding to requests. The system you assumed would hold is being hollowed out around you. (Org capacity −3)");
+  }
+
+  if (S.flags.has('diagnosed_scale_mismatch') && phase >= 2 && !S.flags.has('_scale_mismatch_payoff')) {
+    S.flags.add('_scale_mismatch_payoff');
+    S.orgCapacity = clamp(S.orgCapacity + 4);
+    S.coalitionUnity = clamp(S.coalitionUnity + 3);
+    consequences.push("Your organizational preparation pays off — when a federal investigation lands, your team already has legal protocols and funder communication plans in place. (+4 Org Capacity, +3 Coalition Unity)");
+  }
+
+  if (S.flags.has('diagnosed_support_resisters') && phase >= 2 && !S.flags.has('_support_resisters_payoff')) {
+    S.flags.add('_support_resisters_payoff');
+    S.popularSupport = clamp(S.popularSupport + 4);
+    S.pillars.business.loyalty = clamp(S.pillars.business.loyalty + 4);
+    consequences.push("Companies you publicly supported are holding their ground. Two have cited customer loyalty campaigns as a factor in board decisions to maintain commitments. (+4 Popular Support, Business +4)");
+  }
+
+  // Turn 7 diagnosis payoffs in Phase 3
+  if (S.flags.has('diagnosed_normal_election') && phase >= 3 && !S.flags.has('_normal_election_payoff')) {
+    S.flags.add('_normal_election_payoff');
+    S.popularSupport = clamp(S.popularSupport + 4);
+    S.democracy = clamp(S.democracy - 3);
+    consequences.push("Your voter contact operation outperformed projections. But in districts where results are contested, you have no observer infrastructure and no relationships with election administrators. (+4 Popular Support, Democracy −3)");
+  }
+
+  if (S.flags.has('diagnosed_long_game') && phase >= 3 && !S.flags.has('_long_game_payoff')) {
+    S.flags.add('_long_game_payoff');
+    S.orgCapacity = clamp(S.orgCapacity + 5);
+    S.democracy = clamp(S.democracy + 3);
+    consequences.push("When results are contested, your organization has trained teams ready to sustain pressure. The capacity you built for a crisis nobody wanted to plan for is now the most valuable infrastructure in the ecosystem. (+5 Org Capacity, +3 Democracy)");
+  }
+
+  // Turn 6 youth outreach payoff
+  if (S.flags.has('diagnosed_youth_outreach') && phase >= 3 && !S.flags.has('_youth_outreach_payoff')) {
+    S.flags.add('_youth_outreach_payoff');
+    S.movementPower = clamp(S.movementPower + 3);
+    S.orgCapacity = clamp(S.orgCapacity - 2);
+    consequences.push("Youth recruitment spiked briefly but most didn't stay. The ones who left say the same thing: you wanted their energy but not their judgment. (+3 Movement Power, Org capacity −2)");
+  }
+
   return consequences.length > 0 ? consequences.join(' ') : null;
 }
 
@@ -1168,7 +1206,7 @@ function renderCityMap() {
     const l = S.pillars[d.key].loyalty;
     const state = l>=60?'movement':l>=40?'contested':'regime';
     const statusText = l>=60?'MOVEMENT-ALIGNED':l>=40?'CONTESTED':'REGIME-ALIGNED';
-    return `<div class="city-district ${state}"><div class="cd-icon">${d.icon}</div><div class="cd-name">${d.name}</div><div class="cd-loyalty">${l}%</div><div class="cd-status">${statusText}</div></div>`;
+    return `<div class="city-district ${state}"><div class="cd-icon">${d.icon}</div><div class="cd-name">${d.name}</div><div class="cd-status">${statusText}</div></div>`;
   }).join('');
   const avg = Object.values(S.pillars).reduce((s,p)=>s+p.loyalty,0)/6;
   const panel = document.getElementById('city-panel');
@@ -1747,6 +1785,14 @@ function generateElectionConsequence() {
     parts.push("<p>The energy is real — people are showing up. But when coordination is needed across multiple contested districts, when legal challenges need to be filed simultaneously, when pressure needs to be sustained for weeks — the decision-making infrastructure isn't there. Your organization can turn people out but can't coordinate a sustained multi-front defense.</p>");
   }
 
+  // Turn 7 election strategy
+  if (S.flags.has('diagnosed_normal_election')) {
+    parts.push("<p>Your campaign operation is strong but your election defense infrastructure is thin. In districts where results are contested, other organizations are leading the response — your people are showing up as volunteers, not coordinators.</p>");
+  }
+  if (S.flags.has('diagnosed_long_game')) {
+    parts.push("<p>The ENFORCE infrastructure you built is activating. Trained teams are sustaining pressure at contested election offices. Other organizations are asking how you prepared for this.</p>");
+  }
+
   if (parts.length === 0) {
     parts.push("<p>Election week unfolds. Results are contested in several districts. Across the movement ecosystem, some organizations are prepared, others aren't. Your organization responds with whatever it built — and lives with the gaps in what it didn't.</p>");
   }
@@ -1766,6 +1812,11 @@ function generateNarrative() {
   if (S.flags.has('chose_broad_front')) parts.push("<p>You built the broadest possible front — tolerating uncomfortable alliances with moderates, conservatives, and business leaders who opposed authoritarianism. The historical record validated this: broad fronts defeat authoritarian regimes at dramatically higher rates than narrow ones.</p>");
   if (S.flags.has('chose_alignment')) parts.push("<p>You prioritized ideological clarity over breadth — building a tighter, more aligned movement but a narrower one. Potential allies who were willing to oppose the regime found no place in your front.</p>");
 
+  // Phase 1 mafia state
+  if (S.flags.has('diagnosed_corruption')) parts.push("<p>You diagnosed the situation as extreme but temporary and continued your regular organizing work. The question is whether the system you depended on was being transformed while you focused on local fights.</p>");
+  if (S.flags.has('diagnosed_scale_mismatch')) parts.push("<p>You recognized the mafia state pattern early and prepared your organization for the new reality — asset freezes, retaliatory investigations, the compounding effects of federal pressure.</p>");
+  if (S.flags.has('diagnosed_support_resisters')) parts.push("<p>You rewarded the institutions that held their ground — and watched the buycott strategy shift the cost calculation for companies deciding whether to comply or resist.</p>");
+
   // Phase 2 organizing
   if (S.flags.has('diagnosed_mobilization_problem')) parts.push("<p>You invested in mobilization over organization — impressive rallies that the regime correctly read as spectacle without organizational depth.</p>");
   if (S.flags.has('diagnosed_infrastructure_problem')) parts.push("<p>You invested in organizational infrastructure and local teams — decision-making structures, governance capacity, people rooted in their communities. It was slow and unglamorous, but when the crisis came, your organization could coordinate, negotiate, and sustain pressure. Not every organization in the ecosystem made the same choice.</p>");
@@ -1777,8 +1828,11 @@ function generateNarrative() {
   // Phase 2 youth
   if (S.flags.has('diagnosed_youth_institutions')) parts.push("<p>You invested in genuinely youth-governed organizations, developing a generation of organizers with real ownership of the movement.</p>");
   if (S.flags.has('diagnosed_youth_material')) parts.push("<p>You built mutual aid networks as on-ramps for youth engagement — young people who started volunteering at food distributions became the election protection corps.</p>");
+  if (S.flags.has('diagnosed_youth_outreach')) parts.push("<p>You invested in youth outreach and recruitment — the numbers looked good briefly, but most didn't stay. The deeper problem of genuine power-sharing remained unaddressed.</p>");
 
-  // Phase 3
+  // Phase 3 election
+  if (S.flags.has('diagnosed_normal_election')) parts.push("<p>You ran the best campaign you could. The question you didn't answer: what happens when winning the vote isn't enough?</p>");
+  if (S.flags.has('diagnosed_long_game')) parts.push("<p>You built the capacity nobody wanted to plan for — mass mobilization and noncooperation infrastructure for post-election defense.</p>");
   if (S.flags.has('diagnosed_competitive_authoritarianism')) parts.push("<p>Your local election protection teams — rooted in their districts, trusted by their neighbors — were the decisive infrastructure when results were contested.</p>");
   if (S.flags.has('diagnosed_competitive_authoritarianism')) parts.push("<p>Your independent vote verification system — deliberately nonpartisan, with faith leaders, veterans, and business owners alongside progressive observers — created a factual record the regime couldn't credibly dismiss.</p>");
   if (S.flags.has('diagnosed_competitive_authoritarianism')) parts.push("<p>The officials you pressured into public commitments before the crisis held the line — their pre-committed positions made silent capitulation impossible when the pressure came.</p>");
