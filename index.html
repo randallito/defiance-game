@@ -1033,7 +1033,7 @@ function getConsequence() {
     S.flags.add('_auth_consol_payoff');
     S.orgCapacity = clamp(S.orgCapacity + 5);
     S.pillars.civil.loyalty = clamp(S.pillars.civil.loyalty + 5);
-    consequences.push("Your early investment in back-channel networks with resisting civil servants is paying off — intelligence about upcoming purges arrives before they happen. (+5 Org Capacity, Civil Servants +5)");
+    consequences.push("Your phone rings at 6 AM. A civil servant you've been meeting for coffee once a month tells you three offices are being shut down next week — and which employees are being targeted. Your early investment in back-channel relationships is paying off. (+5 Org Capacity, Civil Servants +5)");
   }
 
   if (S.flags.has('diagnosed_more_of_same') && phase >= 2 && !S.flags.has('_mafia_state_payoff')) {
@@ -1047,7 +1047,7 @@ function getConsequence() {
   if (S.flags.has('chose_alignment') && phase >= 2 && !S.flags.has('_purity_consequence')) {
     S.flags.add('_purity_consequence');
     S.popularSupport = clamp(S.popularSupport - 4);
-    consequences.push("Your narrower front struggles to reach persuadable voters outside the progressive base. Potential allies who were turned away have disengaged entirely. (Popular support −4)");
+    consequences.push("A business owner who came to one of your meetings last month — the one whose company got hit with tariffs — stopped returning calls after someone in your coalition tweeted that corporate allies are complicit. She's not showing up at anyone else's meetings either. She's just watching from the sidelines while her neighbors get raided. (Popular support −4)");
   }
 
   if (S.flags.has('chose_broad_front') && phase >= 2 && !S.flags.has('_broad_front_payoff')) {
@@ -1060,7 +1060,7 @@ function getConsequence() {
   // Spectacle penalty
   if (S.flags.has('diagnosed_mobilization_problem') && phase >= 2 && S.orgCapacity < 35 && !S.flags.has('_spectacle_penalty')) {
     S.flags.add('_spectacle_penalty');
-    consequences.push("Your investment in mobilization without organizational infrastructure has left the movement unable to negotiate, pivot, or sustain campaigns. The regime waits you out.");
+    consequences.push("After the last big rally, people went home energized — and then nothing happened. The phone tree doesn't connect. Nobody knows who's authorized to negotiate with the city council. A reporter calls asking for the movement's position and three different people give three different answers. The regime sees all of this and waits.");
   }
 
   // Phase 2 payoffs in Phase 3
@@ -1115,7 +1115,7 @@ function getConsequence() {
     S.flags.add('_scale_mismatch_payoff');
     S.orgCapacity = clamp(S.orgCapacity + 4);
     S.coalitionUnity = clamp(S.coalitionUnity + 3);
-    consequences.push("Your organizational preparation pays off — when a federal investigation lands, your team already has legal protocols and funder communication plans in place. (+4 Org Capacity, +3 Coalition Unity)");
+    consequences.push("When the federal investigation letter arrives, your team doesn't panic. Your lawyer already drafted a response template. Your operations director knows exactly which files to pull and which to protect. Your funder communication plan goes out within the hour. The investigation still hurts — but it doesn't break you. (+4 Org Capacity, +3 Coalition Unity)");
   }
 
   if (S.flags.has('diagnosed_support_resisters') && phase >= 2 && !S.flags.has('_support_resisters_payoff')) {
@@ -1158,19 +1158,42 @@ function checkPillarThresholds() {
     const fired = S.pillarThresholdsFired[key];
     if (p.loyalty >= 60 && !fired.includes(60)) {
       fired.push(60);
-      alerts.push({ pillar:p.name, level:"CONTESTED → MOVEMENT", text:`${p.name} has shifted toward the movement! Their cooperation unlocks new possibilities for organized resistance.` });
-      // Bonus
+      const shiftTexts = {
+        business:"A regional bank CEO quietly agrees to flag suspicious account freezes. A supply chain manager starts routing around sanctioned vendors. Business is finding ways to resist without making speeches.",
+        military:"A JAG officer circulates a memo on the limits of lawful orders. Retired generals are making phone calls. The people with guns are starting to ask questions.",
+        religious:"A bishop shows up at a federal building during hearings. Clergy are opening their doors. Faith communities are discovering they have moral authority the regime can't match.",
+        media:"A local news director decides to connect the stories instead of covering each one separately. An investigative team starts following the money. The pattern is becoming visible.",
+        labor:"A union local votes to refuse cooperation with immigration enforcement at their worksite. Workers are discovering that withholding labor is still the most powerful tool they have.",
+        civil:"A career official starts forwarding documents to the inspector general before they can be deleted. Civil servants are finding ways to slow things down from the inside."
+      };
+      alerts.push({ pillar:p.name, level:"CONTESTED → MOVEMENT", text:shiftTexts[key] || `${p.name} has shifted toward the movement.` });
       S.democracy = clamp(S.democracy + 3);
     }
     if (p.loyalty >= 80 && !fired.includes(80)) {
       fired.push(80);
-      alerts.push({ pillar:p.name, level:"DEEP ALIGNMENT", text:`${p.name} are now deeply aligned with the movement. This fundamentally weakens the regime's power base.` });
+      const deepTexts = {
+        business:"Companies are publicly refusing to comply with regime demands. The cost of resistance has dropped below the cost of compliance — and everyone can see it.",
+        military:"Senior officers are making public statements about constitutional limits. The chain of command is holding — against the regime, not for it.",
+        religious:"Faith communities have become the backbone of the resistance — sheltering families, feeding communities, providing moral clarity when institutions have failed.",
+        media:"Journalists are coordinating across outlets to cover the story as a pattern, not isolated incidents. The information environment has shifted.",
+        labor:"Organized labor is using its economic leverage — targeted work stoppages, supply chain pressure, solidarity actions. The regime is feeling it in the numbers.",
+        civil:"Entire departments are in quiet revolt — slowing implementation, preserving records, communicating with oversight bodies. The bureaucracy is resisting from within."
+      };
+      alerts.push({ pillar:p.name, level:"DEEP ALIGNMENT", text:deepTexts[key] || `${p.name} are now deeply aligned with the movement.` });
       S.democracy = clamp(S.democracy + 5);
       S.movementPower = clamp(S.movementPower + 5);
     }
     if (p.loyalty <= 10 && !fired.includes(10)) {
       fired.push(10);
-      alerts.push({ pillar:p.name, level:"FULLY CAPTURED", text:`${p.name} are now fully captured by the regime. Shifting them back will be extremely difficult.` });
+      const captureTexts = {
+        business:"The last holdout companies have signed loyalty agreements. Government contracts now require political compliance checks. The private sector has been absorbed.",
+        military:"The officer corps has been purged of dissenters. Troops are deploying domestically without question. The institution that was supposed to refuse unlawful orders has stopped asking.",
+        religious:"Regime-aligned religious leaders dominate the public conversation. Churches that resist face tax investigations. The moral authority of faith communities has been neutralized.",
+        media:"Independent outlets have been shuttered or silenced. What remains reports what it's told. The information environment belongs to the regime.",
+        labor:"Union leadership has been co-opted or crushed. Strikes are met with emergency orders. Workers have lost their most powerful tool.",
+        civil:"Career professionals have been replaced by loyalists. Institutional memory is gone. The agencies now serve the regime, not the public."
+      };
+      alerts.push({ pillar:p.name, level:"FULLY CAPTURED", text:captureTexts[key] || `${p.name} are now fully captured by the regime.` });
       S.democracy = clamp(S.democracy - 3);
     }
   }
@@ -1631,17 +1654,17 @@ function showEndScreen(result) {
     path = 'strong';
     pathColor = 'var(--green)';
     pathTitle = '✊ Strong Foundation';
-    midtermOutcome = 'The new Congress is seated. Across the country, the results are uneven — but in the places where organizations like yours invested in local teams, community infrastructure, and broad alliances, the election was defended. Sanctuary networks are keeping families together. Mutual aid is feeding people whose breadwinners were detained. Young organizers who came up through the movement own this fight. The movement ecosystem held — not because any single organization controlled the outcome, but because enough organizations made the right investments at the right time.';
+    midtermOutcome = 'The new Congress is seated. Across the country, the results are uneven — but in the places where organizations like yours invested in local teams, community infrastructure, and broad alliances, the election was defended. Sanctuary networks are keeping families together. Mutual aid is feeding people whose breadwinners were detained. Young organizers who came up through the movement own this fight. It held — not because any single organization controlled the outcome, but because enough people made the right investments at the right time.';
   } else if (S.democracy >= 45 && totalScore >= 220) {
     path = 'contested';
     pathColor = 'var(--yellow)';
     pathTitle = '⚖️ Contested Ground';
-    midtermOutcome = 'Some races held. Others didn\'t. The picture is uneven across the country — and your organization\'s choices shaped what happened in your area, not everywhere. Where movements built local teams, families are safer and election results were defended by people who knew their neighbors. Where organizations relied on fly-in models or went quiet during the crisis, contested results went unchallenged. Deportations continue, but unevenly: communities with protection infrastructure are harder to raid. The next two years will be harder, and the gaps in the movement ecosystem are now the regime\'s targets.';
+    midtermOutcome = 'Some races held. Others didn\'t. The picture is uneven across the country — and your organization\'s choices shaped what happened in your area, not everywhere. Where movements built local teams, families are safer and election results were defended by people who knew their neighbors. Where organizations relied on fly-in models or went quiet during the crisis, contested results went unchallenged. Deportations continue, but unevenly: communities with protection infrastructure are harder to raid. The next two years will be harder, and the gaps in what wasn\'t built are now the regime\'s targets.';
   } else {
     path = 'weak';
     pathColor = 'var(--red)';
     pathTitle = '🕯️ Insufficient Foundation';
-    midtermOutcome = 'The regime contested enough results to prevent a meaningful shift in power. The movement ecosystem wasn\'t ready — not just your organization, but the broader landscape of organizations that needed to build election defense infrastructure and didn\'t. Deportations are accelerating. Communities without protection infrastructure are exposed. Youth unemployment is rising. Some communities are holding together anyway — organizers and neighbors who built capacity on their own, without waiting for national organizations to lead. But the scale of what was needed was larger than what was built.';
+    midtermOutcome = 'The regime contested enough results to prevent a meaningful shift in power. The organizations that needed to be ready — yours included — weren\'t. Deportations are accelerating. Communities without protection networks are exposed. People who showed up at your rallies last year are asking where the movement went. Some communities are holding together anyway — organizers and neighbors who built what they could, without waiting for anyone to lead. But the scale of what was needed was larger than what was built.';
   }
 
   // Build epilogue with final choice
@@ -1795,7 +1818,7 @@ function generateElectionConsequence() {
   }
 
   if (parts.length === 0) {
-    parts.push("<p>Election week unfolds. Results are contested in several districts. Across the movement ecosystem, some organizations are prepared, others aren't. Your organization responds with whatever it built — and lives with the gaps in what it didn't.</p>");
+    parts.push("<p>Election week unfolds. Results are contested in several districts. Some organizations are prepared. Others aren't. Your organization responds with whatever it built — and lives with the gaps in what it didn't.</p>");
   }
 
   return parts.join('');
