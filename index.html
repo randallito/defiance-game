@@ -915,9 +915,9 @@ const EVENTS = [
   concepts:["Pre-Election Mobilization","Pillars of Support","Nonviolent Discipline"],
   choices:[
     {
-      title:"The consequences arrive",
-      desc:"The decisions that matter were made months ago. What you built — or didn't — determines what happens now.",
-      hint:"<span class='hint-pos'>Your earlier diagnoses determine the outcome</span>",
+      title:"The count begins",
+      desc:"Polls close. The numbers start coming in. And then the challenges start coming in too — not in one or two places, but everywhere at once. What happens next depends on what you built.",
+      hint:"<span class='hint-pos'>Everything you've built is now being tested</span>",
       effects:{movementPower:0,popularSupport:0,orgCapacity:0,coalitionUnity:0,democracy:0},
       pillarEffects:{},
       flags:["election_week_consequence"],
@@ -1467,7 +1467,7 @@ function makeChoice(index) {
       ${otherChoices.map(c => `
         <div class="rnt-item">
           <div class="rnt-title">${c.title}</div>
-          <div class="rnt-counterfactual">${c.counterfactual || c.outcome}</div>
+          <div class="rnt-counterfactual">${c.counterfactual || c.desc}</div>
         </div>`).join('')}
     </div>` : '';
 
