@@ -319,8 +319,32 @@ button { font-family:inherit; cursor:pointer; }
 .rnt-label { font-family:'Inter',system-ui,sans-serif; font-weight:700; color:var(--text-dim); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem; }
 .rnt-item { padding:0.4rem 0; border-bottom:1px solid var(--border); }
 .rnt-item:last-child { border-bottom:none; }
-.rnt-title { font-size:0.88rem; font-weight:600; color:var(--text); margin-bottom:0.15rem; }
-.rnt-counterfactual { font-size:0.88rem; color:var(--text-dim); line-height:1.6; }
+.rnt-title {
+  font-size:0.88rem; font-weight:600; color:var(--text); margin-bottom:0.15rem;
+  cursor:pointer; display:flex; align-items:center; gap:0.4rem; user-select:none;
+}
+.rnt-title:hover { color:var(--accent); }
+.rnt-toggle {
+  font-size:0.7rem; color:var(--text-faint); transition:transform 0.25s ease;
+  display:inline-block; flex-shrink:0;
+}
+.rnt-item.revealed .rnt-toggle { transform:rotate(90deg); }
+.rnt-hint {
+  font-size:0.75rem; color:var(--text-faint); font-weight:400; font-style:italic;
+  margin-left:auto;
+}
+.rnt-item.revealed .rnt-hint { display:none; }
+.rnt-counterfactual {
+  font-size:0.88rem; color:var(--text-dim); line-height:1.6;
+  display:grid; grid-template-rows:0fr; transition:grid-template-rows 0.35s ease, opacity 0.3s ease;
+  opacity:0;
+}
+.rnt-item.revealed .rnt-counterfactual {
+  grid-template-rows:1fr; opacity:1;
+}
+.rnt-counterfactual-inner {
+  overflow:hidden;
+}
 
 /* ── FOLLOW-UP CHOICE ── */
 .followup-card {
@@ -1465,9 +1489,9 @@ function makeChoice(index) {
     <div class="roads-not-taken">
       <div class="rnt-label">🔀 Roads Not Taken</div>
       ${otherChoices.map(c => `
-        <div class="rnt-item">
-          <div class="rnt-title">${c.title}</div>
-          <div class="rnt-counterfactual">${c.counterfactual || c.desc}</div>
+        <div class="rnt-item" onclick="this.classList.toggle('revealed')">
+          <div class="rnt-title"><span class="rnt-toggle">▶</span>${c.title}<span class="rnt-hint">click to reveal</span></div>
+          <div class="rnt-counterfactual"><div class="rnt-counterfactual-inner">${c.counterfactual || c.desc}</div></div>
         </div>`).join('')}
     </div>` : '';
 
@@ -1558,7 +1582,7 @@ function resolveFollowUp(optIndex) {
       </div>
       ${otherOpts.length > 0 ? `<div class="roads-not-taken">
         <div class="rnt-label">🔀 Other Approaches</div>
-        ${otherOpts.map(o => `<div class="rnt-item"><div class="rnt-title">${o.title}</div><div class="rnt-counterfactual">${o.counterfactual || o.desc}</div></div>`).join('')}
+        ${otherOpts.map(o => `<div class="rnt-item" onclick="this.classList.toggle('revealed')"><div class="rnt-title"><span class="rnt-toggle">▶</span>${o.title}<span class="rnt-hint">click to reveal</span></div><div class="rnt-counterfactual"><div class="rnt-counterfactual-inner">${o.counterfactual || o.desc}</div></div></div>`).join('')}
       </div>` : ''}
       <div style="margin-top:1rem; text-align:right;">
         <button class="btn btn-primary btn-sm" onclick="nextTurn()">
