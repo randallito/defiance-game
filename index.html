@@ -263,15 +263,15 @@ button { font-family:inherit; cursor:pointer; }
 /* ── CHOICES ── */
 .choices { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1rem; }
 .choice-btn {
-  text-align:left; padding:1rem 1rem 1rem 1.8rem; border:1px solid var(--border); border-radius:2px;
-  background:var(--surface); color:var(--text); transition:all 0.15s; position:relative; cursor:pointer;
-  border-left:3px solid transparent;
+  text-align:left; padding:1.1rem 1.2rem 1.1rem 1.8rem; border:2px solid var(--border); border-radius:6px;
+  background:var(--surface); color:var(--text); transition:all 0.2s; position:relative; cursor:pointer;
+  border-left:4px solid var(--accent);
 }
 .choice-btn:hover {
-  border-left-color:var(--accent); background:var(--surface2);
+  border-color:var(--accent); background:var(--accent-glow); transform:translateX(2px);
 }
-.choice-title { font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:0.85rem; margin-bottom:0.25rem; }
-.choice-desc { font-size:0.88rem; color:var(--text-dim); line-height:1.6; margin-bottom:0.4rem; }
+.choice-title { font-family:'Inter',system-ui,sans-serif; font-weight:700; font-size:0.95rem; margin-bottom:0.3rem; color:var(--text); }
+.choice-desc { font-size:0.92rem; color:var(--text-dim); line-height:1.65; margin-bottom:0.4rem; }
 .choice-hint {
   font-size:0.75rem; color:var(--text-dim); line-height:1.4;
   border-top:1px solid var(--border); padding-top:0.35rem; margin-top:0.3rem;
@@ -319,8 +319,32 @@ button { font-family:inherit; cursor:pointer; }
 .rnt-label { font-family:'Inter',system-ui,sans-serif; font-weight:700; color:var(--text-dim); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem; }
 .rnt-item { padding:0.4rem 0; border-bottom:1px solid var(--border); }
 .rnt-item:last-child { border-bottom:none; }
-.rnt-title { font-size:0.88rem; font-weight:600; color:var(--text); margin-bottom:0.15rem; }
-.rnt-counterfactual { font-size:0.88rem; color:var(--text-dim); line-height:1.6; }
+.rnt-title {
+  font-size:0.88rem; font-weight:600; color:var(--text); margin-bottom:0.15rem;
+  cursor:pointer; display:flex; align-items:center; gap:0.4rem; user-select:none;
+}
+.rnt-title:hover { color:var(--accent); }
+.rnt-toggle {
+  font-size:0.7rem; color:var(--text-faint); transition:transform 0.25s ease;
+  display:inline-block; flex-shrink:0;
+}
+.rnt-item.revealed .rnt-toggle { transform:rotate(90deg); }
+.rnt-hint {
+  font-size:0.75rem; color:var(--text-faint); font-weight:400; font-style:italic;
+  margin-left:auto;
+}
+.rnt-item.revealed .rnt-hint { display:none; }
+.rnt-counterfactual {
+  font-size:0.88rem; color:var(--text-dim); line-height:1.6;
+  display:grid; grid-template-rows:0fr; transition:grid-template-rows 0.35s ease, opacity 0.3s ease;
+  opacity:0;
+}
+.rnt-item.revealed .rnt-counterfactual {
+  grid-template-rows:1fr; opacity:1;
+}
+.rnt-counterfactual-inner {
+  overflow:hidden;
+}
 
 /* ── FOLLOW-UP CHOICE ── */
 .followup-card {
@@ -364,6 +388,13 @@ button { font-family:inherit; cursor:pointer; }
 .codex-entry.locked { opacity:0.35; cursor:default; }
 .codex-entry.locked:hover { background:transparent; }
 .codex-entry.new { animation:slideIn 0.35s ease-out; }
+.codex-new-badge {
+  display:inline-block; font-size:0.55rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.06em; padding:0.1rem 0.4rem; border-radius:3px;
+  background:var(--accent); color:var(--bg); margin-left:0.4rem; vertical-align:middle;
+  animation:pulseGlow 2s ease-in-out infinite;
+}
+.codex-panel.has-new h3 { animation:borderPulse 1.5s ease-in-out 3; }
 .ce-name { font-size:0.8rem; font-weight:600; }
 .ce-source { font-size:0.65rem; color:var(--text-dim); margin-top:0.1rem; }
 .ce-desc { font-size:0.75rem; color:var(--text-dim); line-height:1.5; margin-top:0.3rem; display:none; }
@@ -444,7 +475,7 @@ button { font-family:inherit; cursor:pointer; }
 <div class="phase-overlay" id="phase-overlay">
   <h2 id="phase-overlay-title"></h2>
   <p id="phase-overlay-desc"></p>
-  <p style="margin-top:1.5rem; font-size:0.9rem; color:#fbbf24; cursor:pointer; font-family:'Inter',system-ui,sans-serif;">Click to continue →</p>
+  <button onclick="document.getElementById('phase-overlay').classList.remove('active')" style="margin-top:2rem; padding:0.8rem 2.5rem; background:#fbbf24; color:#1a1a1a; border:none; border-radius:6px; font-family:'Inter',system-ui,sans-serif; font-size:1rem; font-weight:700; cursor:pointer; animation:fadeUp 0.5s ease-out 1.5s both;">Continue →</button>
 </div>
 
 <!-- ═══ TITLE ═══ -->
@@ -510,8 +541,14 @@ button { font-family:inherit; cursor:pointer; }
         <p style="font-size:0.65rem; color:var(--text-dim); margin-bottom:0.5rem; line-height:1.5;">Authoritarian regimes depend on the loyalty of key institutions. When enough defect, regimes fall.</p>
         <div class="city-grid" id="city-grid"></div>
       </div>
-      <div class="timeline-panel" id="timeline-panel">
+      <div class="timeline-panel" id="timeline-panel" style="margin-bottom:1.5rem;">
         <h3>Movement Timeline</h3>
+        <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:0.5rem; font-size:0.6rem; color:var(--text-dim);">
+          <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);vertical-align:middle;margin-right:3px;"></span>Crisis</span>
+          <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);vertical-align:middle;margin-right:3px;"></span>Opportunity</span>
+          <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--yellow);vertical-align:middle;margin-right:3px;"></span>Dilemma</span>
+          <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--orange);vertical-align:middle;margin-right:3px;"></span>Regime</span>
+        </div>
         <div id="timeline-entries"></div>
       </div>
       <div class="codex-panel" id="codex-panel" style="cursor:pointer;">
@@ -938,52 +975,82 @@ const EVENTS = [
 
 
 // ─── REGIME AI ───
+function pickTactic(pool) {
+  // Pick a tactic we haven't used yet; if all used, reset and pick any
+  S._usedTactics = S._usedTactics || [];
+  const available = pool.filter((_,i) => !S._usedTactics.includes(i));
+  if (available.length === 0) {
+    S._usedTactics = [];
+    const idx = Math.floor(Math.random() * pool.length);
+    S._usedTactics.push(idx);
+    return pool[idx];
+  }
+  const pick = available[Math.floor(Math.random() * available.length)];
+  S._usedTactics.push(pool.indexOf(pick));
+  return pick;
+}
+
 function getRegimeReaction() {
   const phase = getPhase(S.turn);
   if (phase === 1 && S.turn <= 2) return null; // regime doesn't react in first 2 turns
 
-  const stats = [
-    {name:'movementPower', label:'movement power', val:S.movementPower},
-    {name:'popularSupport', label:'popular support', val:S.popularSupport},
-    {name:'orgCapacity', label:'organizational capacity', val:S.orgCapacity},
-    {name:'coalitionUnity', label:'coalition unity', val:S.coalitionUnity},
-  ];
-  const strongest = stats.reduce((a,b)=>a.val>b.val?a:b);
   const reactions = [];
 
-  // Specific regime tactics pool
+  // Specific regime tactics pool — each has an id for dedup
   const phase1Tactics = [
-    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 4); }, msg:"A federal investigation is opened into your organization's fiscal sponsor. Your operations director disappears into a conference room for three weeks pulling files instead of coordinating your spring campaign. A stressed staff member talks to a reporter. Your largest funder sees the headline and pauses next quarter's grant 'pending review.' Nobody's been charged with anything. (Org capacity −4)" },
-    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 4); }, msg:"A right-wing media outlet publishes internal communications from a coalition partner, framing routine disagreements as evidence of radical extremism. Two organizations quietly distance themselves. (Coalition unity −4)" },
-    { effect:() => { S.popularSupport = clamp(S.popularSupport - 3); }, msg:"The regime offers a settlement deal to a university in your coalition — favorable terms if they drop their public opposition. They take the deal. The message to others is clear: compliance is rewarded. (Popular support −3)" },
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 4); }, msg:"A federal investigation is opened into your organization's fiscal sponsor. Your operations director disappears into a conference room for three weeks pulling files instead of coordinating your spring campaign. A stressed staff member talks to a reporter. Your largest funder sees the headline and pauses next quarter's grant 'pending review.' Nobody's been charged with anything." },
+    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 4); }, msg:"A right-wing media outlet publishes internal communications from a coalition partner, framing routine disagreements as evidence of radical extremism. Two organizations quietly distance themselves." },
+    { effect:() => { S.popularSupport = clamp(S.popularSupport - 3); }, msg:"The regime offers a settlement deal to a university in your coalition — favorable terms if they drop their public opposition. They take the deal. The message to others is clear: compliance is rewarded." },
   ];
 
   const phase2Tactics = [
-    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization's primary funder receives a letter from a congressional committee requesting all grant documentation for the past five years. The funder pauses all disbursements pending review. (Org capacity −5)" },
-    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 5); }, msg:"The regime amplifies your coalition's internal debate about Palestine through right-wing media, forcing every member organization to publicly take a position that divides the front. (Coalition unity −5)" },
-    { effect:() => { S.movementPower = clamp(S.movementPower - 5); }, msg:"Three organizers in your network are arrested on dubious charges. The charges will likely be dropped in months — but the arrests make national news, and other organizers start declining to attend public events. (Movement power −5)" },
-    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization is flagged in a domestic terrorism investigation under NSPM-7 — a presidential memorandum that classifies 'anti-fascist' organizing as domestic terrorism. The definition is broad enough to cover immigration defense, trans rights advocacy, and most of what you do. Your lawyers say the case is baseless — but your operations director spends the next two weeks compiling requested documents instead of coordinating election defense. (Org capacity −5)" },
-    { effect:() => { S.popularSupport = clamp(S.popularSupport - 4); }, msg:"The president labels your coalition 'the radical left' and 'enemies within' in a social media post. Independent influencers clip it, add commentary, push it viral. Legacy media picks it up. Within 48 hours, three local officials who had been working with you stop returning calls. (Popular support −4)" },
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization's primary funder receives a letter from a congressional committee requesting all grant documentation for the past five years. The funder pauses all disbursements pending review." },
+    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 5); }, msg:"The regime amplifies your coalition's internal debate about Palestine through right-wing media, forcing every member organization to publicly take a position that divides the front." },
+    { effect:() => { S.movementPower = clamp(S.movementPower - 5); }, msg:"Three organizers in your network are arrested on dubious charges. The charges will likely be dropped in months — but the arrests make national news, and other organizers start declining to attend public events." },
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization is flagged in a domestic terrorism investigation — a presidential memorandum classifies 'anti-fascist' organizing as domestic terrorism. The definition covers immigration defense, trans rights advocacy, and most of what you do. Your lawyers say the case is baseless — but your operations director spends two weeks compiling requested documents instead of coordinating." },
+    { effect:() => { S.popularSupport = clamp(S.popularSupport - 4); }, msg:"The president labels your coalition 'the radical left' and 'enemies within' in a social media post. Independent influencers clip it, add commentary, push it viral. Legacy media picks it up. Within 48 hours, three local officials who had been working with you stop returning calls." },
   ];
 
+  // Reactive tactics — triggered by specific player flags
+  const phase2Reactive = [];
+  if (S.flags.has('diagnosed_go_public')) {
+    phase2Reactive.push({ effect:() => { S.movementPower = clamp(S.movementPower - 5); }, msg:"<strong>The regime noticed your visibility strategy.</strong> Staff who appeared in documentation videos receive death threats within hours. Someone gets doxxed. Pizzas start arriving at an organizer's home — <em>we know where you live</em>. Your operations director spends the week on security protocols instead of campaign work." });
+  }
+  if (S.flags.has('diagnosed_mobilization_problem')) {
+    phase2Reactive.push({ effect:() => { S.orgCapacity = clamp(S.orgCapacity - 4); }, msg:"<strong>The regime exploited your organizational gaps.</strong> Your rallies are clipped, reframed with misleading commentary, and pushed viral. Members of Congress post thinly veiled threats. Without the decision-making infrastructure to respond quickly, the narrative spirals for days before you can coordinate a response." });
+  }
+  if (S.flags.has('diagnosed_infrastructure_problem')) {
+    phase2Reactive.push({ effect:() => { S.popularSupport = clamp(S.popularSupport - 4); }, msg:"<strong>The regime targeted your local teams.</strong> A community organizer who'd been building relationships with local officials gets a visit from federal agents — not an arrest, just questions. The officials stop returning calls. The relationships you invested in are being systematically disrupted." });
+  }
+  if (S.flags.has('chose_broad_front')) {
+    phase2Reactive.push({ effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 5); }, msg:"<strong>The regime targeted your coalition's fault lines.</strong> A leaked internal memo — real or fabricated — surfaces showing progressive organizations privately mocking their conservative allies. Two business leaders who'd been attending coalition meetings stop showing up." });
+  }
+
   const phase3Tactics = [
-    { effect:() => { S.democracy = clamp(S.democracy - 5); }, msg:"A federal court issues a ruling restricting mail-in ballot acceptance windows in three competitive states, potentially invalidating hundreds of thousands of votes. (Democracy −5)" },
-    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"The DOJ opens an investigation into election protection organizations in your state, requesting all volunteer records and communications. The investigation itself — regardless of outcome — drains resources and chills volunteer recruitment. (Org capacity −5)" },
-    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 4); }, msg:"Federal agents visit two election administrators who had publicly committed to certifying legitimate results. After the visits, both go silent. (Coalition unity −4)" },
+    { effect:() => { S.democracy = clamp(S.democracy - 5); }, msg:"A federal court issues a ruling restricting mail-in ballot acceptance windows in three competitive states, potentially invalidating hundreds of thousands of votes." },
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"The DOJ opens an investigation into election protection organizations in your state, requesting all volunteer records and communications. The investigation itself — regardless of outcome — drains resources and chills volunteer recruitment." },
+    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 4); }, msg:"Federal agents visit two election administrators who had publicly committed to certifying legitimate results. After the visits, both go silent." },
   ];
 
   // Phase 1 Turn 3: mild reaction
   if (phase === 1 && S.turn === 3) {
-    const tactic = rand(phase1Tactics);
+    const tactic = pickTactic(phase1Tactics);
     tactic.effect();
     reactions.push(tactic.msg);
   }
 
-  // Phase 2: specific tactics + pillar pressure
+  // Phase 2: reactive tactic (if available) + pool tactic + pillar pressure
   if (phase === 2) {
-    const tactic = rand(phase2Tactics);
-    tactic.effect();
-    reactions.push(tactic.msg);
+    // Try a reactive tactic first (50% chance if available)
+    if (phase2Reactive.length > 0 && chance(0.6)) {
+      const reactive = rand(phase2Reactive);
+      reactive.effect();
+      reactions.push(reactive.msg);
+    } else {
+      const tactic = pickTactic(phase2Tactics);
+      tactic.effect();
+      reactions.push(tactic.msg);
+    }
 
     const driftingPillar = rand(Object.entries(S.pillars).filter(([k,p])=>p.loyalty>=45));
     if (driftingPillar && chance(0.5)) {
@@ -991,36 +1058,30 @@ function getRegimeReaction() {
       S.pillars[key].loyalty = clamp(pillar.loyalty - 5);
       const pillarLeader = {business:'business',security:'military',religious:'faith',media:'media',labor:'union',civil:'civil service'}[key] || pillar.name.toLowerCase();
       const pillarVisitTexts = {
-        business:`A CEO who publicly criticized the tariffs gets a call from the IRS — routine audit, they say. Her lawyers say otherwise. Other executives notice and stop returning your calls. (${pillar.name} loyalty −5)`,
-        military:`A retired general who signed an open letter about lawful orders finds his security clearance under review. The message to other officers is clear. (${pillar.name} loyalty −5)`,
-        religious:`A pastor who opened her church as a sanctuary gets a visit from two men in suits — not an arrest, just questions about the church's tax-exempt status. The congregation votes to stop sheltering families. (${pillar.name} loyalty −5)`,
-        media:`A local news director who connected the stories into a pattern gets a call from the station's corporate owner. The investigative series is killed. She's reassigned to weather. (${pillar.name} loyalty −5)`,
-        labor:`A union president who refused cooperation with immigration enforcement at his worksite finds his local under investigation for financial irregularities. The investigation is baseless but the legal bills are real. (${pillar.name} loyalty −5)`,
-        civil:`A career official who'd been forwarding documents to oversight gets called into a meeting and told her position is being eliminated. Her replacement starts Monday. (${pillar.name} loyalty −5)`
+        business:`A CEO who publicly criticized the tariffs gets a call from the IRS — routine audit, they say. Her lawyers say otherwise. Other executives notice and stop returning your calls.`,
+        military:`A retired general who signed an open letter about lawful orders finds his security clearance under review. The message to other officers is clear.`,
+        religious:`A pastor who opened her church as a sanctuary gets a visit from two men in suits — not an arrest, just questions about the church's tax-exempt status. The congregation votes to stop sheltering families.`,
+        media:`A local news director who connected the stories into a pattern gets a call from the station's corporate owner. The investigative series is killed. She's reassigned to weather.`,
+        labor:`A union president who refused cooperation with immigration enforcement at his worksite finds his local under investigation for financial irregularities. The investigation is baseless but the legal bills are real.`,
+        civil:`A career official who'd been forwarding documents to oversight gets called into a meeting and told her position is being eliminated. Her replacement starts Monday.`
       };
-      reactions.push(pillarVisitTexts[key] || `A ${pillarLeader} leader who had been speaking out receives a visit from federal agents. The message lands. Others go quiet. (${pillar.name} loyalty −5)`);
-    }
-
-    if (S.flags.has('diagnosed_mobilization_problem') && chance(0.5)) {
-      S.orgCapacity = clamp(S.orgCapacity - 4);
-      reactions.push(`Independent influencers clip your rallies, add misleading commentary, and push them viral on social media. Legacy media picks up the framing. Members of Congress post thinly veiled threats afterward. Within days, staff receive death threats, someone gets doxxed, and pizzas start showing up at an organizer's home — we know where you live. Your operations director spends 60 hours that week on security protocols instead of coordinating campaign work. (Org capacity −4)`);
+      reactions.push(pillarVisitTexts[key] || `A ${pillarLeader} leader who had been speaking out receives a visit from federal agents. The message lands. Others go quiet.`);
     }
   }
 
   // Phase 3: election-specific tactics
   if (phase === 3) {
-    const tactic = rand(phase3Tactics);
+    const tactic = pickTactic(phase3Tactics);
     tactic.effect();
     reactions.push(tactic.msg);
 
     if (chance(0.4)) {
       S.democracy = clamp(S.democracy - 4);
-      reactions.push(`New state legislation restricts early voting and same-day registration in competitive districts. (Democracy −4)`);
+      reactions.push(`New state legislation restricts early voting and same-day registration in competitive districts.`);
     }
-    // State terror escalation
     if (S.democracy > 55 && chance(0.4)) {
       S.movementPower = clamp(S.movementPower - 4);
-      reactions.push(`Regime deploys intimidation tactics against election workers — anonymous threats, early morning visits, IRS investigations. (Movement power −4)`);
+      reactions.push(`Regime deploys intimidation tactics against election workers — anonymous threats, early morning visits, IRS investigations.`);
     }
   }
 
@@ -1260,11 +1321,16 @@ function renderCodex() {
   document.getElementById('codex-count').textContent = `${unlocked} / ${total}`;
 
   let html = '';
+  let hasNew = false;
   for (const [name, def] of Object.entries(CODEX_ALL)) {
     if (S.codex.has(name)) {
       const entry = S.codex.get(name);
-      html += `<div class="codex-entry" onclick="this.classList.toggle('expanded')">
-        <div class="ce-name">✦ ${name}</div>
+      const isNew = entry.turn === S.turn;
+      if (isNew) hasNew = true;
+      const newBadge = isNew ? '<span class="codex-new-badge">NEW</span>' : '';
+      const expandClass = isNew ? ' expanded' : '';
+      html += `<div class="codex-entry${expandClass}" onclick="this.classList.toggle('expanded')">
+        <div class="ce-name">✦ ${name}${newBadge}</div>
         <div class="ce-source">${def.source} · Turn ${entry.turn}</div>
         <div class="ce-desc">${def.desc}</div>
       </div>`;
@@ -1276,6 +1342,13 @@ function renderCodex() {
     }
   }
   document.getElementById('codex-entries').innerHTML = html;
+  const panel = document.getElementById('codex-panel');
+  if (hasNew) {
+    panel.classList.add('has-new');
+    document.getElementById('codex-entries').style.display = 'block'; // auto-expand when new entries
+  } else {
+    panel.classList.remove('has-new');
+  }
 }
 
 function renderTimeline() {
@@ -1310,8 +1383,7 @@ function showPhaseTransition(phase) {
   document.getElementById('phase-overlay-title').textContent = titles[phase];
   document.getElementById('phase-overlay-desc').textContent = descs[phase];
   overlay.classList.add('active');
-  // Manual dismiss instead of auto-timer
-  overlay.onclick = () => overlay.classList.remove('active');
+  // Button handles dismissal — no click-anywhere-to-dismiss
 }
 
 // ─── EVENT FLOW ───
@@ -1348,8 +1420,9 @@ function generateFallback() {
 }
 
 function renderEvent(event) {
-  // Scroll to top so the player sees the new event
+  // Scroll to top so the player sees the new event — double-fire for reliability
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => window.scrollTo({ top: 0 }), 100);
 
   document.getElementById('event-area').innerHTML = `
     <div class="event-card fade-up">
@@ -1468,9 +1541,9 @@ function makeChoice(index) {
     <div class="roads-not-taken">
       <div class="rnt-label">🔀 Roads Not Taken</div>
       ${otherChoices.map(c => `
-        <div class="rnt-item">
-          <div class="rnt-title">${c.title}</div>
-          <div class="rnt-counterfactual">${c.counterfactual || c.desc}</div>
+        <div class="rnt-item" onclick="this.classList.toggle('revealed')">
+          <div class="rnt-title"><span class="rnt-toggle">▶</span>${c.title}<span class="rnt-hint">click to reveal</span></div>
+          <div class="rnt-counterfactual"><div class="rnt-counterfactual-inner">${c.counterfactual || c.desc}</div></div>
         </div>`).join('')}
     </div>` : '';
 
@@ -1561,7 +1634,7 @@ function resolveFollowUp(optIndex) {
       </div>
       ${otherOpts.length > 0 ? `<div class="roads-not-taken">
         <div class="rnt-label">🔀 Other Approaches</div>
-        ${otherOpts.map(o => `<div class="rnt-item"><div class="rnt-title">${o.title}</div><div class="rnt-counterfactual">${o.counterfactual || o.desc}</div></div>`).join('')}
+        ${otherOpts.map(o => `<div class="rnt-item" onclick="this.classList.toggle('revealed')"><div class="rnt-title"><span class="rnt-toggle">▶</span>${o.title}<span class="rnt-hint">click to reveal</span></div><div class="rnt-counterfactual"><div class="rnt-counterfactual-inner">${o.counterfactual || o.desc}</div></div></div>`).join('')}
       </div>` : ''}
       <div style="margin-top:1rem; text-align:right;">
         <button class="btn btn-primary btn-sm" onclick="nextTurn()">
