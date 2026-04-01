@@ -14,7 +14,7 @@ The game is a tool for sharpening strategic thinking and sparking conversation. 
 
 Open `index.html` in any modern browser. No server, no dependencies, no install.
 
-Or play at: [https://randallito.github.io/defiance-game/](https://randallito.github.io/defiance-game/) *(if GitHub Pages is enabled)*
+Or play at: **[randallito.github.io/defiance-game](https://randallito.github.io/defiance-game/)**
 
 ## Game mechanics
 
