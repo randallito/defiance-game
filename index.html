@@ -126,6 +126,22 @@ button { font-family:inherit; cursor:pointer; }
 .gh-turn { font-family:'Inter',system-ui,sans-serif; font-size:0.75rem; color:var(--text-dim); margin-top:0.1rem; }
 .gh-dem { display:flex; align-items:center; gap:0.4rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--text-dim); }
 .gh-dem-val { font-weight:700; font-size:1.1rem; }
+.stat-bar {
+  display:flex; gap:0.5rem; flex-wrap:wrap; padding:0.3rem 1.25rem 0.4rem;
+  border-bottom:1px solid var(--border); background:var(--bg); font-family:'Inter',system-ui,sans-serif;
+}
+.stat-chip {
+  font-size:0.65rem; font-weight:600; padding:0.15rem 0.5rem; border-radius:3px;
+  display:flex; align-items:center; gap:0.25rem; transition:all 0.3s;
+}
+.stat-chip .sc-label { color:var(--text-dim); }
+.stat-chip .sc-val { font-weight:700; }
+.stat-chip .sc-delta {
+  font-size:0.55rem; font-weight:700; margin-left:0.15rem;
+  animation:fadeUp 0.4s ease-out both;
+}
+.sc-delta.pos { color:var(--green); }
+.sc-delta.neg { color:var(--red); }
 
 /* ── MAIN ── */
 .game-body { display:flex; gap:1rem; padding:1rem 1.25rem; min-height:calc(100vh - 140px); }
@@ -522,6 +538,7 @@ button { font-family:inherit; cursor:pointer; }
     </div>
     <div class="gh-dem" id="dem-header" style="display:none;"></div>
   </div>
+  <div class="stat-bar" id="stat-bar"></div>
 
   <div class="game-body">
     <div class="game-main">
@@ -955,7 +972,7 @@ const EVENTS = [
   concepts:["Pre-Election Mobilization","Pillars of Support","Nonviolent Discipline"],
   choices:[
     {
-      title:"The count begins",
+      title:"See what you built",
       desc:"It's 3 AM. Your phone hasn't stopped. Across the country, organizations are activating — or discovering what they didn't build. Your choices brought you here.",
       hint:"<span class='hint-pos'>Everything you've built is now being tested</span>",
       effects:{movementPower:0,popularSupport:0,orgCapacity:0,coalitionUnity:0,democracy:0},
@@ -1287,9 +1304,21 @@ function renderHeader() {
   const phaseNames = {1:"Phase 1: The Consolidation (2025)",2:"Phase 2: The Resistance Builds (2025-26)",3:"Phase 3: The 2026 Midterms"};
   document.getElementById('phase-name').textContent = phaseNames[phase];
   document.getElementById('turn-info').textContent = `Turn ${S.turn} / ${S.maxTurns}`;
-  const demEl = document.getElementById('dem-header');
-  demEl.textContent = S.democracy;
-  demEl.style.color = S.democracy > 60 ? 'var(--green)' : S.democracy > 40 ? 'var(--yellow)' : 'var(--red)';
+
+  // Stat bar
+  const stats = [
+    {key:'democracy', label:'Democracy', val:S.democracy, color:'var(--yellow)'},
+    {key:'movementPower', label:'Mvmt', val:S.movementPower, color:'var(--accent)'},
+    {key:'popularSupport', label:'Support', val:S.popularSupport, color:'var(--green)'},
+    {key:'orgCapacity', label:'Org Cap', val:S.orgCapacity, color:'var(--purple)'},
+    {key:'coalitionUnity', label:'Unity', val:S.coalitionUnity, color:'var(--cyan)'},
+  ];
+  document.getElementById('stat-bar').innerHTML = stats.map(s => {
+    const prev = S.prevStats?.[s.key];
+    const delta = prev !== undefined ? s.val - prev : 0;
+    const deltaHtml = delta !== 0 ? `<span class="sc-delta ${delta>0?'pos':'neg'}">${delta>0?'+':''}${delta}</span>` : '';
+    return `<div class="stat-chip"><span class="sc-label">${s.label}</span><span class="sc-val" style="color:${s.color}">${s.val}</span>${deltaHtml}</div>`;
+  }).join('');
 }
 
 // ── CITY MAP ──
@@ -1357,12 +1386,23 @@ function renderCodex() {
 }
 
 function renderTimeline() {
-  document.getElementById('timeline-entries').innerHTML = S.timeline.map(t =>
-    `<div class="tl-entry tl-${t.type}">
+  let html = '';
+  let lastPhase = 0;
+  // Timeline is newest-first (unshift), so reverse for phase dividers
+  const sorted = [...S.timeline].reverse();
+  for (const t of sorted) {
+    const phase = getPhase(t.turn);
+    if (phase !== lastPhase) {
+      const phaseNames = {1:'Phase 1: Consolidation',2:'Phase 2: Resistance Builds',3:'Phase 3: Midterms'};
+      html += `<div style="font-size:0.55rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); font-weight:700; padding:0.3rem 0 0.15rem; margin-top:${lastPhase?'0.4rem':'0'}; border-top:${lastPhase?'1px solid var(--border)':'none'};">${phaseNames[phase]}</div>`;
+      lastPhase = phase;
+    }
+    html += `<div class="tl-entry tl-${t.type}">
       <span class="tl-turn">Turn ${t.turn}</span>
       <span class="tl-title">${t.title}</span>
-    </div>`
-  ).join('');
+    </div>`;
+  }
+  document.getElementById('timeline-entries').innerHTML = html;
 }
 
 function addTimeline(type, title) {
@@ -1384,9 +1424,16 @@ function showPhaseTransition(phase) {
     2:"The regime is consolidating. How you diagnose the situation and where you invest your resources will determine whether the movement has the infrastructure to protect the midterm elections.",
     3:"The midterms under competitive authoritarianism. The preparation you did — or didn't do — now determines what's possible."
   };
+  // Calculate strategic position
+  const pillarsMoved = Object.values(S.pillars).filter(p => p.loyalty >= 40).length;
+  const pillarsAligned = Object.values(S.pillars).filter(p => p.loyalty >= 60).length;
+  const positionText = pillarsAligned > 0
+    ? `${pillarsAligned} of 6 pillars aligned with the movement. ${pillarsMoved - pillarsAligned} more contested.`
+    : `${pillarsMoved} of 6 pillars contested. None yet aligned with the movement.`;
+
   const overlay = document.getElementById('phase-overlay');
   document.getElementById('phase-overlay-title').textContent = titles[phase];
-  document.getElementById('phase-overlay-desc').textContent = descs[phase];
+  document.getElementById('phase-overlay-desc').innerHTML = `${descs[phase]}<br><br><span style="font-size:0.85rem; color:var(--cyan);">${positionText}</span>`;
   overlay.classList.add('active');
   // Button handles dismissal — no click-anywhere-to-dismiss
 }
@@ -1435,18 +1482,32 @@ function renderEvent(event) {
       <p class="event-desc">${event.desc}</p>
     </div>`;
 
-  // Turn 8: pure consequence event — no choices, generate narrative from flags
+  // Turn 8: pure consequence event — staged reveal from flags
   if (S.turn === 8) {
-    const consequenceNarrative = generateElectionConsequence();
+    const consequenceParts = generateElectionConsequence();
     document.getElementById('choices-area').innerHTML = '';
     document.getElementById('outcome-area').innerHTML = `
-      <div class="outcome-card fade-up" style="display:block">
-        <h3>What Your Choices Built</h3>
-        ${consequenceNarrative}
-        <div style="margin-top:1rem; text-align:right;">
+      <div class="outcome-card" style="display:block">
+        <h3 class="fade-up">What Your Choices Built</h3>
+        <div id="staged-consequences"></div>
+        <div id="t8-next" style="margin-top:1rem; text-align:right; opacity:0; transition:opacity 0.5s;">
           <button class="btn btn-primary btn-sm" onclick="nextTurn()">See What Comes Next →</button>
         </div>
       </div>`;
+    // Stage each consequence paragraph with delay
+    const container = document.getElementById('staged-consequences');
+    consequenceParts.forEach((html, i) => {
+      setTimeout(() => {
+        const div = document.createElement('div');
+        div.className = 'fade-up';
+        div.innerHTML = html;
+        container.appendChild(div);
+        // Show the button after the last paragraph
+        if (i === consequenceParts.length - 1) {
+          setTimeout(() => { document.getElementById('t8-next').style.opacity = '1'; }, 800);
+        }
+      }, i * 1500);
+    });
     document.getElementById('consequence-area').innerHTML = '';
     // Record for timeline
     addTimeline('crisis', 'Election Week');
@@ -1505,9 +1566,19 @@ function makeChoice(index) {
   S.coalitionUnity = clamp(S.coalitionUnity + Math.round(eff.coalitionUnity * (eff.coalitionUnity > 0 ? boost : 1)));
   S.democracy      = clamp(S.democracy      + Math.round(eff.democracy * (eff.democracy > 0 ? boost : 1)));
 
-  // Pillar effects
+  // Pillar effects — track before/after for notification
+  const pillarShifts = [];
   for (const [p, val] of Object.entries(choice.pillarEffects || {})) {
-    if (S.pillars[p]) S.pillars[p].loyalty = clamp(S.pillars[p].loyalty + val);
+    if (S.pillars[p]) {
+      const before = S.pillars[p].loyalty;
+      S.pillars[p].loyalty = clamp(S.pillars[p].loyalty + val);
+      const after = S.pillars[p].loyalty;
+      const oldState = before>=60?'Movement':before>=40?'Contested':'Regime';
+      const newState = after>=60?'Movement':after>=40?'Contested':'Regime';
+      if (oldState !== newState) {
+        pillarShifts.push(`${S.pillars[p].name}: ${oldState} → ${newState}`);
+      }
+    }
   }
 
   // Flags
@@ -1577,6 +1648,9 @@ function makeChoice(index) {
     <div class="outcome-card fade-up" style="display:block">
       <h3>Outcome</h3>
       <p class="outcome-text">${choice.outcome}</p>
+      ${pillarShifts.length > 0 ? `<div style="margin:0.6rem 0; padding:0.4rem 0.7rem; background:var(--cyan-dim); border-left:3px solid var(--cyan); border-radius:2px; font-size:0.8rem; font-family:'Inter',system-ui,sans-serif; font-weight:600; color:var(--cyan);">
+        ${pillarShifts.map(s => `<div>⬆ ${s}</div>`).join('')}
+      </div>` : ''}
       ${choice.caseStudy ? `<div class="case-study-box">
         <div class="case-study-label">🌍 Case Study</div>
         <div class="case-study-text">${choice.caseStudy}</div>
@@ -1734,7 +1808,13 @@ function showEndScreen(result) {
 
   // Epilogue — branching based on accumulated score and flags
   const pillarsMoved = Object.values(S.pillars).filter(p=>p.loyalty>=50).length;
-  const totalScore = S.democracy + S.orgCapacity + S.popularSupport + S.movementPower + S.coalitionUnity;
+  let totalScore = S.democracy + S.orgCapacity + S.popularSupport + S.movementPower + S.coalitionUnity;
+
+  // Early diagnosis bonus — recognizing the pattern early matters
+  if (S.flags.has('diagnosed_authoritarian_crisis')) totalScore += 15;
+  if (S.flags.has('diagnosed_scale_mismatch')) totalScore += 10;
+  if (S.flags.has('chose_broad_front')) totalScore += 10;
+
   const narrative = generateNarrative();
 
   // Determine path
@@ -1807,7 +1887,17 @@ function showEndScreen(result) {
 
     <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.5rem;">
       <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
+      <button class="btn" id="share-btn" onclick="shareSummary()">Copy Summary</button>
     </div>`;
+  // Share function
+  window.shareSummary = () => {
+    const keyChoices = [...S.flags].filter(f => !f.startsWith('_') && !f.startsWith('election')).slice(0,5).join(', ');
+    const txt = pathTitle + '\\nDemocracy: ' + S.democracy + ' | Org Capacity: ' + S.orgCapacity + ' | Movement: ' + S.movementPower + ' | Support: ' + S.popularSupport + ' | Unity: ' + S.coalitionUnity + ' | Pillars: ' + pillarsMoved + '/6\\nKey choices: ' + keyChoices + '\\nPlay at https://randallito.github.io/defiance-game/';
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = document.getElementById('share-btn');
+      if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy Summary', 2000); }
+    });
+  };
 }
 
 function resolveEpilogue(choice) {
@@ -1913,7 +2003,7 @@ function generateElectionConsequence() {
     parts.push("<p>Election week unfolds. Results are contested in several districts. Some organizations are prepared. Others aren't. Your organization responds with whatever it built — and lives with the gaps in what it didn't.</p>");
   }
 
-  return parts.join('');
+  return parts; // return array for staged rendering
 }
 
 function generateNarrative() {
