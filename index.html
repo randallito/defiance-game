@@ -1527,7 +1527,7 @@ function renderEvent(event) {
   }
 
   document.getElementById('choices-area').innerHTML = `
-    <h3 style="font-size:0.85rem; color:var(--yellow); margin-bottom:0.6rem; font-weight:600;">${S.turn <= 3 ? 'How do you read this situation?' : 'What does your organization do?'}</h3>
+    <h3 style="font-size:0.85rem; color:var(--yellow); margin-bottom:0.6rem; font-weight:600;">${S.turn === 1 ? 'How do you read this situation?' : 'What does your organization do?'}</h3>
     <div class="choices stagger">
       ${event.choices.map((c,i) => `
         <button class="choice-btn fade-up" onclick="makeChoice(${i})">
