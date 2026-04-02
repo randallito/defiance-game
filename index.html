@@ -164,7 +164,7 @@ button { font-family:inherit; cursor:pointer; }
   /* radar removed */
 
   /* City map */
-  .city-grid { grid-template-columns:1fr 1fr; gap:0.35rem; }
+  .city-grid { grid-template-columns:1fr 1fr 1fr; gap:0.35rem; }
 
   /* Outcome cards */
   .outcome-card { padding:1rem; }
@@ -195,38 +195,37 @@ button { font-family:inherit; cursor:pointer; }
   font-family:'Inter',system-ui,sans-serif; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em;
   color:var(--text-dim); margin-bottom:0.5rem;
 }
+.pillar-legend {
+  display:flex; justify-content:space-between; font-size:0.5rem; color:var(--text-faint);
+  text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem; padding:0 0.2rem;
+}
 .city-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem 0.6rem;
 }
 .city-district {
-  border-bottom:1px solid var(--border); padding:0.4rem 0.5rem;
-  text-align:center; transition:all 0.5s; position:relative;
+  text-align:center; transition:all 0.6s ease; position:relative; padding:0.4rem 0.2rem 0.3rem;
 }
-/* removed: was spanning 5th pillar full-width when there were only 5 pillars */
-.cd-icon { font-size:1.3rem; margin-bottom:0.15rem; }
-.cd-name { font-size:0.65rem; font-weight:600; margin-bottom:0.15rem; }
+.cd-name { font-size:0.58rem; font-weight:600; margin-bottom:0.3rem; color:var(--text-dim); }
+.cd-pillar-wrap {
+  display:flex; justify-content:center; align-items:flex-end; height:48px; margin-bottom:0.2rem;
+}
+.cd-pillar {
+  width:10px; height:40px; border-radius:2px 2px 0 0;
+  transition:transform 0.8s ease, background 0.6s ease;
+  transform-origin:bottom center;
+}
 .cd-status {
-  font-size:0.5rem; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; margin-top:0.1rem;
+  font-size:0.48rem; text-transform:uppercase; letter-spacing:0.06em; font-weight:700;
+  transition:color 0.6s ease;
 }
-/* District states */
-.city-district.regime {
-  background:rgba(248,113,113,0.06); border-color:rgba(248,113,113,0.2);
-}
+/* Pillar colors by state */
+.city-district.regime .cd-pillar { background:var(--red); }
 .city-district.regime .cd-status { color:var(--red); }
-.city-district.regime .cd-icon { opacity:0.5; filter:grayscale(0.5); }
-
-.city-district.contested {
-  background:rgba(251,191,36,0.08); border-color:rgba(251,191,36,0.3);
-  animation:borderPulse 2.5s ease-in-out infinite;
-}
+.city-district.contested .cd-pillar { background:var(--yellow); }
 .city-district.contested .cd-status { color:var(--yellow); }
-
-.city-district.movement {
-  background:rgba(34,211,238,0.1); border-color:var(--cyan);
-  box-shadow:0 0 12px var(--cyan-dim);
-}
+.city-district.movement .cd-pillar { background:var(--cyan); }
 .city-district.movement .cd-status { color:var(--cyan); }
-.city-district.movement .cd-icon { filter:drop-shadow(0 0 4px rgba(34,211,238,0.4)); }
+.city-district.movement .cd-pillar { box-shadow:0 0 8px var(--cyan-dim); }
 
 /* ── EVENT CARD ── */
 .event-card {
@@ -538,7 +537,8 @@ button { font-family:inherit; cursor:pointer; }
       <!-- City Map -->
       <div class="city-panel" id="city-panel">
         <h3>Pillars of Support</h3>
-        <p style="font-size:0.65rem; color:var(--text-dim); margin-bottom:0.5rem; line-height:1.5;">Authoritarian regimes depend on the loyalty of key institutions. When enough defect, regimes fall.</p>
+        <p style="font-size:0.6rem; color:var(--text-dim); margin-bottom:0.4rem; line-height:1.4;">Upright = supports regime. Tilted = shifting toward movement.</p>
+        <div class="pillar-legend"><span>← Regime</span><span>Movement →</span></div>
         <div class="city-grid" id="city-grid"></div>
       </div>
       <div class="timeline-panel" id="timeline-panel" style="margin-bottom:1.5rem;">
@@ -1009,6 +1009,8 @@ function getRegimeReaction() {
     { effect:() => { S.movementPower = clamp(S.movementPower - 5); }, msg:"Three organizers in your network are arrested on dubious charges. The charges will likely be dropped in months — but the arrests make national news, and other organizers start declining to attend public events." },
     { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization is flagged in a domestic terrorism investigation — a presidential memorandum classifies 'anti-fascist' organizing as domestic terrorism. The definition covers immigration defense, trans rights advocacy, and most of what you do. Your lawyers say the case is baseless — but your operations director spends two weeks compiling requested documents instead of coordinating." },
     { effect:() => { S.popularSupport = clamp(S.popularSupport - 4); }, msg:"The president labels your coalition 'the radical left' and 'enemies within' in a social media post. Independent influencers clip it, add commentary, push it viral. Legacy media picks it up. Within 48 hours, three local officials who had been working with you stop returning calls." },
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 6); S.democracy = clamp(S.democracy - 3); }, msg:"Your fiscal sponsor's bank account is frozen by the Treasury Department — no charges, no hearing, just a flag on the account. Your payroll doesn't clear. Two staff members can't pay rent. By the time the freeze is lifted three weeks later, your spring campaign is gutted and a staff member has resigned." },
+    { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 6); S.movementPower = clamp(S.movementPower - 3); }, msg:"ICE conducts a workplace raid at a coalition partner's office — not a factory, an advocacy organization. They arrest two undocumented staff members in front of their colleagues. The message isn't subtle: this is what happens to organizations that resist. Two other coalition partners quietly pull out of the next joint action." },
   ];
 
   // Reactive tactics — triggered by specific player flags
@@ -1030,6 +1032,8 @@ function getRegimeReaction() {
     { effect:() => { S.democracy = clamp(S.democracy - 5); }, msg:"A federal court issues a ruling restricting mail-in ballot acceptance windows in three competitive states, potentially invalidating hundreds of thousands of votes." },
     { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"The DOJ opens an investigation into election protection organizations in your state, requesting all volunteer records and communications. The investigation itself — regardless of outcome — drains resources and chills volunteer recruitment." },
     { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 4); }, msg:"Federal agents visit two election administrators who had publicly committed to certifying legitimate results. After the visits, both go silent." },
+    { effect:() => { S.democracy = clamp(S.democracy - 7); S.orgCapacity = clamp(S.orgCapacity - 3); }, msg:"The administration announces it will deploy federal law enforcement to 'monitor' polling places in competitive districts. They cite 'election integrity.' Everyone knows what it means. Poll workers in three counties resign rather than work under those conditions. Replacements are recruited through the state party apparatus." },
+    { effect:() => { S.movementPower = clamp(S.movementPower - 6); S.coalitionUnity = clamp(S.coalitionUnity - 3); }, msg:"An executive order reclassifies election protection work as 'interference with federal election administration.' Your legal team says it's unconstitutional. Your lawyers are right — and it doesn't matter, because the chilling effect is immediate. Half your volunteer observers drop out overnight." },
   ];
 
   // Phase 1 Turn 3: mild reaction
@@ -1291,24 +1295,25 @@ function renderHeader() {
 // ── CITY MAP ──
 function renderCityMap() {
   const districts = [
-    {key:'business',name:'Business & Markets',icon:''},
-    {key:'military',name:'Security & Military',icon:''},
-    {key:'religious',name:'Religious Institutions',icon:''},
-    {key:'media',name:'Media & Press',icon:''},
-    {key:'labor',name:'Labor & Unions',icon:''},
-    {key:'civil',name:'Civil Servants & Bureaucracy',icon:''},
+    {key:'business',name:'Business'},
+    {key:'military',name:'Military'},
+    {key:'religious',name:'Religious'},
+    {key:'media',name:'Media'},
+    {key:'labor',name:'Labor'},
+    {key:'civil',name:'Civil Service'},
   ];
   document.getElementById('city-grid').innerHTML = districts.map(d => {
     const l = S.pillars[d.key].loyalty;
     const state = l>=60?'movement':l>=40?'contested':'regime';
-    const statusText = l>=60?'MOVEMENT-ALIGNED':l>=40?'CONTESTED':'REGIME-ALIGNED';
-    return `<div class="city-district ${state}"><div class="cd-icon">${d.icon}</div><div class="cd-name">${d.name}</div><div class="cd-status">${statusText}</div></div>`;
+    const statusText = l>=60?'MOVEMENT':l>=40?'CONTESTED':'REGIME';
+    // Tilt: 0 loyalty = 0deg (upright, supports regime), 100 = 55deg (falling toward movement)
+    const tiltDeg = (l / 100) * 55;
+    return `<div class="city-district ${state}">
+      <div class="cd-name">${d.name}</div>
+      <div class="cd-pillar-wrap"><div class="cd-pillar" style="transform:rotate(${tiltDeg}deg)"></div></div>
+      <div class="cd-status">${statusText}</div>
+    </div>`;
   }).join('');
-  const avg = Object.values(S.pillars).reduce((s,p)=>s+p.loyalty,0)/6;
-  const panel = document.getElementById('city-panel');
-  if (avg>=55) panel.style.boxShadow='0 0 20px rgba(34,211,238,0.1)';
-  else if (avg<=25) panel.style.boxShadow='0 0 20px rgba(248,113,113,0.1)';
-  else panel.style.boxShadow='none';
 }
 
 // Unified render
