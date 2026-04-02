@@ -192,12 +192,12 @@ button { font-family:inherit; cursor:pointer; }
   padding:0.75rem 0; margin-bottom:1rem; border-bottom:1px solid var(--border);
 }
 .city-panel h3 {
-  font-family:'Inter',system-ui,sans-serif; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em;
-  color:var(--text-dim); margin-bottom:0.5rem;
+  font-family:'Inter',system-ui,sans-serif; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em;
+  color:var(--text); font-weight:700; margin-bottom:0.5rem;
 }
 .pillar-legend {
-  display:flex; justify-content:space-between; font-size:0.5rem; color:var(--text-faint);
-  text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.4rem; padding:0 0.2rem;
+  display:flex; justify-content:space-between; font-size:0.65rem; color:var(--text-dim);
+  text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:0.4rem; padding:0 0.2rem;
 }
 .city-grid {
   display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem 0.6rem;
@@ -205,7 +205,7 @@ button { font-family:inherit; cursor:pointer; }
 .city-district {
   text-align:center; transition:all 0.6s ease; position:relative; padding:0.4rem 0.2rem 0.3rem;
 }
-.cd-name { font-size:0.58rem; font-weight:600; margin-bottom:0.3rem; color:var(--text-dim); }
+.cd-name { font-size:0.72rem; font-weight:700; margin-bottom:0.3rem; color:var(--text); }
 .cd-pillar-wrap {
   display:flex; justify-content:center; align-items:flex-end; height:48px; margin-bottom:0.2rem;
 }
@@ -215,7 +215,7 @@ button { font-family:inherit; cursor:pointer; }
   transform-origin:bottom center;
 }
 .cd-status {
-  font-size:0.48rem; text-transform:uppercase; letter-spacing:0.06em; font-weight:700;
+  font-size:0.6rem; text-transform:uppercase; letter-spacing:0.06em; font-weight:700;
   transition:color 0.6s ease;
 }
 /* Pillar colors by state */
@@ -374,7 +374,7 @@ button { font-family:inherit; cursor:pointer; }
   padding:1rem; margin-bottom:1rem; max-height:60vh; overflow-y:auto;
 }
 .codex-panel h3 {
-  font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim);
+  font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text); font-weight:700;
   margin-bottom:0.6rem; display:flex; align-items:center; gap:0.4rem;
 }
 .codex-count { font-family:'JetBrains Mono',monospace; color:#fbbf24; }
@@ -405,7 +405,7 @@ button { font-family:inherit; cursor:pointer; }
   background:var(--surface); border:1px solid var(--border); border-radius:10px;
   padding:1rem; max-height:40vh; overflow-y:auto;
 }
-.timeline-panel h3 { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:0.6rem; }
+.timeline-panel h3 { font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text); font-weight:700; margin-bottom:0.6rem; }
 .tl-entry {
   padding:0.4rem 0 0.4rem 1rem; border-left:2px solid var(--border); font-size:0.75rem;
   line-height:1.5; color:var(--text-dim); margin-bottom:0.3rem; position:relative;
@@ -537,9 +537,9 @@ button { font-family:inherit; cursor:pointer; }
       <!-- City Map -->
       <div class="city-panel" id="city-panel">
         <h3>Pillars of Support</h3>
-        <p style="font-size:0.6rem; color:var(--text-dim); margin-bottom:0.4rem; line-height:1.4;">Upright = supports regime. Tilted = shifting toward movement.</p>
         <div class="pillar-legend"><span>← Movement</span><span>Regime →</span></div>
         <div class="city-grid" id="city-grid"></div>
+        <p style="font-size:0.6rem; color:var(--text-faint); margin-top:0.4rem; line-height:1.4; text-align:center;">Upright = supports regime. Tilted = shifting toward movement.</p>
       </div>
       <div class="timeline-panel" id="timeline-panel" style="margin-bottom:1.5rem;">
         <h3>Movement Timeline</h3>
