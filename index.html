@@ -538,7 +538,7 @@ button { font-family:inherit; cursor:pointer; }
       <div class="city-panel" id="city-panel">
         <h3>Pillars of Support</h3>
         <p style="font-size:0.6rem; color:var(--text-dim); margin-bottom:0.4rem; line-height:1.4;">Upright = supports regime. Tilted = shifting toward movement.</p>
-        <div class="pillar-legend"><span>← Regime</span><span>Movement →</span></div>
+        <div class="pillar-legend"><span>← Movement</span><span>Regime →</span></div>
         <div class="city-grid" id="city-grid"></div>
       </div>
       <div class="timeline-panel" id="timeline-panel" style="margin-bottom:1.5rem;">
@@ -1306,8 +1306,8 @@ function renderCityMap() {
     const l = S.pillars[d.key].loyalty;
     const state = l>=60?'movement':l>=40?'contested':'regime';
     const statusText = l>=60?'MOVEMENT':l>=40?'CONTESTED':'REGIME';
-    // Tilt: 0 loyalty = 0deg (upright, supports regime), 100 = 55deg (falling toward movement)
-    const tiltDeg = (l / 100) * 55;
+    // Tilt: 0 loyalty = 0deg (upright, supports regime), 100 = -55deg (falling left toward movement)
+    const tiltDeg = -(l / 100) * 55;
     return `<div class="city-district ${state}">
       <div class="cd-name">${d.name}</div>
       <div class="cd-pillar-wrap"><div class="cd-pillar" style="transform:rotate(${tiltDeg}deg)"></div></div>
