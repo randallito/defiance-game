@@ -135,7 +135,10 @@ button { font-family:inherit; cursor:pointer; }
   display:flex; align-items:center; gap:0.25rem; transition:all 0.3s;
 }
 .stat-chip .sc-label { color:var(--text-dim); }
-.stat-chip .sc-val { font-weight:700; }
+.stat-chip .sc-val {
+  display:inline-block; width:8px; height:8px; border-radius:50%;
+  vertical-align:middle;
+}
 .stat-chip .sc-delta {
   font-size:0.55rem; font-weight:700; margin-left:0.15rem;
   animation:fadeUp 0.4s ease-out both;
@@ -234,14 +237,14 @@ button { font-family:inherit; cursor:pointer; }
   font-size:0.6rem; text-transform:uppercase; letter-spacing:0.06em; font-weight:700;
   transition:color 0.6s ease;
 }
-/* Pillar colors by state */
+/* Pillar colors by state — red → orange → gold */
 .city-district.regime .cd-pillar { background:var(--red); }
 .city-district.regime .cd-status { color:var(--red); }
-.city-district.contested .cd-pillar { background:var(--yellow); }
-.city-district.contested .cd-status { color:var(--yellow); }
-.city-district.movement .cd-pillar { background:var(--cyan); }
-.city-district.movement .cd-status { color:var(--cyan); }
-.city-district.movement .cd-pillar { box-shadow:0 0 8px var(--cyan-dim); }
+.city-district.contested .cd-pillar { background:var(--orange); }
+.city-district.contested .cd-status { color:var(--orange); }
+.city-district.movement .cd-pillar { background:var(--accent); }
+.city-district.movement .cd-status { color:var(--accent); }
+.city-district.movement .cd-pillar { box-shadow:0 0 8px var(--accent-glow2); }
 
 /* ── EVENT CARD ── */
 .event-card {
@@ -477,11 +480,11 @@ button { font-family:inherit; cursor:pointer; }
 
 /* ── PILLAR THRESHOLD ALERT (inline) ── */
 .threshold-alert {
-  background:var(--surface); border:1px solid var(--cyan); border-radius:10px;
-  padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 0 20px var(--cyan-dim);
+  background:var(--surface); border:1px solid var(--accent); border-radius:10px;
+  padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 0 20px var(--accent-glow);
   animation:popIn 0.4s ease-out;
 }
-.threshold-alert .ta-title { font-weight:700; color:var(--cyan); margin-bottom:0.3rem; font-size:0.9rem; }
+.threshold-alert .ta-title { font-weight:700; color:var(--accent); margin-bottom:0.3rem; font-size:0.9rem; }
 .threshold-alert .ta-text { font-size:0.85rem; color:var(--text-dim); line-height:1.6; }
 </style>
 </head>
@@ -744,7 +747,7 @@ const EVENTS = [
 {
   phase:1, type:"crisis",
   title:"The Mafia State Becomes Visible",
-  desc:"The CEO is in the Oval Office, negotiating. The president demanded a cut of his company's international chip sales. They're haggling over the percentage.<br><br>A steel company was forced to give the government permanent veto power over its business decisions — which plants to close, which suppliers to use. An AI company was labeled a national security threat for refusing to drop its safety policies. Presidential pardons are being brokered through lobbyists for millions. A half-billion-dollar deal with a foreign government was signed four days before the inauguration. Media companies are settling meritless lawsuits and restructuring their operations to curry favor. A university had $400 million in research grants suspended until it fired its president, ended diversity programs, and ceded governance control — then after it complied, the money never came back.<br><br>The opposition to this is broader than your movement. Economists across the political spectrum are using words like 'state capitalism' and 'venture socialism.' Libertarian think tanks are calling it an assault on free markets. More House Republicans have announced they won't seek reelection than at any point in nearly a century — 36 and counting, including powerful committee chairs and military veterans. Some are running for other offices; others are just walking away. Members of the president's own party blocked his tariff dividend proposal and refused to eliminate the Senate filibuster when he demanded it.<br><br>The Hungarian scholar Bálint Magyar has a framework for understanding systems like this: the 'mafia state' — where one person distributes money and power through a network of loyalists, and loyalty is the only currency. Is that what you're looking at? Is this framework useful for understanding what's happening — or is there a better way to make sense of it?",
+  desc:"The CEO is in the Oval Office, negotiating. The president demanded a cut of his company's international chip sales. They're haggling over the percentage.<br><br>A steel company was forced to give the government permanent veto power over its business decisions — which plants to close, which suppliers to use. Presidential pardons are being brokered through lobbyists for millions. A half-billion-dollar deal with a foreign government was signed four days before the inauguration. Media companies are settling meritless lawsuits and restructuring their operations to curry favor. A university had $400 million in research grants suspended until it fired its president, ended diversity programs, and ceded governance control — then after it complied, the money never came back.<br><br>The opposition to this is broader than your movement. Economists across the political spectrum are using words like 'state capitalism' and 'venture socialism.' Libertarian think tanks are calling it an assault on free markets. A growing number of House Republicans have announced they won't seek reelection — including committee chairs and military veterans. Some are running for other offices; others are just walking away. Members of the president's own party blocked his tariff dividend proposal and refused to eliminate the Senate filibuster when he demanded it.<br><br>The Hungarian scholar Bálint Magyar has a framework for understanding systems like this: the 'mafia state' — where one person distributes money and power through a network of loyalists, and loyalty is the only currency. Is that what you're looking at? Is this framework useful for understanding what's happening — or is there a better way to make sense of it?",
   concepts:["Mafia State","Dual-Direction Pressure","Regulatory Capture Risk","Three Earths"],
   choices:[
     {
@@ -810,7 +813,7 @@ const EVENTS = [
       lesson:"Mobilization and organization are complementary, not opposed. Mass mobilization builds energy, signals strength, and creates on-ramps — but without organizational capacity to sustain pressure, those gains are vulnerable to capture by better-organized forces.",
       source:"Tufekci, Twitter and Tear Gas (2017); Chenoweth & Stephan (2011); Chenoweth & Marks (2022); Bevins, If We Burn (2023)",
       concepts_unlocked:["Capacity vs. Spectacle","Algorithmic Amplification"],
-      discuss:"What did the No Kings rallies accomplish? What would it take to convert that energy into lasting organizational capacity?"
+      discuss:"Is your organization making the most of the opportunity to be a part of the broad No Kings coalition?"
     },
     {
       title:"We have an infrastructure problem — organizational AND local",
@@ -918,7 +921,7 @@ const EVENTS = [
 {
   phase:3, type:"crisis",
   title:"Six Months Out",
-  desc:"Someone pulls up a scenario on the conference room screen: a state attorney general files suit to invalidate 200,000 mail-in ballots. The DOJ opens investigations into election officials in three competitive states. A federal court restricts early voting windows two weeks before Election Day. The room goes quiet. Then someone says: 'This isn't hypothetical. Protect Democracy has documented the pattern — they call it Executive Override. Deceive voters, disrupt election administration, deny the results.'<br><br>Your field director breaks the silence: 'We have six months. We can run the best campaign in the country — digital ads, relational organizing, affordability messaging, turnout infrastructure. Or we can split resources to prepare for what happens after the vote. We can't do both at full strength.'<br><br>Election defense strategists break this into four stages: <strong>FIGHT</strong> is pre-election defense of voting rules and infrastructure. <strong>WIN</strong> is the election itself — turnout, voter contact, campaigning. <strong>PROVE</strong> is independently verifying results — citizen observation, audits, documentation. <strong>ENFORCE</strong> is what happens if results are challenged — litigation, mass mobilization, noncooperation. Most of the ecosystem is investing almost everything in WIN. Almost nobody is building PROVE or ENFORCE capacity.<br><br>This is the tension nobody wants to name. Some organizers won't even discuss contested elections — they're convinced it suppresses turnout. Others think that's like refusing to discuss fire escapes because it might scare people out of the building. And there's a credibility problem with PROVE: if the people doing election observation are all from one side, the regime discredits the entire effort by pointing at who's running it.",
+  desc:"Someone pulls up a scenario on the conference room screen: a state attorney general files suit to invalidate 200,000 mail-in ballots. The DOJ opens investigations into election officials in three competitive states. A federal court restricts early voting windows two weeks before Election Day. The room goes quiet. Then someone says: 'This isn't hypothetical. Protect Democracy has documented the pattern — they call it <a href='https://protectdemocracy.org/executive-override/' target='_blank'>Executive Override</a>. Deceive voters, disrupt election administration, deny the results.'<br><br>Your field director breaks the silence: 'We have six months. We can run the best campaign in the country — digital ads, relational organizing, affordability messaging, turnout infrastructure. Or we can split resources to prepare for what happens after the vote. We can't do both at full strength.'<br><br>Election defense strategists break this into four stages: <strong>FIGHT</strong> is pre-election defense of voting rules and infrastructure. <strong>WIN</strong> is the election itself — turnout, voter contact, campaigning. <strong>PROVE</strong> is independently verifying results — citizen observation, audits, documentation. <strong>ENFORCE</strong> is what happens if results are challenged — litigation, mass mobilization, noncooperation. Most of the ecosystem is investing almost everything in WIN. Almost nobody is building PROVE or ENFORCE capacity.<br><br>This is the tension nobody wants to name. Some organizers won't even discuss contested elections — they're convinced it suppresses turnout. Others think that's like refusing to discuss fire escapes because it might scare people out of the building. And there's a credibility problem with PROVE: if the people doing election observation are all from one side, the regime discredits the entire effort by pointing at who's running it.",
   concepts:["Pre-Election Mobilization","Parallel Vote Tabulation","Pillars of Support"],
   choices:[
     {
@@ -968,7 +971,7 @@ const EVENTS = [
 {
   phase:3, type:"crisis",
   title:"Election Week",
-  desc:"Polls close at 8 PM. By 9, the lines are still long in three states. By midnight, the first wave of results looks promising — turnout is the highest in a midterm since 1914. Then the phone starts ringing.<br><br>A federal judge in Georgia issues a hold on certification in four counties. The DOJ announces 'irregularities' in a dozen districts simultaneously. In Arizona, federal agents are photographed near a ballot counting center — they have no legal authority to be there, but they don't need authority. They need cameras. In Pennsylvania, an election administrator who'd pledged to certify legitimate results goes silent after a 6 AM visit from two men in suits.<br><br>By morning, results are being contested across competitive races in multiple states — congressional, state legislature, local offices. The scale is overwhelming. Too many places, too many simultaneous challenges. This is the scenario that Protect Democracy warned about: Deny.<br><br>What happens next depends on everything you've built over the past seven turns.",
+  desc:"Polls close at 8 PM. By 9, the lines are still long in three states. By midnight, the first wave of results looks promising — turnout is the highest in a midterm since 1914. Then the phone starts ringing.<br><br>A federal judge in Georgia issues a hold on certification in four counties. The DOJ announces 'irregularities' in a dozen districts simultaneously. In Arizona, federal agents are photographed near a ballot counting center — they have no legal authority to be there, but they don't need authority. They need cameras. In Pennsylvania, an election administrator who'd pledged to certify legitimate results goes silent after a 6 AM visit from two men in suits.<br><br>By morning, results are being contested across competitive races in multiple states — congressional, state legislature, local offices. The scale is overwhelming. Too many places, too many simultaneous challenges. This is the scenario that Protect Democracy's <a href='https://protectdemocracy.org/executive-override/' target='_blank'>Executive Override</a> framework warned about: Deny.<br><br>What happens next depends on everything you've built over the past seven turns.",
   concepts:["Pre-Election Mobilization","Pillars of Support","Nonviolent Discipline"],
   choices:[
     {
@@ -1024,7 +1027,7 @@ function getRegimeReaction() {
     { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization's primary funder receives a letter from a congressional committee requesting all grant documentation for the past five years. The funder pauses all disbursements pending review." },
     { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 5); }, msg:"The regime amplifies your coalition's internal debate about Palestine through right-wing media, forcing every member organization to publicly take a position that divides the front." },
     { effect:() => { S.movementPower = clamp(S.movementPower - 5); }, msg:"Three organizers in your network are arrested on dubious charges. The charges will likely be dropped in months — but the arrests make national news, and other organizers start declining to attend public events." },
-    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization is flagged in a domestic terrorism investigation — a presidential memorandum classifies 'anti-fascist' organizing as domestic terrorism. The definition covers immigration defense, trans rights advocacy, and most of what you do. Your lawyers say the case is baseless — but your operations director spends two weeks compiling requested documents instead of coordinating." },
+    { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 5); }, msg:"Your organization is flagged in a domestic terrorism investigation — a presidential memorandum classifies 'anti-fascist' organizing as domestic terrorism. The definition covers immigration defense, trans rights advocacy, and most of what you do. Your lawyers say the case is baseless — but everything stops. Your operations director spends two weeks compiling requested documents. Your executive director is on the phone with every funder and major donor, reassuring them. Your comms person is fielding media inquiries. Board members are calling emergency meetings. Staff morale craters. The investigation is the punishment — and it consumed your entire leadership team for a month." },
     { effect:() => { S.popularSupport = clamp(S.popularSupport - 4); }, msg:"The president labels your coalition 'the radical left' and 'enemies within' in a social media post. Independent influencers clip it, add commentary, push it viral. Legacy media picks it up. Within 48 hours, three local officials who had been working with you stop returning calls." },
     { effect:() => { S.orgCapacity = clamp(S.orgCapacity - 6); S.democracy = clamp(S.democracy - 3); }, msg:"Your fiscal sponsor's bank account is frozen by the Treasury Department — no charges, no hearing, just a flag on the account. Your payroll doesn't clear. Two staff members can't pay rent. By the time the freeze is lifted three weeks later, your spring campaign is gutted and a staff member has resigned." },
     { effect:() => { S.coalitionUnity = clamp(S.coalitionUnity - 6); S.movementPower = clamp(S.movementPower - 3); }, msg:"ICE conducts a workplace raid at a coalition partner's office — not a factory, an advocacy organization. They arrest two undocumented staff members in front of their colleagues. The message isn't subtle: this is what happens to organizations that resist. Two other coalition partners quietly pull out of the next joint action." },
@@ -1317,7 +1320,8 @@ function renderHeader() {
     const prev = S.prevStats?.[s.key];
     const delta = prev !== undefined ? s.val - prev : 0;
     const deltaHtml = delta !== 0 ? `<span class="sc-delta ${delta>0?'pos':'neg'}">${delta>0?'+':''}${delta}</span>` : '';
-    return `<div class="stat-chip"><span class="sc-label">${s.label}</span><span class="sc-val" style="color:${s.color}">${s.val}</span>${deltaHtml}</div>`;
+    const dotColor = s.val > 60 ? 'var(--green)' : s.val > 40 ? 'var(--yellow)' : 'var(--red)';
+    return `<div class="stat-chip"><span class="sc-label">${s.label}</span><span class="sc-val" style="background:${dotColor}"></span>${deltaHtml}</div>`;
   }).join('');
 }
 
@@ -1416,6 +1420,7 @@ function showThresholdAlert(alert) {
   el.className = 'threshold-alert';
   el.innerHTML = `<div class="ta-title">⚡ ${alert.level}: ${alert.pillar}</div><div class="ta-text">${alert.text}</div>`;
   document.getElementById('threshold-alert-area').appendChild(el);
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function showPhaseTransition(phase) {
@@ -1648,7 +1653,7 @@ function makeChoice(index) {
     <div class="outcome-card fade-up" style="display:block">
       <h3>Outcome</h3>
       <p class="outcome-text">${choice.outcome}</p>
-      ${pillarShifts.length > 0 ? `<div style="margin:0.6rem 0; padding:0.4rem 0.7rem; background:var(--cyan-dim); border-left:3px solid var(--cyan); border-radius:2px; font-size:0.8rem; font-family:'Inter',system-ui,sans-serif; font-weight:600; color:var(--cyan);">
+      ${pillarShifts.length > 0 ? `<div style="margin:0.6rem 0; padding:0.4rem 0.7rem; background:var(--accent-glow); border-left:3px solid var(--accent); border-radius:2px; font-size:0.8rem; font-family:'Inter',system-ui,sans-serif; font-weight:600; color:var(--accent);">
         ${pillarShifts.map(s => `<div>⬆ ${s}</div>`).join('')}
       </div>` : ''}
       ${choice.caseStudy ? `<div class="case-study-box">
@@ -1852,7 +1857,7 @@ function showEndScreen(result) {
       <div class="final-stat fade-up"><div class="fs-label">Pop Support</div><div class="fs-value" style="color:var(--green)">${S.popularSupport}</div></div>
       <div class="final-stat fade-up"><div class="fs-label">Org Capacity</div><div class="fs-value" style="color:var(--purple)">${S.orgCapacity}</div></div>
       <div class="final-stat fade-up"><div class="fs-label">Unity</div><div class="fs-value" style="color:var(--yellow)">${S.coalitionUnity}</div></div>
-      <div class="final-stat fade-up"><div class="fs-label">Pillars</div><div class="fs-value" style="color:var(--cyan)">${pillarsMoved}/6</div></div>
+      <div class="final-stat fade-up"><div class="fs-label">Pillars</div><div class="fs-value" style="color:var(--yellow)">${pillarsMoved}/6</div></div>
     </div>
 
     <div style="margin-top:1.5rem; padding:1rem 0; border-bottom:1px solid var(--border); text-align:left;">
