@@ -483,10 +483,13 @@ button { font-family:inherit; cursor:pointer; }
 
 /* ── PILLAR THRESHOLD ALERT (inline) ── */
 .threshold-alert {
-  background:var(--surface); border:1px solid var(--accent); border-radius:10px;
-  padding:1rem 1.25rem; margin-bottom:1rem; box-shadow:0 0 20px var(--accent-glow);
-  animation:popIn 0.4s ease-out;
+  position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%);
+  max-width:600px; width:90%; z-index:150;
+  background:var(--surface); border:2px solid var(--accent); border-radius:10px;
+  padding:1rem 1.25rem; box-shadow:0 4px 24px var(--accent-glow2);
+  animation:toastIn 0.4s ease-out;
 }
+@keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
 .threshold-alert .ta-title { font-weight:700; color:var(--accent); margin-bottom:0.3rem; font-size:0.9rem; }
 .threshold-alert .ta-text { font-size:0.85rem; color:var(--text-dim); line-height:1.6; }
 </style>
@@ -781,7 +784,7 @@ const EVENTS = [
       pillarEffects:{media:6},
       flags:["diagnosed_corruption"],
       outcome:"You continue your regular organizing work — tenant campaigns, workplace fights, electoral races, issue advocacy. You tune out the federal noise, treat it as politics-as-usual on steroids, and trust the system to self-correct. Your local work is good and necessary. But the question the mafia state framework raises is whether the ground has shifted under that work while you were doing it. If the rules of the system have changed — if courts don't enforce, if regulatory agencies have been captured, if election administration itself is compromised — then the assumptions your local work depends on may no longer hold. Organizers Ai-jen Poo and Lorella Praeli use a framework called Three Earths: Earth One is a flawed but functional democracy where your wins stick. Earth Two is an authoritarian breakthrough where the rules have changed. Earth Three is the future you're building. You're operating as if you're on <a href='https://docs.google.com/document/d/1p11OlyFhIIasmks3phY-JvLJxO4k4erFrpSkAKNILFs/edit?tab=t.0#heading=h.7v7id2bzrjkq' target='_blank'>Earth One</a>. What if you're on Earth Two?",
-      caseStudy:"In <strong>Hungary</strong>, opposition parties and civil society organizations continued operating within the existing system for years after Viktor Orbán began dismantling democratic institutions in 2010 — running candidates, filing lawsuits, organizing protests. Each individual fight made sense on its own terms. But the system they were operating within was being hollowed out around them: courts were packed, media was captured, electoral districts were redrawn, and civil society funding was restricted through foreign agent laws. By the time organizations recognized the structural shift, the cost of resistance had increased dramatically. In <strong>Poland</strong>, civil society recognized the pattern earlier — partly because they had Hungary's example — and mounted a broader, faster response that ultimately succeeded in protecting and restoring democratic institutions.",
+      caseStudy:"In <strong>Hungary</strong>, opposition parties and civil society organizations continued operating within the existing system for years after Viktor Orbán began dismantling democratic institutions in 2010 — running candidates, filing lawsuits, organizing protests. Each individual fight made sense on its own terms. But the system they were operating within was being hollowed out around them: courts were packed, media was captured, electoral districts were redrawn, and civil society funding was restricted through foreign agent laws. By the time organizations recognized the structural shift, the cost of resistance had increased dramatically. In <strong>Poland</strong>, civil society recognized the pattern faster and mounted a broader response — and ultimately succeeded in protecting democratic institutions.",
       lesson:"The most dangerous assumption in an authoritarian consolidation is that local work can proceed normally while the national system transforms around it. The question isn't whether your local campaigns are valuable — they are — but whether the system they depend on is still functioning the way you assume.",
       source:"Magyar, Post-Communist Mafia State (2016); Grzymala-Busse, How Populists Rule (2024); Poo & Praeli, Three Earths Framework (2025)",
       concepts_unlocked:["Mafia State","Three Earths"],
@@ -809,7 +812,7 @@ const EVENTS = [
       pillarEffects:{business:8,religious:4},
       flags:["diagnosed_support_resisters"],
       outcome:"You shift from punishing collaborators to rewarding resisters. When companies or universities maintain their commitments under regime pressure, you organize consumer loyalty, investor support, and public backing. But there are two costs. First: the companies actively enabling harm go unchallenged. Second — and this is the harder one: when you publicly praise a company for resisting, you help them and paint a target on them. The regime comes down harder — investigations, regulatory pressure, audits of their directors. If they survive the retaliation, they become proof that resistance is possible — and that can trigger a cascade of other companies finding their courage. But if they don't survive, you've contributed to their destruction.",
-      caseStudy:"In <strong>Palermo, Sicily</strong>, 80% of shops paid <em>pizzo</em> — protection money — to the Mafia. The Cosa Nostra collected an estimated $260 million per year in Sicily alone. In 2004, a group called <strong>Addio Pizzo</strong> ('Goodbye Pizzo') tried something counterintuitive: instead of boycotting businesses that paid, they organized consumers to support businesses that refused. Their slogan: <em>'Pago chi non paga'</em> — 'I pay those who don't pay.' They collected 3,500 consumer pledges before approaching a single business, then showed shop owners the list: all these people will buy from you if you stop paying. By 2006, 230 businesses had openly defied extortion. By 2012, over 1,000.<br><br>When the Mafia fire-bombed a member's warehouse in retaliation, the movement rallied — citizens collected money for the displaced workers, activists leveraged anti-Mafia compensation laws to secure an even bigger replacement facility, and two mafiosi were convicted. The violence backfired. Each business owner who joined actively recruited new members — replicating the Mafia's own network model with solidarity instead of fear. A detained mafioso was overheard on a wiretap calling the movement <em>'camurria'</em> — a pain in the ass. The activists took it as a compliment.",
+      caseStudy:"In <strong>Palermo, Sicily</strong>, 80% of shops paid <em>pizzo</em> — protection money — to the Mafia. The Cosa Nostra collected an estimated $260 million per year in Sicily. In 2004, a group called <strong>Addio Pizzo</strong> ('Goodbye Pizzo') tried something counterintuitive: instead of boycotting businesses that paid, they organized consumers to support businesses that refused. Their slogan: <em>'Pago chi non paga'</em> — 'I pay those who don't pay.' They collected 3,500 consumer pledges before approaching a single business, then showed shop owners the list: all these people will buy from you if you stop paying. By 2006, 230 businesses had openly defied extortion. By 2012, over 1,000.<br><br>When the Mafia fire-bombed a member's warehouse in retaliation, the movement rallied — citizens collected money for the displaced workers, activists leveraged anti-Mafia compensation laws to secure an even bigger replacement facility, and two mafiosi were convicted. The violence backfired. Each business owner who joined actively recruited new members — replicating the Mafia's own network model with solidarity instead of fear. A detained mafioso was overheard on a wiretap calling the movement <em>'camurria'</em> — a pain in the ass. The activists took it as a compliment.",
       lesson:"Supporting resisters can be more effective than pressuring collaborators. When institutions see that holding their ground is rewarded with loyalty and support, the calculation changes — and the cost of capitulation starts to exceed the cost of resistance. The Addio Pizzo model shows this works even against organized criminal power.",
       source:"Ferrara, Ferraro & Ferrara, Nonviolent Resistance Against the Mafia (2021); Corporate campaigns research (2025-26); Stephan, 6 Superpowers of Faith Communities (Waging Nonviolence, 2025)",
       concepts_unlocked:["Dual-Direction Pressure","Three Earths"],
@@ -1445,16 +1448,11 @@ function addTimeline(type, title) {
 // ─── ALERTS ───
 function showThresholdAlert(alert) {
   const el = document.createElement('div');
-  el.className = 'threshold-alert fade-up';
+  el.className = 'threshold-alert';
   el.innerHTML = `<div class="ta-title">⚡ ${alert.level}: ${alert.pillar}</div><div class="ta-text">${alert.text}</div>`;
-  // Show inline in outcome area if it exists, otherwise fall back to threshold area
-  const staged = document.getElementById('staged-outcome');
-  if (staged) {
-    staged.appendChild(el);
-  } else {
-    document.getElementById('threshold-alert-area').appendChild(el);
-  }
-  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  document.body.appendChild(el);
+  // Auto-dismiss after 8 seconds
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.5s'; setTimeout(() => el.remove(), 500); }, 8000);
 }
 
 function showPhaseTransition(phase) {
