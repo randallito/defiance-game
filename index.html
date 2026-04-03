@@ -134,7 +134,8 @@ button { font-family:inherit; cursor:pointer; }
   font-size:0.65rem; font-weight:600; padding:0.15rem 0.5rem; border-radius:3px;
   display:flex; align-items:center; gap:0.25rem; transition:all 0.3s;
 }
-.stat-chip .sc-label { color:var(--text-dim); }
+.stat-chip .sc-label { color:var(--text-dim); cursor:help; }
+.stat-chip .sc-label:hover { color:var(--text); }
 .stat-chip .sc-val {
   display:inline-block; width:8px; height:8px; border-radius:50%;
   vertical-align:middle;
@@ -642,7 +643,7 @@ const CODEX_ALL = {
 };
 
 // ─── TIMELINE REFERENCE (for content accuracy) ───
-// Phase 1 (Turns 1-3) = early-mid 2025
+// Phase 1 (Turns 1-3) = 2025
 //   Real events available: DOGE/Big Balls (Feb 2), CPAC chainsaw/Milei (Feb 20),
 //   El Capitan flag (Feb 22), ranger protests at 100+ sites (Mar 1),
 //   Khalil arrest (Mar 8), Abrego Garcia CECOT (Mar 15), Öztürk arrest (Mar 25),
@@ -1334,18 +1335,18 @@ function renderHeader() {
 
   // Stat bar
   const stats = [
-    {key:'democracy', label:'Democracy', val:S.democracy, color:'var(--yellow)'},
-    {key:'movementPower', label:'Mvmt', val:S.movementPower, color:'var(--accent)'},
-    {key:'popularSupport', label:'Support', val:S.popularSupport, color:'var(--green)'},
-    {key:'orgCapacity', label:'Org Cap', val:S.orgCapacity, color:'var(--purple)'},
-    {key:'coalitionUnity', label:'Unity', val:S.coalitionUnity, color:'var(--cyan)'},
+    {key:'democracy', label:'Democracy', val:S.democracy, color:'var(--yellow)', tip:'How much democratic space remains — courts, elections, press freedom'},
+    {key:'movementPower', label:'Mvmt', val:S.movementPower, color:'var(--accent)', tip:'Can your movement make the regime pay a price?'},
+    {key:'popularSupport', label:'Support', val:S.popularSupport, color:'var(--green)', tip:'How many people are on your side — or at least sympathetic?'},
+    {key:'orgCapacity', label:'Org Cap', val:S.orgCapacity, color:'var(--purple)', tip:'Can your organization coordinate, sustain pressure, and make decisions?'},
+    {key:'coalitionUnity', label:'Unity', val:S.coalitionUnity, color:'var(--cyan)', tip:'Is the broad front holding together — or fragmenting?'},
   ];
   document.getElementById('stat-bar').innerHTML = stats.map(s => {
     const prev = S.prevStats?.[s.key];
     const delta = prev !== undefined ? s.val - prev : 0;
     const deltaHtml = delta !== 0 ? `<span class="sc-delta ${delta>0?'pos':'neg'}">${delta>0?'+':''}${delta}</span>` : '';
     const dotColor = s.val > 60 ? 'var(--green)' : s.val > 40 ? 'var(--yellow)' : 'var(--red)';
-    return `<div class="stat-chip"><span class="sc-label">${s.label}</span><span class="sc-val" style="background:${dotColor}"></span>${deltaHtml}</div>`;
+    return `<div class="stat-chip"><span class="sc-label" title="${s.tip}">${s.label}</span><span class="sc-val" style="background:${dotColor}"></span>${deltaHtml}</div>`;
   }).join('');
 }
 
@@ -1464,9 +1465,34 @@ function showPhaseTransition(phase) {
     ? `${pillarsAligned} of 6 pillars aligned with the movement. ${pillarsMoved - pillarsAligned} more contested.`
     : `${pillarsMoved} of 6 pillars contested. None yet aligned with the movement.`;
 
+  // Build choice recap based on flags
+  const recapParts = [];
+  if (phase === 2) {
+    if (S.flags.has('diagnosed_authoritarian_crisis')) recapParts.push('You recognized the authoritarian crisis early.');
+    else if (S.flags.has('diagnosed_more_of_same')) recapParts.push('You saw continuity with deep trends in American life.');
+    else if (S.flags.has('diagnosed_regime_change')) recapParts.push('You diagnosed this as constitutional regime change.');
+    if (S.flags.has('chose_broad_front')) recapParts.push('You built the broadest possible front.');
+    else if (S.flags.has('chose_alignment')) recapParts.push('You kept the movement focused on shared values.');
+    else if (S.flags.has('chose_affirmative_vision')) recapParts.push('You built an affirmative vision, not just opposition.');
+    if (S.flags.has('diagnosed_scale_mismatch')) recapParts.push('You recognized the mafia state pattern.');
+    else if (S.flags.has('diagnosed_support_resisters')) recapParts.push('You chose to reward resisters.');
+  }
+  if (phase === 3) {
+    if (S.flags.has('diagnosed_infrastructure_problem')) recapParts.push('You invested in organizational infrastructure.');
+    else if (S.flags.has('diagnosed_mobilization_problem')) recapParts.push('You invested in mobilization.');
+    if (S.flags.has('diagnosed_go_public')) recapParts.push('You made resistance more visible.');
+    else if (S.flags.has('diagnosed_go_underground')) recapParts.push('You built community protection infrastructure.');
+    if (S.flags.has('diagnosed_youth_institutions')) recapParts.push('You built youth-governed organizations.');
+    else if (S.flags.has('diagnosed_youth_material')) recapParts.push('You built mutual aid as on-ramps.');
+    else if (S.flags.has('diagnosed_youth_outreach')) recapParts.push('You invested in youth outreach.');
+  }
+  const recapHtml = recapParts.length > 0
+    ? `<br><br><span style="font-size:0.8rem; color:var(--text-dim); line-height:1.6;">${recapParts.join(' ')}</span>`
+    : '';
+
   const overlay = document.getElementById('phase-overlay');
   document.getElementById('phase-overlay-title').textContent = titles[phase];
-  document.getElementById('phase-overlay-desc').innerHTML = `${descs[phase]}<br><br><span style="font-size:0.85rem; color:var(--cyan);">${positionText}</span>`;
+  document.getElementById('phase-overlay-desc').innerHTML = `${descs[phase]}<br><br><span style="font-size:0.85rem; color:var(--accent);">${positionText}</span>${recapHtml}`;
   overlay.classList.add('active');
   // Button handles dismissal — no click-anywhere-to-dismiss
 }
