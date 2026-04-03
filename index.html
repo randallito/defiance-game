@@ -37,7 +37,7 @@
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Source Serif 4',Georgia,serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; line-height:1.7; font-size:20px; }
+body { font-family:'Source Serif 4',Georgia,serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; line-height:1.7; font-size:22px; }
 button { font-family:inherit; cursor:pointer; }
 
 /* ── ANIMATIONS ── */
@@ -183,7 +183,8 @@ button { font-family:inherit; cursor:pointer; }
   /* radar removed */
 
   /* City map */
-  .city-grid { grid-template-columns:1fr 1fr 1fr; gap:0.35rem; }
+  .city-grid { gap:0.35rem; }
+  .cd-name { width:4rem; font-size:0.65rem; }
 
   /* Outcome cards */
   .outcome-card { padding:1rem; }
@@ -219,32 +220,31 @@ button { font-family:inherit; cursor:pointer; }
   text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:0.4rem; padding:0 0.2rem;
 }
 .city-grid {
-  display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem 0.6rem;
+  display:flex; flex-direction:column; gap:0.5rem;
 }
 .city-district {
-  text-align:center; transition:all 0.6s ease; position:relative; padding:0.4rem 0.2rem 0.3rem;
+  display:flex; align-items:center; gap:0.5rem; transition:all 0.4s ease;
 }
-.cd-name { font-size:0.72rem; font-weight:700; margin-bottom:0.3rem; color:var(--text); }
-.cd-pillar-wrap {
-  display:flex; justify-content:center; align-items:flex-end; height:48px; margin-bottom:0.2rem;
+.cd-name { font-size:0.72rem; font-weight:700; color:var(--text); width:5.5rem; flex-shrink:0; }
+.cd-bar-track {
+  flex:1; height:10px; background:var(--surface3); border-radius:5px; position:relative; overflow:hidden;
 }
-.cd-pillar {
-  width:10px; height:40px; border-radius:2px 2px 0 0;
-  transition:transform 0.8s ease, background 0.6s ease;
-  transform-origin:bottom center;
+.cd-bar-fill {
+  height:100%; border-radius:5px; transition:width 0.8s ease, background 0.6s ease;
+  position:absolute; left:0; top:0;
 }
 .cd-status {
-  font-size:0.6rem; text-transform:uppercase; letter-spacing:0.06em; font-weight:700;
-  transition:color 0.6s ease;
+  font-size:0.55rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;
+  width:4.5rem; text-align:right; flex-shrink:0;
 }
 /* Pillar colors by state — red → orange → gold */
-.city-district.regime .cd-pillar { background:var(--red); }
+.city-district.regime .cd-bar-fill { background:var(--red); }
 .city-district.regime .cd-status { color:var(--red); }
-.city-district.contested .cd-pillar { background:var(--orange); }
+.city-district.contested .cd-bar-fill { background:var(--orange); }
 .city-district.contested .cd-status { color:var(--orange); }
-.city-district.movement .cd-pillar { background:var(--accent); }
+.city-district.movement .cd-bar-fill { background:var(--accent); }
 .city-district.movement .cd-status { color:var(--accent); }
-.city-district.movement .cd-pillar { box-shadow:0 0 8px var(--accent-glow2); }
+.city-district.movement .cd-bar-fill { box-shadow:0 0 6px var(--accent-glow2); }
 
 /* ── EVENT CARD ── */
 .event-card {
@@ -266,7 +266,7 @@ button { font-family:inherit; cursor:pointer; }
 }
 .concept-tag:hover { background:rgba(167,139,250,0.25); }
 .event-card h2 { font-size:1.2rem; font-weight:700; line-height:1.35; margin-bottom:0.6rem; }
-.event-desc { color:var(--text); line-height:1.7; font-size:1rem; }
+.event-desc { color:var(--text); line-height:1.75; font-size:1.05rem; }
 
 /* regime reaction banner */
 .regime-reaction {
@@ -288,8 +288,8 @@ button { font-family:inherit; cursor:pointer; }
 .choice-btn:hover {
   border-color:var(--accent); background:var(--accent-glow); transform:translateX(2px);
 }
-.choice-title { font-family:'Inter',system-ui,sans-serif; font-weight:700; font-size:0.95rem; margin-bottom:0.3rem; color:var(--text); }
-.choice-desc { font-size:0.92rem; color:var(--text-dim); line-height:1.65; margin-bottom:0.4rem; }
+.choice-title { font-family:'Inter',system-ui,sans-serif; font-weight:700; font-size:1rem; margin-bottom:0.3rem; color:var(--text); }
+.choice-desc { font-size:1rem; color:var(--text-dim); line-height:1.7; margin-bottom:0.4rem; }
 .choice-hint {
   font-size:0.75rem; color:var(--text-dim); line-height:1.4;
   border-top:1px solid var(--border); padding-top:0.35rem; margin-top:0.3rem;
@@ -557,9 +557,8 @@ button { font-family:inherit; cursor:pointer; }
       <!-- City Map -->
       <div class="city-panel" id="city-panel">
         <h3>Pillars of Support</h3>
-        <div class="pillar-legend"><span>← Movement</span><span>Regime →</span></div>
+        <p style="font-size:0.6rem; color:var(--text-dim); margin-bottom:0.5rem; line-height:1.4;">The regime depends on these institutions. When enough withdraw cooperation, the regime weakens. Your choices shift them.</p>
         <div class="city-grid" id="city-grid"></div>
-        <p style="font-size:0.6rem; color:var(--text-faint); margin-top:0.4rem; line-height:1.4; text-align:center;">Upright = supports regime. Tilted = shifting toward movement.</p>
       </div>
       <div class="timeline-panel" id="timeline-panel" style="margin-bottom:1.5rem;">
         <h3>Movement Timeline</h3>
@@ -572,7 +571,8 @@ button { font-family:inherit; cursor:pointer; }
         <div id="timeline-entries"></div>
       </div>
       <div class="codex-panel" id="codex-panel" style="cursor:pointer;">
-        <h3 onclick="document.getElementById('codex-entries').style.display=document.getElementById('codex-entries').style.display==='none'?'block':'none'">Concept Codex <span class="codex-count" id="codex-count">0 / 19</span> <span style="font-size:0.7em;color:var(--text-faint)">▼</span></h3>
+        <h3 onclick="document.getElementById('codex-entries').style.display=document.getElementById('codex-entries').style.display==='none'?'block':'none'">Key Concepts <span class="codex-count" id="codex-count">0 / 19</span> <span style="font-size:0.7em;color:var(--text-faint)">▼</span></h3>
+        <p style="font-size:0.6rem; color:var(--text-dim); margin-bottom:0.4rem; line-height:1.4;">Frameworks and research unlocked through gameplay. Click to expand.</p>
         <div id="codex-entries" style="display:none"></div>
       </div>
     </div>
@@ -640,6 +640,26 @@ const CODEX_ALL = {
   "Overreach as Opening":{ desc:"Authoritarian overreach creates mobilization windows. When the regime goes too far — raiding an electoral tribunal, arresting a beloved figure, targeting a community that wasn't previously engaged — it can activate people who were on the sidelines. In Guatemala, a regime raid on the electoral tribunal was the tipping point that brought hundreds of thousands into the streets. In Minnesota, ICE operations targeting naturalized citizens mobilized opposition so effectively that a special election swung by 91 points against the expected margin. The strategic implication: overreach moments are opportunities, but only if organizations are ready to channel the outrage into sustained action rather than letting it dissipate.", source:"How Guatemalans Are Defending Their Democracy (Journal of Democracy); Acemoglu, Bloody Minnesota (2026)" },
   "Algorithmic Amplification":{ desc:"Social media platforms prioritize engagement, which means the most extreme, polarizing, and context-free version of any message travels farthest. Clippers strip nuance, add inflammatory commentary, and the algorithm rewards them with reach. This dynamic makes coalition politics nearly impossible in the public information environment — careful positions get flattened, internal disagreements get weaponized, and unaccountable individuals with large followings can override months of careful relationship-building in a single post. The strategic implication: movements need internal communication channels that don't run through algorithmic amplification, and public-facing messaging must be designed for the reality that it will be clipped and reframed.", source:"Tufekci, Twitter and Tear Gas (2017)" },
 };
+
+// ─── TIMELINE REFERENCE (for content accuracy) ───
+// Phase 1 (Turns 1-3) = early-mid 2025
+//   Real events available: DOGE/Big Balls (Feb 2), CPAC chainsaw/Milei (Feb 20),
+//   El Capitan flag (Feb 22), ranger protests at 100+ sites (Mar 1),
+//   Khalil arrest (Mar 8), Abrego Garcia CECOT (Mar 15), Öztürk arrest (Mar 25),
+//   Columbia $400M grant freeze, FCC license threats, university compact,
+//   corporate equity seizures (US Steel golden share), pardons, law firm retreats,
+//   congressional retirements (growing through 2025, 36+ by 2026),
+//   Disney/FCC boycott (Sep-Oct 2025)
+// Phase 2 (Turns 4-6) = mid 2025-2026
+//   Real events available: Renée Good killing, Alex Pretti shooting,
+//   ChongLy Scott Thao ICE raid, Minnesota general strike,
+//   ICE Watch networks, block parties, state terror escalation,
+//   Anthropic supply chain designation (2026), 36 retirements confirmed (2026)
+// Phase 3 (Turns 7-8) = 2026 midterms
+//   Real events available: election defense organizing, Protect Democracy
+//   Executive Override framework, contested results scenarios
+// DO NOT reference Phase 2/3 events in Phase 1 scenarios or vice versa.
+// Historical case studies (Chile, Hungary, Serbia, etc.) are fine in any phase.
 
 // ─── EVENT DATABASE (v0.2 — 8 turns, diagnosis-first) ───
 const EVENTS = [
@@ -1342,11 +1362,9 @@ function renderCityMap() {
     const l = S.pillars[d.key].loyalty;
     const state = l>=60?'movement':l>=40?'contested':'regime';
     const statusText = l>=60?'MOVEMENT':l>=40?'CONTESTED':'REGIME';
-    // Tilt: 0 loyalty = 0deg (upright, supports regime), 100 = -55deg (falling left toward movement)
-    const tiltDeg = -(l / 100) * 55;
     return `<div class="city-district ${state}">
       <div class="cd-name">${d.name}</div>
-      <div class="cd-pillar-wrap"><div class="cd-pillar" style="transform:rotate(${tiltDeg}deg)"></div></div>
+      <div class="cd-bar-track"><div class="cd-bar-fill" style="width:${l}%"></div></div>
       <div class="cd-status">${statusText}</div>
     </div>`;
   }).join('');
@@ -1420,9 +1438,15 @@ function addTimeline(type, title) {
 // ─── ALERTS ───
 function showThresholdAlert(alert) {
   const el = document.createElement('div');
-  el.className = 'threshold-alert';
+  el.className = 'threshold-alert fade-up';
   el.innerHTML = `<div class="ta-title">⚡ ${alert.level}: ${alert.pillar}</div><div class="ta-text">${alert.text}</div>`;
-  document.getElementById('threshold-alert-area').appendChild(el);
+  // Show inline in outcome area if it exists, otherwise fall back to threshold area
+  const staged = document.getElementById('staged-outcome');
+  if (staged) {
+    staged.appendChild(el);
+  } else {
+    document.getElementById('threshold-alert-area').appendChild(el);
+  }
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -1652,40 +1676,102 @@ function makeChoice(index) {
     window._pendingFollowUp = null;
   }
 
-  document.getElementById('outcome-area').innerHTML = `
-    <div class="outcome-card fade-up" style="display:block">
-      <h3>Outcome</h3>
-      <p class="outcome-text">${choice.outcome}</p>
-      ${pillarShifts.length > 0 ? `<div style="margin:0.6rem 0; padding:0.4rem 0.7rem; background:var(--accent-glow); border-left:3px solid var(--accent); border-radius:2px; font-size:0.8rem; font-family:'Inter',system-ui,sans-serif; font-weight:600; color:var(--accent);">
-        ${pillarShifts.map(s => `<div>⬆ ${s}</div>`).join('')}
-      </div>` : ''}
-      ${choice.caseStudy ? `<div class="case-study-box">
-        <div class="case-study-label">🌍 Case Study</div>
-        <div class="case-study-text">${choice.caseStudy}</div>
-      </div>` : ''}
-      <div class="lesson-box">
-        <div class="lesson-label">📖 Key Concept</div>
-        <div class="lesson-text">${choice.lesson}</div>
-        <div class="lesson-source">— ${choice.source}</div>
-      </div>
-      ${roadsNotTaken}
-      ${choice.discuss ? `<div class="discuss-box">
-        <div class="discuss-label">💬 Discussion Prompt</div>
-        <div class="discuss-text">${choice.discuss}</div>
-      </div>` : ''}
-      ${followUpHtml}
-      ${!choice.followUp ? `<div style="margin-top:1rem; text-align:right;">
-        <button class="btn btn-primary btn-sm" onclick="nextTurn()">
-          ${S.turn >= S.maxTurns ? 'See Results →' : 'Next Turn →'}
-        </button>
-      </div>` : ''}
+  // === STAGED OUTCOME FLOW ===
+  // Build sections as an array, reveal one at a time with Continue buttons
+  const sections = [];
+
+  // Section 1: Outcome narrative + pillar shifts
+  let sec1 = `<h3>Outcome</h3><p class="outcome-text">${choice.outcome}</p>`;
+  if (pillarShifts.length > 0) {
+    sec1 += `<div style="margin:0.6rem 0; padding:0.4rem 0.7rem; background:var(--accent-glow); border-left:3px solid var(--accent); border-radius:2px; font-size:0.8rem; font-family:'Inter',system-ui,sans-serif; font-weight:600; color:var(--accent);">
+      ${pillarShifts.map(s => `<div>⬆ ${s}</div>`).join('')}</div>`;
+  }
+  sections.push(sec1);
+
+  // Section 2: Case study + Key concept (if case study exists)
+  if (choice.caseStudy) {
+    sections.push(`<div class="case-study-box">
+      <div class="case-study-label">🌍 Case Study</div>
+      <div class="case-study-text">${choice.caseStudy}</div>
+    </div>
+    <div class="lesson-box">
+      <div class="lesson-label">📖 Key Concept</div>
+      <div class="lesson-text">${choice.lesson}</div>
+      <div class="lesson-source">— ${choice.source}</div>
+    </div>`);
+  } else {
+    // No case study — just lesson
+    sections[0] += `<div class="lesson-box" style="margin-top:0.8rem;">
+      <div class="lesson-label">📖 Key Concept</div>
+      <div class="lesson-text">${choice.lesson}</div>
+      <div class="lesson-source">— ${choice.source}</div>
     </div>`;
+  }
+
+  // Section 3: Discussion prompt + Roads Not Taken (optional)
+  let sec3 = '';
+  if (choice.discuss) {
+    sec3 += `<div class="discuss-box">
+      <div class="discuss-label">💬 Discussion Prompt</div>
+      <div class="discuss-text">${choice.discuss}</div>
+    </div>`;
+  }
+  if (roadsNotTaken) sec3 += roadsNotTaken;
+  if (sec3) sections.push(sec3);
+
+  // Section 4: Follow-up or Next Turn
+  if (followUpHtml) {
+    sections.push(followUpHtml);
+  }
+
+  // Render staged flow
+  const outcomeArea = document.getElementById('outcome-area');
+  outcomeArea.innerHTML = `<div class="outcome-card" style="display:block" id="staged-outcome"></div>`;
+  const container = document.getElementById('staged-outcome');
+
+  let currentSection = 0;
+  function revealNext() {
+    if (currentSection >= sections.length) {
+      // All sections revealed — show Next Turn button if no follow-up
+      if (!choice.followUp) {
+        const btnDiv = document.createElement('div');
+        btnDiv.style.cssText = 'margin-top:1rem; text-align:right;';
+        btnDiv.className = 'fade-up';
+        btnDiv.innerHTML = `<button class="btn btn-primary btn-sm" onclick="nextTurn()">
+          ${S.turn >= S.maxTurns ? 'See Results →' : 'Next Turn →'}
+        </button>`;
+        container.appendChild(btnDiv);
+        btnDiv.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      }
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 'fade-up';
+    div.innerHTML = sections[currentSection];
+    container.appendChild(div);
+    currentSection++;
+
+    // If more sections remain (and this isn't the follow-up section), add Continue button
+    if (currentSection < sections.length || (!choice.followUp && currentSection === sections.length)) {
+      if (currentSection < sections.length) {
+        const continueBtn = document.createElement('div');
+        continueBtn.style.cssText = 'margin-top:0.8rem; text-align:right;';
+        continueBtn.innerHTML = `<button class="btn btn-sm" style="font-size:0.8rem; padding:0.4rem 1rem;" onclick="this.parentElement.remove(); window._revealNext();">Continue →</button>`;
+        container.appendChild(continueBtn);
+        continueBtn.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      } else {
+        revealNext(); // Show the Next Turn button
+      }
+    }
+  }
+  window._revealNext = revealNext;
+  revealNext(); // Show first section immediately
 
   renderStats();
   renderPillars();
   renderCodex();
 
-  // Pillar threshold alerts
+  // Pillar threshold alerts — now shown inline after outcome, not in separate area
   const alerts = checkPillarThresholds();
   alerts.forEach((a,i) => setTimeout(() => showThresholdAlert(a), i * 600));
 }
