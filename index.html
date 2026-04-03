@@ -184,8 +184,7 @@ button { font-family:inherit; cursor:pointer; }
   /* radar removed */
 
   /* City map */
-  .city-grid { gap:0.35rem; }
-  .cd-name { width:4rem; font-size:0.65rem; }
+  .city-grid { grid-template-columns:1fr 1fr 1fr; gap:0.35rem; }
 
   /* Outcome cards */
   .outcome-card { padding:1rem; }
@@ -221,33 +220,34 @@ button { font-family:inherit; cursor:pointer; }
   text-transform:uppercase; letter-spacing:0.06em; font-weight:600; margin-bottom:0.4rem; padding:0 0.2rem;
 }
 .city-grid {
-  display:flex; flex-direction:column; gap:0.5rem;
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem 0.6rem;
 }
 .city-district {
-  display:flex; align-items:center; gap:0.5rem; transition:all 0.4s ease;
+  text-align:center; transition:all 0.6s ease; position:relative; padding:0.4rem 0.2rem 0.3rem;
 }
-.cd-name { font-size:0.72rem; font-weight:700; color:var(--text); width:5.5rem; flex-shrink:0; }
-.cd-bar-track {
-  flex:1; height:10px; background:var(--surface3); border-radius:5px; position:relative; overflow:hidden;
+.cd-name { font-size:0.72rem; font-weight:700; margin-bottom:0.3rem; color:var(--text); }
+.cd-pillar-wrap {
+  display:flex; justify-content:center; align-items:flex-end; height:52px; margin-bottom:0.2rem;
 }
-.cd-bar-fill {
-  height:100%; border-radius:5px; transition:width 0.8s ease, background 0.6s ease;
-  position:absolute; left:0; top:0;
+.cd-pillar {
+  width:12px; height:44px; border-radius:2px 2px 0 0;
+  transition:transform 0.8s ease, background 0.6s ease;
+  transform-origin:bottom center;
 }
-.cd-bar-fill.pulse { animation:barPulse 0.6s ease-out; }
+.cd-pillar.pulse { animation:barPulse 0.6s ease-out; }
 @keyframes barPulse { 0%{filter:brightness(1.8)} 100%{filter:brightness(1)} }
 .cd-status {
-  font-size:0.55rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;
-  width:4.5rem; text-align:right; flex-shrink:0;
+  font-size:0.6rem; text-transform:uppercase; letter-spacing:0.06em; font-weight:700;
+  transition:color 0.6s ease;
 }
 /* Pillar colors by state — red → orange → gold */
-.city-district.regime .cd-bar-fill { background:var(--red); }
+.city-district.regime .cd-pillar { background:var(--red); }
 .city-district.regime .cd-status { color:var(--red); }
-.city-district.contested .cd-bar-fill { background:var(--orange); }
+.city-district.contested .cd-pillar { background:var(--orange); }
 .city-district.contested .cd-status { color:var(--orange); }
-.city-district.movement .cd-bar-fill { background:var(--accent); }
+.city-district.movement .cd-pillar { background:var(--accent); }
 .city-district.movement .cd-status { color:var(--accent); }
-.city-district.movement .cd-bar-fill { box-shadow:0 0 6px var(--accent-glow2); }
+.city-district.movement .cd-pillar { box-shadow:0 0 8px var(--accent-glow2); }
 
 /* ── EVENT CARD ── */
 .event-card {
@@ -681,7 +681,7 @@ const EVENTS = [
       pillarEffects:{civil:8,military:5},
       flags:["diagnosed_authoritarian_crisis"],
       outcome:"Maybe you start with the podcasts and newsletters — the <a href='https://www.fascismbarometer.org/' target='_blank'>Fascism Barometer</a> on your commute, <a href='https://snyder.substack.com/' target='_blank'>Timothy Snyder's Substack</a> at midnight, Protect Democracy's <a href='https://www.ifyoucankeepit.org/' target='_blank'>If We Can Keep It</a>. You sign up for a <a href='https://choosedemocracy.us/' target='_blank'>Choose Democracy</a> training, connect with <a href='https://freedomtrainers.net/' target='_blank'>Freedom Trainers</a>. But the short-form stuff only gets you so far. The pattern actually clicks when you sit with a book — one sustained argument instead of a thousand fragments. In the age of flood-the-zone, a book is less overwhelming than your feed.<br><br>Maybe you suggest one to your book club — or start an anti-fascist reading group. The canon: Snyder's <em>On Tyranny</em>, M. Gessen's <em>Surviving Autocracy</em>, Chenoweth's <em>Why Civil Resistance Works</em>, Levitsky & Ziblatt's <em>How Democracies Die</em>, Lee Drutman's <em>Breaking the Two-Party Doom Loop</em>. You start finding frameworks that help you see the pattern. <strong>Mafia state</strong> — a system where one person distributes money and power through loyalty, not ideology. <strong>Competitive authoritarianism</strong> — elections still happen, but the regime tilts the playing field so far that winning the vote alone isn't enough. <strong>Pillars of support</strong> — every regime depends on key institutions, and when enough withdraw cooperation, the regime can't govern.<br><br>You also start reading <a href='https://protectdemocracy.org/work/nonprofit-toolkit-responding-to-government-investigations/' target='_blank'>practical guides on organizational defense</a> — how to prepare for asset freezes, how to handle retaliatory investigations, how to protect your communications and your people. You bring this to your team. The learning isn't a distraction from the work — it IS the work right now, because the organizers who understand the pattern can act faster than those treating every development as unprecedented.",
-      caseStudy:"In <strong>Hungary</strong>, when Viktor Orbán won a supermajority in 2010 and began dismantling democratic institutions, the opposition had no name for what was happening. They fought it as if it were a policy disagreement — filing lawsuits, running candidates, objecting to individual moves. Each step Orbán took could be rationalized within the old framework. But the opposition was stuck fighting as if both sides were still playing by the same rules.<br><br>The scholar Bálint Magyar, a former opposition MP watching from inside the legislature, spent years trying to build a vocabulary that could describe the system as a whole. Existing terms — 'illiberal democracy,' 'hybrid regime' — described symptoms but not the machine. He named it: <strong>mafia state</strong> — one person distributes power through loyalty networks. And he drew a critical line between an <strong>autocratic attempt</strong> (still reversible) and an <strong>autocratic breakthrough</strong> (the locks click shut). By the time the book was published in 2013, Hungary had already crossed that line.<br><br>M. Gessen saw the same pattern in the United States during Trump's first term: Americans kept reaching for words like 'unprecedented' and 'norm-breaking' — words that captured the shock but not the pattern. Without the right frameworks, every outrage was treated as an isolated scandal rather than a step in a sequence.",
+      caseStudy:"In <strong>Hungary</strong>, when Viktor Orbán won a supermajority in 2010 and began dismantling democratic institutions, the opposition had no name for what was happening. They fought it as if it were a policy disagreement — filing lawsuits, running candidates, objecting to individual moves. Each step Orbán took could be rationalized within the old framework. But the opposition was stuck fighting as if both sides were still playing by the same rules.<br><br>The scholar Bálint Magyar, a former opposition MP watching from inside the legislature, spent years trying to build a vocabulary that could describe the system as a whole. Existing terms — 'illiberal democracy,' 'hybrid regime' — described symptoms but not the machine. He named it: <strong>mafia state</strong> — one person distributes power through loyalty networks. And he drew a critical line between an <strong>autocratic attempt</strong> (still reversible) and an <strong>autocratic breakthrough</strong> (the locks click shut). By the time the book was published in 2013, Hungary had already crossed that line.",
       lesson:"The most dangerous thing about an authoritarian consolidation is not recognizing it as one. When the strategy is to flood the zone — so many crises, so fast, that nobody can hold the pattern — frameworks, language, and history are how you cut through the noise. People who can name what's happening don't get lost in the flood.",
       source:"Britton-Purdy & Pozen, Boston Review (2025); Britton-Purdy, Pozen & Guida, NYT (2026); Levitsky & Ziblatt (2018); Chenoweth & Marks (2022)",
       concepts_unlocked:["Competitive Authoritarianism","Anticipatory Obedience","Pillars of Support"],
@@ -1367,9 +1367,11 @@ function renderCityMap() {
     const l = S.pillars[d.key].loyalty;
     const state = l>=60?'movement':l>=40?'contested':'regime';
     const statusText = l>=60?'MOVEMENT':l>=40?'CONTESTED':'REGIME';
+    // Tilt: 0 loyalty = 0deg (upright, supports regime), 100 = -55deg (falling toward movement)
+    const tiltDeg = -(l / 100) * 55;
     return `<div class="city-district ${state}">
       <div class="cd-name">${d.name}</div>
-      <div class="cd-bar-track"><div class="cd-bar-fill" style="width:${l}%"></div></div>
+      <div class="cd-pillar-wrap"><div class="cd-pillar" style="transform:rotate(${tiltDeg}deg)"></div></div>
       <div class="cd-status">${statusText}</div>
     </div>`;
   }).join('');
@@ -1760,7 +1762,7 @@ function makeChoice(index) {
   // Pulse pillar bars that changed
   if (Object.keys(choice.pillarEffects || {}).length > 0) {
     setTimeout(() => {
-      document.querySelectorAll('.cd-bar-fill').forEach(bar => {
+      document.querySelectorAll('.cd-pillar').forEach(bar => {
         bar.classList.add('pulse');
         setTimeout(() => bar.classList.remove('pulse'), 700);
       });
