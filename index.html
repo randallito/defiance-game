@@ -234,6 +234,8 @@ button { font-family:inherit; cursor:pointer; }
   height:100%; border-radius:5px; transition:width 0.8s ease, background 0.6s ease;
   position:absolute; left:0; top:0;
 }
+.cd-bar-fill.pulse { animation:barPulse 0.6s ease-out; }
+@keyframes barPulse { 0%{filter:brightness(1.8)} 100%{filter:brightness(1)} }
 .cd-status {
   font-size:0.55rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700;
   width:4.5rem; text-align:right; flex-shrink:0;
@@ -829,7 +831,7 @@ const EVENTS = [
       effects:{movementPower:8,popularSupport:5,orgCapacity:-6,coalitionUnity:-3,democracy:1},
       pillarEffects:{media:4},
       flags:["diagnosed_mobilization_problem"],
-      outcome:"You invest in scaling up mobilization — bigger rallies, more cities, more visibility. And there's real value here. Mass rallies like the No Kings protests serve as easy on-ramps into activism, build cross-organization relationships — Indivisible and DSA and Sunrise and 50501 and local groups all working together for the first time — and provide coordination rehearsal for harder joint actions later. They counter isolation: people feel less alone, see the beauty of humanity showing up for each other. Most of them are volunteer-organized, which is a strength. Chenoweth and Marks argue that movements should use elections as opportunities to 'message and engage, organize and mobilize a growing base' — and rallies can do that.<br><br>But mobilization alone has limits. After the largest protests in American history against the Iraq war in 2003, President Bush dismissed the protests, saying he doesn't decide policy based on 'a focus group.' Hundreds of thousands of people organized against the genocide in Gaza and watched it change neither the party's position nor the policy.<br><br>Mass mobilization is a powerful signal of discontent — but that signal alone doesn't force concessions unless it's backed by the organizational capacity to sustain pressure. Organizing builds power; mobilizing wields it. They're complementary, not opposed. The question is whether you're building both.",
+      outcome:"You invest in scaling up mobilization — bigger rallies, more cities, more visibility. And there's real value here. Mass rallies like the No Kings protests serve as easy on-ramps into activism, build cross-organization relationships — Indivisible and DSA and Sunrise and 50501 and local groups all working together for the first time — and provide coordination rehearsal for harder joint actions later. They counter isolation: people feel less alone, see the beauty of humanity showing up for each other. Most of them are volunteer-organized, which is a strength. Chenoweth and Marks argue that movements should use elections as opportunities to 'message and engage, organize and mobilize a growing base' — and rallies can do that.<br><br>But mobilization alone has limits. After the largest protests in American history against the Iraq war in 2003, President Bush dismissed the protests, saying he doesn't decide policy based on 'a focus group.' Hundreds of thousands of people organized against the genocide in Gaza and watched it change neither the party's position nor the policy.<br><br>This is the difference between <strong>capacity and spectacle</strong>: mass mobilization is a powerful signal of discontent, but that signal alone doesn't force concessions unless it's backed by the organizational capacity to sustain pressure. And <strong>algorithmic amplification</strong> makes it worse — platforms reward the most extreme, decontextualized version of your message, which means the movement's public image is controlled by clippers, not organizers. Organizing builds power; mobilizing wields it. They're complementary, not opposed. The question is whether you're building both.",
       caseStudy:"In <strong>Egypt in 2011</strong>, 18 days of spectacular protest in Tahrir Square toppled a dictator — but the protesters who started the revolution were organized, through groups like the April 6 Movement and labor unions. They were just LESS organized than the Muslim Brotherhood, which had deeper infrastructure, decision-making structures, and years of experience. The Brotherhood captured the gains of a revolution they didn't start — and then the military overthrew them, installing a regime worse than the one the protesters had toppled. The lesson isn't that the protesters were disorganized — it's that in the aftermath, better-organized forces captured their momentum. In <strong>Hong Kong in 2019</strong>, a similar pattern: up to 2 million participants by organizers' estimates, creative and decentralized tactics, but crushed by a government willing to impose sweeping security laws. Across multiple countries, the journalist Vincent Bevins documented this repeating pattern: spectacular uprisings without sufficient organizational infrastructure saw their gains captured by better-organized forces — military, established political factions, oligarchs.",
       lesson:"Mobilization and organization are complementary, not opposed. Mass mobilization builds energy, signals strength, and creates on-ramps — but without organizational capacity to sustain pressure, those gains are vulnerable to capture by better-organized forces.",
       source:"Tufekci, Twitter and Tear Gas (2017); Chenoweth & Stephan (2011); Chenoweth & Marks (2022); Bevins, If We Burn (2023)",
@@ -859,7 +861,7 @@ const EVENTS = [
   concepts:["State Terror","Backfire Framework"],
   choices:[
     {
-      title:"Go public — more people, more stories, more visible",
+      title:"Lead with visibility — more voices, more stories, more people",
       desc:"The answer is to make resistance MORE visible — not just bodies on the line, but voices. Church leaders explaining from the pulpit why they're sheltering families. Teachers explaining why they document enforcement near schools. Small business owners explaining why they closed for the one-day strike. The power is in the breadth: when it's obviously not a radical fringe but everyday people standing up for their neighbors.",
       hint:"<span class='hint-pos'>Counters the fear dynamic</span> · <span class='hint-pos'>Backfire potential</span> · <span class='hint-warn'>Not everyone can safely be visible</span>",
       effects:{movementPower:8,popularSupport:8,orgCapacity:-2,coalitionUnity:4,democracy:5},
@@ -873,7 +875,7 @@ const EVENTS = [
       discuss:"What's the difference between provoking a backfire and walking into a crackdown? How do you know which dynamic you're in?"
     },
     {
-      title:"Protect your community — build safety infrastructure",
+      title:"Lead with protection — build the safety infrastructure first",
       desc:"For communities directly targeted — undocumented families, organizers with pending cases, people whose identities make them vulnerable — safety comes first. Build sanctuary networks, rapid response teams, legal defense, encrypted communications. This isn't retreat — it's the foundation that makes everything else possible.",
       hint:"<span class='hint-pos'>Protects most vulnerable</span> · <span class='hint-pos'>Builds community trust</span> · <span class='hint-warn'>Less publicly visible</span>",
       effects:{movementPower:-3,popularSupport:2,orgCapacity:8,coalitionUnity:5,democracy:1},
@@ -981,7 +983,7 @@ const EVENTS = [
       effects:{movementPower:3,popularSupport:5,orgCapacity:10,coalitionUnity:6,democracy:4},
       pillarEffects:{religious:5,labor:5,civil:4},
       flags:["diagnosed_long_game"],
-      outcome:"You build the infrastructure nobody wants to plan for — the organizational capacity to sustain mass nonviolent pressure if election results are challenged. This means acknowledging the election might be stolen, which some allies say suppresses turnout. But if nobody plans for it, the regime only needs to invalidate enough ballots to end the contest.<br><br>The costs are real: it feels like planning to lose, which is demoralizing. If results aren't challenged, you built capacity you didn't need. And by diverting resources from the campaign, you miss the midterm as a rehearsal for 2028 — the only chance to test your election defense infrastructure before the presidential election.",
+      outcome:"You build the infrastructure nobody wants to plan for — the organizational capacity to sustain mass nonviolent pressure if election results are challenged. This means acknowledging the election might be stolen, which some allies say suppresses turnout. But if nobody plans for it, the regime only needs to invalidate enough ballots to end the contest.<br><br>The costs are real: it feels like planning to lose, which is demoralizing. If results aren't challenged, you built capacity you didn't need. And by diverting resources from the campaign, you miss the midterm as a rehearsal for 2028.<br><br>But there's a deeper argument: research on democratic transitions shows that movements which only built protest capacity — but not the political capacity to negotiate, govern, and defend results — lost their gains even when they won. ENFORCE capacity isn't just about this election. It's the infrastructure for what comes after.",
       caseStudy:"<strong>Poland's Solidarity</strong> built infrastructure over years — workers' cooperatives, underground publishing, mutual aid networks — that sustained the movement through martial law, repression, and multiple electoral setbacks before finally prevailing in 1989. The organizations that survived were those that had built community-level capacity that didn't depend on any single electoral outcome. In the current U.S. context, communities with strong mutual aid networks, sanctuary infrastructure, and local democratic organizations are demonstrably more resilient — regardless of which party controls Congress.",
       lesson:"Movement infrastructure that's built for the long game survives any single electoral outcome. The organizations that last are those rooted in community relationships, not campaign cycles.",
       source:"Chenoweth & Marks (2022); Protect Democracy, Executive Override Framework",
@@ -993,7 +995,7 @@ const EVENTS = [
 {
   phase:3, type:"crisis",
   title:"Election Week",
-  desc:"Polls close at 8 PM. By 9, the lines are still long in three states. By midnight, the first wave of results looks promising — turnout is the highest in a midterm since 1914. Then the phone starts ringing.<br><br>A federal judge in Georgia issues a hold on certification in four counties. The DOJ announces 'irregularities' in a dozen districts simultaneously. In Arizona, federal agents show up outside a ballot counting center. They have no legal authority to be there. They don't need it — their presence alone is enough to intimidate poll workers. In Pennsylvania, an election administrator who'd pledged to certify legitimate results goes silent after a 6 AM visit from two men in suits.<br><br>By morning, results are being contested across competitive races in multiple states — congressional, state legislature, local offices. The scale is overwhelming. Too many places, too many simultaneous challenges. This is the scenario that Protect Democracy's <a href='https://protectdemocracy.org/executive-override/' target='_blank'>Executive Override</a> framework warned about: Deny.<br><br>What happens next depends on everything you've built over the past seven turns.",
+  desc:"Polls close at 8 PM. By 9, the lines are still long in three states. By midnight, the first wave of results looks promising — turnout is the highest in a midterm since 1914. Then the phone starts ringing.<br><br>It hits everywhere at once. A federal judge in Georgia issues a hold on certification in four counties. The DOJ announces 'irregularities' in a dozen districts simultaneously. In Arizona, federal agents show up outside a ballot counting center — their presence alone is enough to intimidate poll workers. ICE vehicles are parked near polling places in districts with large immigrant communities. Robocalls go out in three swing districts telling voters the election has been extended to tomorrow. Social media floods with AI-generated images of 'ballot fraud' and deepfake videos of candidates saying things they never said — spreading faster than anyone can debunk them. Federal agents seize mail ballots in two counties, claiming a 'chain of custody investigation.' State legislators in two states claim authority to override certification. Lawsuits are filed simultaneously in fifteen jurisdictions — more than the election defense legal teams can respond to at once.<br><br>In Pennsylvania, an election administrator who'd pledged to certify legitimate results goes silent after a 6 AM visit from two men in suits.<br><br>The scale is overwhelming. Too many places, too many simultaneous challenges. This is the scenario that Protect Democracy's <a href='https://protectdemocracy.org/executive-override/' target='_blank'>Executive Override</a> framework warned about: Deny.<br><br>What happens next depends on everything you've built over the past seven turns.",
   concepts:["Pre-Election Mobilization","Pillars of Support","Nonviolent Discipline"],
   choices:[
     {
@@ -1486,8 +1488,25 @@ function showPhaseTransition(phase) {
     else if (S.flags.has('diagnosed_youth_material')) recapParts.push('You built mutual aid as on-ramps.');
     else if (S.flags.has('diagnosed_youth_outreach')) recapParts.push('You invested in youth outreach.');
   }
+  // Add forward-looking consequence preview
+  const previewParts = [];
+  if (phase === 2) {
+    if (S.flags.has('chose_broad_front')) previewParts.push('Your broad front will give you allies in unexpected places — but holding it together will be tested.');
+    else if (S.flags.has('chose_alignment')) previewParts.push('Your focused movement is disciplined — but the regime can isolate you more easily.');
+    if (S.flags.has('diagnosed_authoritarian_crisis')) previewParts.push('Your early preparation means you\'ll see what\'s coming before others do.');
+    if (S.flags.has('diagnosed_scale_mismatch')) previewParts.push('You understand the mafia state — your organization is harder to blindside.');
+  }
+  if (phase === 3) {
+    if (S.flags.has('diagnosed_infrastructure_problem')) previewParts.push('You have coordination capacity that others don\'t — that matters for election defense.');
+    else if (S.flags.has('diagnosed_mobilization_problem')) previewParts.push('You can turn people out — but sustaining pressure over weeks will be the test.');
+    if (S.flags.has('diagnosed_go_public')) previewParts.push('Your documentation infrastructure transfers directly to election observation.');
+    if (S.orgCapacity >= 60) previewParts.push('Your organizational strength is high — you\'re positioned for the midterms.');
+    else if (S.orgCapacity < 35) previewParts.push('Your organizational capacity is thin — the midterms will expose the gaps.');
+  }
+
   const recapHtml = recapParts.length > 0
     ? `<br><br><span style="font-size:0.8rem; color:var(--text-dim); line-height:1.6;">${recapParts.join(' ')}</span>`
+    + (previewParts.length > 0 ? `<br><span style="font-size:0.8rem; color:var(--accent); line-height:1.6;">${previewParts.join(' ')}</span>` : '')
     : '';
 
   const overlay = document.getElementById('phase-overlay');
@@ -1797,6 +1816,16 @@ function makeChoice(index) {
   renderStats();
   renderPillars();
   renderCodex();
+
+  // Pulse pillar bars that changed
+  if (Object.keys(choice.pillarEffects || {}).length > 0) {
+    setTimeout(() => {
+      document.querySelectorAll('.cd-bar-fill').forEach(bar => {
+        bar.classList.add('pulse');
+        setTimeout(() => bar.classList.remove('pulse'), 700);
+      });
+    }, 100);
+  }
 
   // Pillar threshold alerts — now shown inline after outcome, not in separate area
   const alerts = checkPillarThresholds();
