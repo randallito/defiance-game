@@ -640,7 +640,7 @@ const CODEX_ALL = {
   "Nonviolent Discipline":{ desc:"Nonviolent campaigns have achieved success 53% of the time, compared with 26% for violent resistance campaigns. The strategic argument is not 'violence is wrong' but 'violence narrows your coalition precisely when you need to broaden it.' Blockades, sit-ins, and strikes are all forms of nonviolent escalation — escalation and nonviolence are not opposites. The discipline must be built through training before the crisis, not imposed during it. A related finding: over 50% of recent movements have tolerated violent flanks, and movements that mix violent and nonviolent tactics fail at roughly four times the rate of purely nonviolent ones.", source:"Chenoweth & Stephan, Why Civil Resistance Works (2011); Chenoweth, The Future of Nonviolent Resistance (2020)" },
   "Three Earths":{ desc:"A <a href='https://docs.google.com/document/d/1p11OlyFhIIasmks3phY-JvLJxO4k4erFrpSkAKNILFs/edit?tab=t.0#heading=h.7v7id2bzrjkq' target='_blank'>framework</a> from organizers Ai-jen Poo and Lorella Praeli for understanding where you are. Earth One: a flawed but functional democracy where organizing wins are durable and institutions respond to pressure. Earth Two: an authoritarian breakthrough where the rules have changed and Earth One tactics may not apply. Earth Three: the future you're building — not a return to the old normal but something better. The framework matters because misdiagnosing which Earth you're on leads to wasted resources: Earth One strategies on Earth Two produce frustration; Earth Two strategies on Earth One produce overreaction.", source:"Poo & Praeli, Three Earths Framework (2025)" },
   "Quiet Outreach vs. Public Pressure":{ desc:"Research on democratic backsliding cases found that quiet outreach — relationship-building, back-channel conversations, diplomacy — shifted institutional pillar loyalty 39% of the time. Public pressure tactics (protests, boycotts, shaming) performed worse than doing nothing. This is counterintuitive: the instinct is to protest, to make noise, to shame. The research says build relationships. Important caveat: this research studied democratic backsliding specifically. If the situation has moved into state terror territory — where the randomness of violence makes quiet meetings dangerous — the mechanism for shifting pillars may change. The backfire framework suggests that in state terror contexts, making violence visible becomes a form of outreach through the public. The goal (shifting pillars) stays the same; the method adapts to the terrain.", source:"Pinckney & Trilling, Breaking Down Pillars of Support (2024)" },
-  "Overreach as Opening":{ desc:"Authoritarian overreach creates mobilization windows. When the regime goes too far — raiding an electoral tribunal, arresting a beloved figure, targeting a community that wasn't previously engaged — it can activate people who were on the sidelines. In Guatemala, a regime raid on the electoral tribunal was the tipping point that brought hundreds of thousands into the streets. In Minnesota, ICE operations targeting naturalized citizens mobilized opposition so effectively that a special election swung by 91 points against the expected margin. The strategic implication: overreach moments are opportunities, but only if organizations are ready to channel the outrage into sustained action rather than letting it dissipate.", source:"How Guatemalans Are Defending Their Democracy (Journal of Democracy); Acemoglu, Bloody Minnesota (2026)" },
+  "Overreach as Opening":{ desc:"Authoritarian overreach creates mobilization windows. When the regime goes too far — raiding an electoral tribunal, arresting a beloved figure, targeting a community that wasn't previously engaged — it can activate people who were on the sidelines. In Guatemala, a regime raid on the electoral tribunal was the tipping point that brought hundreds of thousands into the streets. In Minnesota, after ICE agents killed two residents, the backlash was so intense that in the special elections that followed, one Republican candidate got less than 5% of the vote in a district that had been 83-17 the year before — and in the other district, Republicans didn't even field a candidate. The strategic implication: overreach moments are opportunities, but only if organizations are ready to channel the outrage into sustained action rather than letting it dissipate.", source:"How Guatemalans Are Defending Their Democracy (Journal of Democracy); Acemoglu, Bloody Minnesota (2026)" },
   "Algorithmic Amplification":{ desc:"Social media platforms prioritize engagement, which means the most extreme, polarizing, and context-free version of any message travels farthest. Clippers strip nuance, add inflammatory commentary, and the algorithm rewards them with reach. This dynamic makes coalition politics nearly impossible in the public information environment — careful positions get flattened, internal disagreements get weaponized, and unaccountable individuals with large followings can override months of careful relationship-building in a single post. The strategic implication: movements need internal communication channels that don't run through algorithmic amplification, and public-facing messaging must be designed for the reality that it will be clipped and reframed.", source:"Tufekci, Twitter and Tear Gas (2017)" },
 };
 
@@ -730,11 +730,11 @@ const EVENTS = [
       effects:{movementPower:4,popularSupport:8,orgCapacity:3,coalitionUnity:-3,democracy:5},
       pillarEffects:{business:6,religious:5,military:4},
       flags:["chose_broad_front"],
-      outcome:"You start building relationships across the divides — not a single coordinated coalition, but a shared terrain where different actors with different strategies and different bases are all aware of each other and pointed at the same threat. It's deeply uncomfortable. Your undocumented staff member sees you in relationship with people who voted for policies that threaten her family. Some of your base questions your judgment.<br><br>But here's the thing: research on democratic backsliding found that this kind of quiet relationship-building — back-channel conversations, sitting in uncomfortable rooms together — shifted institutional loyalty 39% of the time. Public pressure campaigns performed worse than doing nothing. Your cousin texting you about her layoffs IS the pillar-shifting moment. The question is whether you're ready to respond.<br><br>One possibility that keeps coming up: the broad front needs something to be FOR, not just against. One-dimensional winner-take-all politics is where authoritarians flourish — when every election collapses to a single partisan axis, voters can't defect even when their leaders violate norms. The structural fix is multi-party democracy — fusion voting as a first step, proportional representation as the goal. It's the rare reform that could unite people who are fighting authoritarianism and people who are fighting economic oligarchy, because it changes the game itself rather than just trying to win within a rigged one.",
+      outcome:"You start building relationships across the divides — not a single coordinated coalition, but a shared terrain where different actors with different strategies and different bases are all aware of each other and pointed at the same threat. It's deeply uncomfortable. Your undocumented staff member sees you in relationship with people who voted for policies that threaten her family. Some of your base questions your judgment.<br><br>But here's the thing: research on democratic backsliding found that this kind of quiet relationship-building — back-channel conversations, sitting in uncomfortable rooms together — shifted institutional loyalty 39% of the time. Public pressure campaigns performed worse than doing nothing. Your cousin texting you about her layoffs IS the pillar-shifting moment. The question is whether you're ready to respond. And the broad front you're building now isn't just a coalition for the midterms — research on democratic transitions shows it's the infrastructure for governing afterward. Movements that only built protest capacity lost their gains even when they won.<br><br>One possibility that keeps coming up: the broad front needs something to be FOR, not just against. One-dimensional winner-take-all politics is where authoritarians flourish — when every election collapses to a single partisan axis, voters can't defect even when their leaders violate norms. The structural fix is multi-party democracy — fusion voting as a first step, proportional representation as the goal. It's the rare reform that could unite people who are fighting authoritarianism and people who are fighting economic oligarchy, because it changes the game itself rather than just trying to win within a rigged one.",
       caseStudy:"Resistance to authoritarianism has almost always required alliances that felt deeply uncomfortable. The <strong>anti-apartheid movement in South Africa</strong> united communists, liberal democrats, traditional chiefs, and religious leaders. The <strong>broad front that defeated Milošević in Serbia</strong> included nationalists, liberals, and socialists. In <strong>Chile's 1988 plebiscite</strong>, the opposition spanned parties from center-right to communist.<br><br>The broad front is already forming in unexpected places: forty-one retired generals and admirals filed a court brief defending a senator's right to say that troops needn't obey unlawful orders. Former Republican FCC chairs are calling for investigation of their own party's appointee. Former military lawyers are opposing the use of military courts to prosecute civilians. These are uncomfortable allies whose broader politics many in your movement oppose — but they're defending the constitutional foundations that everyone depends on.",
       lesson:"A 'no' front — united against the regime — allows a bigger tent than a 'yes' front — united for a specific vision. Breadth comes with real costs, but narrowness has consistently led to defeat.",
       source:"Ontiveros & Dixon, Fascism Barometer Podcast; Chenoweth & Marks (2022)",
-      concepts_unlocked:["Broad Front","Quiet Outreach vs. Public Pressure"],
+      concepts_unlocked:["Broad Front","Quiet Outreach vs. Public Pressure","Loyalty Shift"],
       discuss:"Who are the most uncomfortable potential allies in the current situation? What are the real costs of working with them — and what are the costs of NOT working with them?"
     },
     {
@@ -794,7 +794,7 @@ const EVENTS = [
       effects:{movementPower:2,popularSupport:3,orgCapacity:8,coalitionUnity:5,democracy:4},
       pillarEffects:{business:6},
       flags:["diagnosed_scale_mismatch"],
-      outcome:"Here's the scale problem: the regime imposed billions in tariffs on a single company in a week. It seized equity stakes in corporations, launched regulatory investigations that could shut businesses down entirely. Your movement's most successful boycott cost a company millions over months. The regime's pressure is immediate, certain, and existential. The movement's pressure is slow, uncertain, and survivable. Companies know which direction to bend.<br><br>So if you can't out-pressure the regime, maybe the answer isn't pressure at all. Research on democratic backsliding by Pinckney and Trilling found that quiet outreach — relationship-building, back-channel conversations, insider appeals — shifted institutional loyalty 39% of the time. Public pressure campaigns? Worse than doing nothing — in cases of democratic backsliding specifically. The instinct is to protest, shame, and boycott. The research says: build relationships. But if this has moved beyond backsliding, the mechanism may change.<br><br>This also means preparing your own organization. The regime uses asset freezes, retaliatory investigations, and funding disruption as weapons. Most organizations aren't prepared. And there's a survival insight: building connections beyond the left — with faith organizations, local elected officials, community institutions — makes your organization harder to isolate. Isolation is certain death. Being embedded isn't a guarantee of safety, but it's your best protection.",
+      outcome:"Here's the <strong>dual-direction pressure</strong> problem: the regime imposed billions in tariffs on a single company in a week. It seized equity stakes in corporations, launched regulatory investigations that could shut businesses down entirely. Your movement's most successful boycott cost a company millions over months. The regime's pressure is immediate, certain, and existential. The movement's pressure is slow, uncertain, and survivable. Companies know which direction to bend.<br><br>So if you can't out-pressure the regime, maybe the answer isn't pressure at all. Research on democratic backsliding by Pinckney and Trilling found that quiet outreach — relationship-building, back-channel conversations, insider appeals — shifted institutional loyalty 39% of the time. Public pressure campaigns? Worse than doing nothing — in cases of democratic backsliding specifically. The instinct is to protest, shame, and boycott. The research says: build relationships. But if this has moved beyond backsliding, the mechanism may change.<br><br>This also means preparing your own organization. The regime uses asset freezes, retaliatory investigations, and funding disruption as weapons — and institutions with government dependencies (broadcast licenses, federal contracts, tax-exempt status) face the highest <strong>regulatory capture risk</strong>. Most organizations aren't prepared. And there's a survival insight: building connections beyond the left — with faith organizations, local elected officials, community institutions — makes your organization harder to isolate. Isolation is certain death. Being embedded isn't a guarantee of safety, but it's your best protection.",
       caseStudy:"The <strong>Disney boycott</strong> — <a href='https://wagingnonviolence.org/2025/10/how-disney-boycott-beat-fcc-censorship-push/' target='_blank'>analyzed by Daniel Hunter</a> — shows what organized economic pressure looks like when it works. After the FCC chair publicly bragged about pressuring affiliates to censor Jimmy Kimmel, Disney caved and suspended the show. That could have been the end — but organizers moved fast. Nelini Stamp and colleagues had a Google doc circulating within hours. <a href='https://friendseverywhere.network/' target='_blank'>Friends Everywhere Network</a> spread the boycott through Star Wars fan communities. Indivisible, 50501, and Movement Labs amplified it. WGA, SAG-AFTRA, and IATSE unions issued statements and held rallies. The unbranded structure let any organization pick it up and make it their own.<br><br>1.7 million customers cancelled. Disney stock dropped nearly $5 billion. Unsubscribes ran 436% above normal. Disney's final assessment, according to Hunter: protesters were more powerful than Trump. Kimmel returned. Both Nexstar and Sinclair — which had regulatory business before the FCC — folded within a week.<br><br>Why it worked: speed (infrastructure up in hours), targeting high-revenue streams (Monday Night Football, Disney+ price increase timing), fandom organizing, union solidarity, and the FCC chair's own bragging making the illegality obvious.",
       lesson:"The Disney boycott worked because organizers moved fast, stayed unbranded so any group could join, and imposed costs that were measurable, immediate, and clearly attributable. The key question for any corporate campaign: can you impose costs faster and more visibly than the regime?",
       source:"Hunter, How the Disney Boycott Beat the FCC (Waging Nonviolence, 2026); Blanc, Your Individual Boycotts Aren't Helping (2026); Corporate campaigns research (2025-26); Pinckney & Trilling (2024)",
@@ -857,8 +857,9 @@ const EVENTS = [
 {
   phase:2, type:"crisis",
   title:"State Terror and Community Response",
-  desc:"Federal agents in St. Paul drag a 57-year-old Hmong man from his home in handcuffs, underwear, and a blanket in freezing weather while neighbors record. DHS tells the press he's a sex offender. He's a naturalized U.S. citizen. The name they were looking for doesn't match his. No apology.<br><br>Then a mother named Renée Good is killed by federal agents near a school. A nurse named Alex Pretti is shot while documenting enforcement with his phone. In Minneapolis, an ICE official later removed from his post had a photographer traveling with his convoy — they wanted the confrontations on camera. The regime's lies about the killings come fast: Good used her vehicle as a weapon. Pretti wanted to 'massacre' agents. Neighbors and video tell different stories. The lies aren't designed to be believed. They're designed to demonstrate that the state can kill and control the narrative simultaneously.<br><br>Media later reports that Stephen Miller directed agents to create these confrontations. This isn't random violence — it's manufactured spectacle. M. Gessen uses the term 'state terror' to describe this dynamic — violence deployed to change the behavior of onlookers, not just targets. But it's worse than random: the regime is engineering the incidents and the narrative at the same time. Is that what you're seeing?<br><br>And yet something emerges. ICE Watch networks activate in days. Neighbors tail federal agents through residential streets, documenting every stop. Pop-up blockades turn into block parties — pallets, lawn chairs, kids playing, people grilling. Minnesota holds a general strike. People who voted for the president start saying: this isn't what I signed up for. A rancher. A veteran. A small business owner who wanted lower taxes, not state killings.<br><br>But visibility has costs. Death threats. Doxxing. The intimidation is decentralized — the regime doesn't need to direct it, just give permission.<br><br>Your organization faces a question — and the answer depends on who you are and who your people are. For some, visibility is a survival calculation. For others, staying invisible when they could safely speak up is its own kind of failure. Both are real. Both are needed in the ecosystem.",
-  concepts:["State Terror","Backfire Framework"],
+  desc:"Federal agents in St. Paul drag a 57-year-old Hmong man from his home in handcuffs, underwear, and a blanket in freezing weather while neighbors record. DHS tells the press he's a sex offender. He's a naturalized U.S. citizen. The name they were looking for doesn't match his. No apology.<br><br>Then a mother named Renée Good is killed by federal agents near a school. A nurse named Alex Pretti is shot while documenting enforcement with his phone. In Minneapolis, an ICE official later removed from his post had a photographer traveling with his convoy — they wanted the confrontations on camera. The regime's lies about the killings come fast: Good used her vehicle as a weapon. Pretti wanted to 'massacre' agents. Neighbors and video tell different stories. The lies aren't designed to be believed. They're designed to demonstrate that the state can kill and control the narrative simultaneously.<br><br><a href='https://www.dailymail.co.uk/news/article-15686393/Trump-insiders-explode-Stephen-Millers-shadow-rule-reveal-puppet-master-overrides-president-needs-fired.html' target='_blank'>Media later reports</a> that Stephen Miller directed agents to create these confrontations. This isn't random violence — it's manufactured spectacle. M. Gessen uses the term 'state terror' to describe this dynamic — violence deployed to change the behavior of onlookers, not just targets. But it's worse than random: the regime is engineering the incidents and the narrative at the same time. Is that what you're seeing?<br><br>And yet something emerges. ICE Watch networks activate in days. Neighbors tail federal agents through residential streets, documenting every stop. Pop-up blockades turn into block parties — pallets, lawn chairs, kids playing, people grilling. Minnesota holds a general strike. People who voted for the president start saying: this isn't what I signed up for. A rancher. A veteran. A small business owner who wanted lower taxes, not state killings.<br><br>But visibility has costs. Death threats. Doxxing. The intimidation is decentralized — the regime doesn't need to direct it, just give permission.<br><br>Your organization faces a question — and the answer depends on who you are and who your people are. For some, visibility is a survival calculation. For others, staying invisible when they could safely speak up is its own kind of failure. Both are real. Both are needed in the ecosystem.",
+  concepts:["State Terror","Backfire Framework","Overreach as Opening"],
+  choicePrompt:"Both choices are needed in the ecosystem. What's right for YOUR organization and the people it serves?",
   choices:[
     {
       title:"Lead with visibility — more voices, more stories, more people",
@@ -871,7 +872,7 @@ const EVENTS = [
       caseStudy:"The <strong>backfire framework</strong> predicts this: when a regime uses disproportionate force, it can generate MORE resistance than it suppresses — but only if the violence is documented and publicized. In <strong>Birmingham, Alabama in 1963</strong>, the civil rights movement deliberately chose to protest where they knew the response would be disproportionate — fire hoses and attack dogs against peaceful protesters, including children. The images broadcast nationally broke the political deadlock on civil rights legislation. The key: the movement had trained thousands in nonviolent discipline BEFORE the confrontation, and had media relationships in place to ensure documentation.",
       lesson:"The instinct to go underground is exactly what state terror is designed to produce. The most effective counter is to bring MORE people and MORE stories into the open — making resistance visible, normal, and widespread.",
       source:"M. Gessen, State Terror Has Arrived (2026); Merriman, Backfire Framework; Ben-Ghiat, Strongmen (2020); Stephan, 6 Superpowers of Faith Communities (2025)",
-      concepts_unlocked:["State Terror","Backfire Framework","Overreach as Opening"],
+      concepts_unlocked:["State Terror","Backfire Framework","Overreach as Opening","Nonviolent Discipline"],
       discuss:"What's the difference between provoking a backfire and walking into a crackdown? How do you know which dynamic you're in?"
     },
     {
@@ -932,7 +933,7 @@ const EVENTS = [
       effects:{movementPower:3,popularSupport:7,orgCapacity:5,coalitionUnity:4,democracy:3},
       pillarEffects:{religious:5,labor:4},
       flags:["diagnosed_youth_material"],
-      outcome:"You build mutual aid networks as on-ramps for youth engagement. Right now that looks like community fridges, Venmo chains, Signal group chats coordinating rides and resources, GoFundMe campaigns for rent. Some colleagues dismiss this as 'charity work' that distracts from 'real' organizing. But the evidence says otherwise: in authoritarian environments, mutual aid replaces failing state functions AND creates the relationships that sustained political engagement depends on. Young people who feel the movement is actually helping them and their communities stay engaged at far higher rates.<br><br>The question is ambition. What you're doing now is real and necessary. But why can't we build at the scale of the mutual benefit societies that sustained communities through far worse?<br><br>The people who volunteer at food distributions know their neighbors by name. That's the trust you'll need for election protection — people who show up because they know each other, not because an organization sent them.",
+      outcome:"You build <strong>alternative institutions</strong> — mutual aid networks as on-ramps for youth engagement. Right now that looks like community fridges, Venmo chains, Signal group chats coordinating rides and resources, GoFundMe campaigns for rent. Some colleagues dismiss this as 'charity work' that distracts from 'real' organizing. But the evidence says otherwise: in authoritarian environments, mutual aid replaces failing state functions AND creates the relationships that sustained political engagement depends on. Young people who feel the movement is actually helping them and their communities stay engaged at far higher rates.<br><br>The question is ambition. What you're doing now is real and necessary. But why can't we build at the scale of the mutual benefit societies that sustained communities through far worse?<br><br>The people who volunteer at food distributions know their neighbors by name. That's the trust you'll need for election protection — people who show up because they know each other, not because an organization sent them.",
       caseStudy:"The Jim Crow South was an authoritarian system — lynching, disenfranchisement, people trapped in debt by the sharecropping system, state-sanctioned terror. Under those conditions, Black communities built cooperatives as acts of resistance. The Colored Farmers' Alliance had over a million members by 1891. The <strong>United Order of Tents</strong> — founded by formerly enslaved Black women — built a self-governing mutual benefit society that ran old-age homes without grant funding, sustained entirely by member contributions. <strong>Ella Baker</strong> organized cooperative economics in New York in the early 1930s through the Young Negroes' Cooperative League, then went South to build NAACP branches under conditions where civil rights work could get you killed. That organizing tradition powered the movement that came later.<br><br>In <strong>Poland</strong>, Solidarity built mutual aid networks — workers' cooperatives, independent education, health support — that sustained engagement through martial law and years of repression.<br><br>The lesson: when above-ground political work is dangerous, you build the infrastructure through mutual aid and economic cooperation. This isn't a new strategy. Black communities practiced it for a century under authoritarian conditions.<br><br>And it used to be the norm: research by Skocpol, Ganz, and Munson found that 58 American organizations once enrolled 1% or more of all adults as members — the Odd Fellows, the Grange, the Knights of Pythias. They were democratically governed, funded by member dues, and structured in three tiers (local→state→national) that mirrored the government itself. The scaffolding created the chapters: the WCTU built state organizations in 60% of states BEFORE reaching 1% membership. These weren't small groups — they were the backbone of American civic life until the mid-1960s, when they were replaced by staff-managed nonprofits funded by foundations. The question is why we stopped building at that scale — and whether we can start again.",
       lesson:"Mutual aid is both a moral imperative and a strategic investment. In authoritarian environments, community organizations that provide real material help become the most effective on-ramps for sustained engagement — but only if they build toward lasting institutions, not just emergency response.",
       source:"Chenoweth & Marks (2022); CIRCLE (2025); Skocpol, Diminished Democracy (2003); Bushwick, United Order of Tents (2024)",
@@ -945,7 +946,7 @@ const EVENTS = [
 {
   phase:3, type:"crisis",
   title:"Six Months Out",
-  desc:"Someone pulls up a scenario on the conference room screen: a state attorney general files suit to invalidate 200,000 mail-in ballots. The DOJ opens investigations into election officials in three competitive states. A federal court restricts early voting windows two weeks before Election Day. The room goes quiet. Then someone says: 'This isn't hypothetical. Protect Democracy has documented the pattern — they call it <a href='https://protectdemocracy.org/executive-override/' target='_blank'>Executive Override</a>. Deceive voters, disrupt election administration, deny the results.'<br><br>Your field director breaks the silence: 'We have six months. We can run the best campaign in the country — digital ads, relational organizing, affordability messaging, turnout infrastructure. Or we can split resources to prepare for what happens after the vote. We can't do both at full strength.'<br><br>Election defense strategists break this into four stages: <strong>FIGHT</strong> is pre-election defense of voting rules and infrastructure. <strong>WIN</strong> is the election itself — turnout, voter contact, campaigning. <strong>PROVE</strong> is independently verifying results — citizen observation, audits, documentation. <strong>ENFORCE</strong> is what happens if results are challenged — litigation, mass mobilization, noncooperation. Most of the ecosystem is investing almost everything in WIN. Almost nobody is building PROVE or ENFORCE capacity.<br><br>This is the tension nobody wants to name. Some organizers won't even discuss contested elections — they're convinced it suppresses turnout. Others think that's like refusing to discuss fire escapes because it might scare people out of the building. And there's a credibility problem with PROVE: if the people doing election observation are all from one side, the regime discredits the entire effort by pointing at who's running it.",
+  desc:"Someone pulls up a scenario on the conference room screen: a state attorney general files suit to invalidate 200,000 mail-in ballots. The DOJ opens investigations into election officials in three competitive states. A federal court restricts early voting windows two weeks before Election Day. The room goes quiet. Then someone says: 'This isn't hypothetical. Protect Democracy has documented the pattern — they call it <a href='https://protectdemocracy.org/executive-override/' target='_blank'>Executive Override</a>. Deceive voters, disrupt election administration, deny the results.'<br><br>Your field director breaks the silence: 'We have six months. We can run the best campaign in the country — digital ads, relational organizing, affordability messaging, turnout infrastructure. Or we can split resources to prepare for what happens after the vote. We can't do both at full strength.'<br><br>Election defense strategists break this into four stages: <strong>FIGHT</strong> is pre-election defense of voting rules and infrastructure. <strong>WIN</strong> is the election itself — turnout, voter contact, campaigning. <strong>PROVE</strong> is independently verifying results — citizen observation, audits, documentation. <strong>ENFORCE</strong> is what happens if results are challenged — litigation, mass mobilization, noncooperation. Most of the ecosystem is investing almost everything in WIN. Almost nobody is building PROVE or ENFORCE capacity. Research on <strong>pre-election mobilization</strong> shows that high turnout reduces the space for fraud — but mobilization alone isn't enough without infrastructure to defend results.<br><br>This is the tension nobody wants to name. Some organizers won't even discuss contested elections — they're convinced it suppresses turnout. Others think that's like refusing to discuss fire escapes because it might scare people out of the building. And there's a credibility problem with PROVE: if the people doing election observation are all from one side, the regime discredits the entire effort by pointing at who's running it.",
   concepts:["Pre-Election Mobilization","Parallel Vote Tabulation","Pillars of Support"],
   choices:[
     {
@@ -969,7 +970,7 @@ const EVENTS = [
       effects:{movementPower:4,popularSupport:4,orgCapacity:8,coalitionUnity:5,democracy:6},
       pillarEffects:{civil:6,religious:4},
       flags:["diagnosed_competitive_authoritarianism"],
-      outcome:"You split resources between winning and defending the win. The cost is real: fewer door-knocks, less ad spending, a genuine risk of losing a winnable race because you diverted resources. If the results aren't contested, you may have sacrificed the win for a precaution that wasn't needed. But when results ARE contested, your people are already there — they know the election administrators, they've trained for this, and they're not going anywhere. The observer corps includes faith leaders, a retired judge, and two Republican small business owners. The regime can't credibly dismiss them as partisan.<br><br>This is what pillar-shifting looks like in practice — not a boycott or a protest, but quiet relationship-building with the people inside institutions. The election administrator who trusts you. The faith leader who'll stand next to a union organizer. The veteran who'll say 'I voted for the president, and I want every ballot counted.' You built these relationships over months. They can't be manufactured in a crisis.",
+      outcome:"You split resources between winning and defending the win. The cost is real: fewer door-knocks, less ad spending, a genuine risk of losing a winnable race because you diverted resources. If the results aren't contested, you may have sacrificed the win for a precaution that wasn't needed. But when results ARE contested, your people are already there — they know the election administrators, they've trained for this, and they're not going anywhere. The observer corps includes faith leaders, a retired judge, and two Republican small business owners — a credible <strong>parallel vote tabulation</strong> operation the regime can't dismiss as partisan.<br><br>This is what pillar-shifting looks like in practice — not a boycott or a protest, but quiet relationship-building with the people inside institutions. The election administrator who trusts you. The faith leader who'll stand next to a union organizer. The veteran who'll say 'I voted for the president, and I want every ballot counted.' You built these relationships over months. They can't be manufactured in a crisis.",
       caseStudy:"In <strong>Washington, D.C.</strong>, the coalition Free DC ran a role-play scenario with over 500 participants months before the National Guard was deployed to the city. When it actually happened — 800 troops — they held a press conference before the official announcement. They'd already rehearsed. They targeted the pillars: military, police, media, business, faith leaders. They gave institutions specific asks, not vague appeals. The preparation was the strategy.<br><br>In <strong>Chile in 1988</strong>, the democratic opposition ran an effective campaign to win the plebiscite AND built election defense infrastructure simultaneously — trained observers at every polling station, community networks ready to mobilize, and an independent vote count. Both were essential: they needed to win AND they needed to prove they won.",
       lesson:"Under competitive authoritarianism, the campaign to win and the infrastructure to defend results must be built simultaneously. Neither is sufficient alone. The organizations that rehearsed were the ones that were ready.",
       source:"Hunter, Free DC Models Effective Resistance (Waging Nonviolence, 2026); Batura (2024); Hold the Line Guide; Secret Bipartisan Campaign That Saved 2020 (TIME)",
@@ -1722,96 +1723,35 @@ function makeChoice(index) {
     window._pendingFollowUp = null;
   }
 
-  // === STAGED OUTCOME FLOW ===
-  // Build sections as an array, reveal one at a time with Continue buttons
-  const sections = [];
-
-  // Section 1: Outcome narrative + pillar shifts
-  let sec1 = `<h3>Outcome</h3><p class="outcome-text">${choice.outcome}</p>`;
-  if (pillarShifts.length > 0) {
-    sec1 += `<div style="margin:0.6rem 0; padding:0.4rem 0.7rem; background:var(--accent-glow); border-left:3px solid var(--accent); border-radius:2px; font-size:0.8rem; font-family:'Inter',system-ui,sans-serif; font-weight:600; color:var(--accent);">
-      ${pillarShifts.map(s => `<div>⬆ ${s}</div>`).join('')}</div>`;
-  }
-  sections.push(sec1);
-
-  // Section 2: Case study + Key concept (if case study exists)
-  if (choice.caseStudy) {
-    sections.push(`<div class="case-study-box">
-      <div class="case-study-label">🌍 Case Study</div>
-      <div class="case-study-text">${choice.caseStudy}</div>
-    </div>
-    <div class="lesson-box">
-      <div class="lesson-label">📖 Key Concept</div>
-      <div class="lesson-text">${choice.lesson}</div>
-      <div class="lesson-source">— ${choice.source}</div>
-    </div>`);
-  } else {
-    // No case study — just lesson
-    sections[0] += `<div class="lesson-box" style="margin-top:0.8rem;">
-      <div class="lesson-label">📖 Key Concept</div>
-      <div class="lesson-text">${choice.lesson}</div>
-      <div class="lesson-source">— ${choice.source}</div>
-    </div>`;
-  }
-
-  // Section 3: Discussion prompt + Roads Not Taken (optional)
-  let sec3 = '';
-  if (choice.discuss) {
-    sec3 += `<div class="discuss-box">
-      <div class="discuss-label">💬 Discussion Prompt</div>
-      <div class="discuss-text">${choice.discuss}</div>
-    </div>`;
-  }
-  if (roadsNotTaken) sec3 += roadsNotTaken;
-  if (sec3) sections.push(sec3);
-
-  // Section 4: Follow-up or Next Turn
-  if (followUpHtml) {
-    sections.push(followUpHtml);
-  }
-
-  // Render staged flow
-  const outcomeArea = document.getElementById('outcome-area');
-  outcomeArea.innerHTML = `<div class="outcome-card" style="display:block" id="staged-outcome"></div>`;
-  const container = document.getElementById('staged-outcome');
-
-  let currentSection = 0;
-  function revealNext() {
-    if (currentSection >= sections.length) {
-      // All sections revealed — show Next Turn button if no follow-up
-      if (!choice.followUp) {
-        const btnDiv = document.createElement('div');
-        btnDiv.style.cssText = 'margin-top:1rem; text-align:right;';
-        btnDiv.className = 'fade-up';
-        btnDiv.innerHTML = `<button class="btn btn-primary btn-sm" onclick="nextTurn()">
+  // Render outcome as single card with clear visual hierarchy
+  document.getElementById('outcome-area').innerHTML = `
+    <div class="outcome-card fade-up" style="display:block" id="staged-outcome">
+      <h3>Outcome</h3>
+      <p class="outcome-text">${choice.outcome}</p>
+      ${pillarShifts.length > 0 ? `<div style="margin:0.6rem 0; padding:0.4rem 0.7rem; background:var(--accent-glow); border-left:3px solid var(--accent); border-radius:2px; font-size:0.8rem; font-family:'Inter',system-ui,sans-serif; font-weight:600; color:var(--accent);">
+        ${pillarShifts.map(s => `<div>⬆ ${s}</div>`).join('')}
+      </div>` : ''}
+      ${choice.caseStudy ? `<div class="case-study-box">
+        <div class="case-study-label">🌍 Case Study</div>
+        <div class="case-study-text">${choice.caseStudy}</div>
+      </div>` : ''}
+      <div class="lesson-box">
+        <div class="lesson-label">📖 Key Concept</div>
+        <div class="lesson-text">${choice.lesson}</div>
+        <div class="lesson-source">— ${choice.source}</div>
+      </div>
+      ${roadsNotTaken}
+      ${choice.discuss ? `<div class="discuss-box">
+        <div class="discuss-label">💬 Discussion Prompt</div>
+        <div class="discuss-text">${choice.discuss}</div>
+      </div>` : ''}
+      ${followUpHtml}
+      ${!choice.followUp ? `<div style="margin-top:1.5rem; text-align:center;">
+        <button class="btn btn-primary" style="font-size:1rem; padding:0.7rem 2rem;" onclick="nextTurn()">
           ${S.turn >= S.maxTurns ? 'See Results →' : 'Next Turn →'}
-        </button>`;
-        container.appendChild(btnDiv);
-        btnDiv.scrollIntoView({ behavior:'smooth', block:'nearest' });
-      }
-      return;
-    }
-    const div = document.createElement('div');
-    div.className = 'fade-up';
-    div.innerHTML = sections[currentSection];
-    container.appendChild(div);
-    currentSection++;
-
-    // If more sections remain (and this isn't the follow-up section), add Continue button
-    if (currentSection < sections.length || (!choice.followUp && currentSection === sections.length)) {
-      if (currentSection < sections.length) {
-        const continueBtn = document.createElement('div');
-        continueBtn.style.cssText = 'margin-top:0.8rem; text-align:right;';
-        continueBtn.innerHTML = `<button class="btn btn-sm" style="font-size:0.8rem; padding:0.4rem 1rem;" onclick="this.parentElement.remove(); window._revealNext();">Continue →</button>`;
-        container.appendChild(continueBtn);
-        continueBtn.scrollIntoView({ behavior:'smooth', block:'nearest' });
-      } else {
-        revealNext(); // Show the Next Turn button
-      }
-    }
-  }
-  window._revealNext = revealNext;
-  revealNext(); // Show first section immediately
+        </button>
+      </div>` : ''}
+    </div>`;
 
   renderStats();
   renderPillars();
